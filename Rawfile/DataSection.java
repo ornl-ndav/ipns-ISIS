@@ -277,22 +277,21 @@ public class DataSection {
    */
   public float[] get1DSpectrum(RandomAccessFile rawFile, int spect, TimeSection ts)
   {
+  	float[] result = null;
 	try
 	{
 		if (version == 1)
-		  return getDataForDataVersion1(rawFile,spect,ts);
+		  result = getDataForDataVersion1(rawFile,spect,ts);
 		else if (version == 2)
-		  return getDataForDataVersion2(rawFile,spect,ts);
+		  result = getDataForDataVersion2(rawFile,spect,ts);
 	}
 	catch(IOException e)
 	{
 		System.out.print(e);
-		System.out.println(" has ocurred in template(RandomAccessFile rawFile, int spect, TimeSection ts)");
+		System.out.println(" has ocurred in get1DSpectrum(RandomAccessFile rawFile, int spect, TimeSection ts)");
 	}
-	finally
-	{
-		return null;
-	}
+	
+	return result;
   }
   
   private float[] getDataForDataVersion1(RandomAccessFile rawFile, int spect, TimeSection ts) throws IOException
