@@ -29,6 +29,13 @@
  * of Argonne National Laboratory, Argonne, IL 60439-4845, USA.
  *
  * For further information, see <http://www.pns.anl.gov/ISAW/>
+ * $Log$
+ * Revision 1.7  2004/06/16 20:40:50  kramer
+ * Now the source will contain the cvs logs.  Replaced tabs with 3 spaces,
+ * created a default contstructor where fields will be initialized (instead
+ * of when they are first declared), and when exceptions are caught a stack
+ * trace is now printed to standard output.
+ *
  */
 
 package ISIS.Rawfile;
@@ -45,20 +52,20 @@ import java.io.*;
 public class Header {
   //~ Instance fields ----------------------------------------------------------
 
-  protected String runDuration       = new String( "" );
+  protected String runDuration;
   /**
    * Run identifier.  Three characters for the instrument followed by 
    * five characters for the run number (eg LAD12345).
    */
-  protected String runID             = new String( "" );
+  protected String runID;
   /** Experiment short title. */
-  protected String runTitleShort     = new String( "" );
+  protected String runTitleShort;
   /** Start date. */
-  protected String startDate         = new String( "" );
+  protected String startDate;
   /** Start time. */
-  protected String startTime         = new String( "" );
+  protected String startTime;
   /** The user name. */
-  protected String userName          = new String( "" );
+  protected String userName;
   /**
    * data format flag (0 or 1)<br>
    * 0 - all time channels for each<br>
@@ -91,7 +98,26 @@ public class Header {
   /**
    * Creates a new Header object.
    */
-  Header(  ) {}
+   Header(  )
+   {
+      runDuration = new String();
+      runID = new String();
+      runTitleShort = new String();
+      startDate = new String();
+      startTime = new String();
+      userName = new String();
+      dataFormatFlag = -1;
+      formatVersion = -1;
+      startAddressDae = -1;
+      startAddressData = -1;
+      startAddressInst = -1;
+      startAddressLog = -1;
+      startAddressRun = -1;
+      startAddressSe = -1;
+      startAddressSpare = -1;
+      startAddressTcb = -1;
+      startAddressUser = -1;
+   }
 
   /**
    * Creates a new Header object.
@@ -99,6 +125,7 @@ public class Header {
    * @param rawFile The ISIS rawfile to use.
    */
   Header( RandomAccessFile rawFile ) {
+  	this();
     try {
       rawFile.seek( 0 );
 
@@ -157,7 +184,7 @@ public class Header {
       dataFormatFlag      = readUnsignedInteger( rawFile, 4 );
 
       //this looks complete, based on information in libget.txt.
-    } catch( IOException ex ) {}
+    } catch( IOException ex ) { ex.printStackTrace(); }
   }
 
   //~ Methods ------------------------------------------------------------------

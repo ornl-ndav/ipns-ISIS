@@ -29,6 +29,13 @@
  * of Argonne National Laboratory, Argonne, IL 60439-4845, USA.
  *
  * For further information, see <http://www.pns.anl.gov/ISAW/>
+ * $Log$
+ * Revision 1.6  2004/06/16 20:40:51  kramer
+ * Now the source will contain the cvs logs.  Replaced tabs with 3 spaces,
+ * created a default contstructor where fields will be initialized (instead
+ * of when they are first declared), and when exceptions are caught a stack
+ * trace is now printed to standard output.
+ *
  */
 
 package ISIS.Rawfile;
@@ -59,21 +66,21 @@ public class TimeSection {
   /** Number of periods. */
   protected int         numOfPeriods;
   /** Period number for each basic period. */
-  protected int[]       periodMap             = new int[PMAP_SIZE];
+  protected int[]       periodMap;
   /**
    * Gives the number of spectra in each time regime.  The ith element 
    * in the array is one more than the number of spectra in the (i+1)th time 
    * regime (an additional spectra is added for the zeroth spectra).  The 
    * length of this array equals the number of time regimes.
    */
-  protected int[]       numSpectra            = new int[0];
+  protected int[]       numSpectra;
   /**
    * Gives the number of time channels in each time regime.  The ith element 
    * in the array is one more than the number of time channels in the (i+1)th time 
    * regime (an additional time channel is added for the zeroth time channel).  The 
    * length of this array equals the number of time regimes.
    */
-  protected int[]       numTimeChannels       = new int[0];
+  protected int[]       numTimeChannels;
   /**
    * Gives the time channel mode for each time regime.  The ith element 
    * in the array is the time channel mode for the (i+1)th time regime.<br>
@@ -100,33 +107,46 @@ public class TimeSection {
    *                           documentation is interpreted from how ISIS files were accessed.  
    *                           Initially, Fortran was used to access data from an ISIS file.
    */
-  protected int[][]     timeChannelMode       = new int[0][0];
+  protected int[][]     timeChannelMode;
   /**
    * Gives the time channel parameters (in microseconds) in each time regime.  
    * timeChannelParameters[i][j][k] gives the parameters for the (i+1)th time regime.  
    * Where 0<j<4 and 0<k<5.  Also, 0<\i<(the number of time regimes).
    */
-  protected float[][][] timeChannelParameters = new float[0][0][0];
+  protected float[][][] timeChannelParameters;
   /**
    * Prescale value for 32MHz clock (<=15).  The length of this array is equal to 
    * the number of time regimes and the ith element in the array corresponds to 
    * the clock prescale of the (i+1)th time regime.
    */
-  protected int[]       clockPrescale         = new int[0];
+  protected int[]       clockPrescale;
   /**
    * Gives the time channel boundaries.<br>
    * The first index is used to specify the regime number.<br>
    * The second index is used to specify the time channel number where 
    * values range from 0 to one more than the number of time channels.
    */
-  protected int[][]     timeChannelBoundaries = new int[0][0];
+  protected int[][]     timeChannelBoundaries;
 
   //~ Constructors -------------------------------------------------------------
 
   /**
    * Creates a new TimeSection object.
    */
-  TimeSection(  ) {}
+   TimeSection(  )
+   {
+      version = -1;
+      numOfRegimes = -1;
+      numOfFramesPerPeriod = -1;
+      numOfPeriods = -1;
+      periodMap = new int[PMAP_SIZE];
+      numSpectra = new int[0];
+      numTimeChannels = new int[0];
+      timeChannelMode = new int[0][0];
+      timeChannelParameters = new float[0][0][0];
+      clockPrescale = new int[0];
+      timeChannelBoundaries = new int[0][0];
+   }
 
   /**
    * Creates a new TimeSection object.
@@ -135,6 +155,7 @@ public class TimeSection {
    * @param header The header for the RAW file.
    */
   TimeSection( RandomAccessFile rawFile, Header header ) {
+     this();
     int startAddress = ( header.startAddressTcb - 1 ) * 4;
 
     try {
@@ -179,7 +200,7 @@ public class TimeSection {
           timeChannelBoundaries[ii][jj] = Header.readUnsignedInteger( rawFile, 4 );
       }
       
-    } catch( IOException ex ) {}
+    } catch( IOException ex ) { ex.printStackTrace(); }
 
     //looks complete based on libget.txt
 
