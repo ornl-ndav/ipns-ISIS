@@ -10,7 +10,7 @@ import java.io.*;
  *         Laboratory
  */
 public class RunSection {
-  //~ Instance fields **********************************************************
+  //~ Instance fields ----------------------------------------------------------
 
   protected String finishDate           = new String( "" );
   protected String finishTime           = new String( "" );
@@ -40,7 +40,7 @@ public class RunSection {
   protected int    twobyk;
   protected int    version;
 
-  //~ Constructors *************************************************************
+  //~ Constructors -------------------------------------------------------------
 
   /**
    * Creates a new RunSection object.
@@ -58,8 +58,8 @@ public class RunSection {
 
     try {
       rawFile.seek( startAddress );
-      version           = header.readUnsignedInteger( rawFile, 4 );
-      runNumber         = header.readUnsignedInteger( rawFile, 4 );
+      version     = header.readUnsignedInteger( rawFile, 4 );
+      runNumber   = header.readUnsignedInteger( rawFile, 4 );
 
       StringBuffer temp;
 
@@ -69,36 +69,36 @@ public class RunSection {
         temp.append( ( char )rawFile.readByte(  ) );
       }
 
-      runTitle          = temp.toString(  );
-      temp              = new StringBuffer( 20 );
+      runTitle   = temp.toString(  );
+      temp       = new StringBuffer( 20 );
 
       for( int ii = 0; ii < 20; ii++ ) {
         temp.append( ( char )rawFile.readByte(  ) );
       }
 
-      userName          = temp.toString(  );
-      temp              = new StringBuffer( 20 );
+      userName   = temp.toString(  );
+      temp       = new StringBuffer( 20 );
 
       for( int ii = 0; ii < 20; ii++ ) {
         temp.append( ( char )rawFile.readByte(  ) );
       }
 
-      userPhone1        = temp.toString(  );
-      temp              = new StringBuffer( 20 );
+      userPhone1   = temp.toString(  );
+      temp         = new StringBuffer( 20 );
 
       for( int ii = 0; ii < 20; ii++ ) {
         temp.append( ( char )rawFile.readByte(  ) );
       }
 
-      userPhone2        = temp.toString(  );
-      temp              = new StringBuffer( 20 );
+      userPhone2   = temp.toString(  );
+      temp         = new StringBuffer( 20 );
 
       for( int ii = 0; ii < 20; ii++ ) {
         temp.append( ( char )rawFile.readByte(  ) );
       }
 
-      userPhone3        = temp.toString(  );
-      temp              = new StringBuffer( 20 );
+      userPhone3   = temp.toString(  );
+      temp         = new StringBuffer( 20 );
 
       for( int ii = 0; ii < 20; ii++ ) {
         temp.append( ( char )rawFile.readByte(  ) );
@@ -112,12 +112,12 @@ public class RunSection {
         temp.append( ( char )rawFile.readByte(  ) );
       }
 
-      actualRunDuration      = header.readUnsignedInteger( rawFile, 4 );
-      scalerForRPB1          = header.readUnsignedInteger( rawFile, 4 );
-      testInterval2          = header.readUnsignedInteger( rawFile, 4 );
-      dumpInterval           = header.readUnsignedInteger( rawFile, 4 );
-      scalerForRPB4          = header.readUnsignedInteger( rawFile, 4 );
-      testInterval5          = header.readUnsignedInteger( rawFile, 4 );
+      actualRunDuration   = header.readUnsignedInteger( rawFile, 4 );
+      scalerForRPB1       = header.readUnsignedInteger( rawFile, 4 );
+      testInterval2       = header.readUnsignedInteger( rawFile, 4 );
+      dumpInterval        = header.readUnsignedInteger( rawFile, 4 );
+      scalerForRPB4       = header.readUnsignedInteger( rawFile, 4 );
+      testInterval5       = header.readUnsignedInteger( rawFile, 4 );
 
       // 2**k (SNS frequency(Hz)=50/2**k)
       twobyk                 = header.readUnsignedInteger( rawFile, 4 );
@@ -136,8 +136,8 @@ public class RunSection {
         temp.append( ( char )rawFile.readByte(  ) );
       }
 
-      finishDate       = temp.toString(  );
-      temp             = new StringBuffer( 8 );
+      finishDate   = temp.toString(  );
+      temp         = new StringBuffer( 8 );
 
       for( int ii = 0; ii < 8; ii++ ) {
         temp.append( ( char )rawFile.readByte(  ) );
@@ -150,7 +150,7 @@ public class RunSection {
     } catch( IOException ex ) {}
   }
 
-  //~ Methods ******************************************************************
+  //~ Methods ------------------------------------------------------------------
 
   /**
    * Testbed
