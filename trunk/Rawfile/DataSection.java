@@ -30,7 +30,15 @@
  *
  * For further information, see <http://www.pns.anl.gov/ISAW/>
  * $Log$
+ * Revision 1.10  2004/06/24 21:38:04  kramer
+ * Changed all of the fields' visiblity from protected to private.  Fields
+ * are now accessed from other classes in this package through getter methods
+ * instead of using <object>.<field name>.  Also, this class should now be
+ * immutable.  Now get1DSpectrum verifies if the spectrum it is asked to
+ * analyze exists.
+ *
  * Revision 1.9  2004/06/22 15:12:12  kramer
+ *
  * Added getter methods (with documentation).  Now this class imports 2 classes
  * instead of the entire java.io.package.  Also,  it gives an error and tells
  * the user the section couldn't be read if the situation exists.  Made the
@@ -67,7 +75,7 @@ public class DataSection {
   /**
    * Data version number (either 1 or 2).
    */
-  protected int version;
+  private int version;
 
   //version 1
   // For version 2 compression
@@ -77,22 +85,22 @@ public class DataSection {
    * 0 = no compression
    * 1 =byte relative compression.
    */
-  protected int   compressionType;
+  private int   compressionType;
   /** Reserved. */
-  protected int   reserved;
+  private int   reserved;
   /** Offset to Spectrum Description Array. */
-  protected int   offsetToSpectrumDescArray;
+  private int   offsetToSpectrumDescArray;
   /** Equivalent version 1 filesize (blocks). */
-  protected int   equivV1FileSize;
+  private int   equivV1FileSize;
   /** Compression Ration for data section. */
-  protected float compRatioDataSect;
+  private float compRatioDataSect;
   /** Compression Ratio for whole file. */
-  protected float compRatioWholeFile;
+  private float compRatioWholeFile;
   /**
    * The total of all spectra in all time regimes 
    * in all periods.
    */
-  protected int   nspec;
+  private int   nspec;
   /**
    * The Spectrum Descriptor Array.  The elements in this array are:<br>
    * Number of words in compressed spectrum 1<br>
@@ -104,13 +112,13 @@ public class DataSection {
    * . . . . <br>
    * The length of this array is 2*nspec+1.
    */
-  protected int[] spectrumDescArray;
+  private int[] spectrumDescArray;
   /** The offset in the file where the data for this section starts. */
-  protected int   startAddress;
+  private int   startAddress;
   /**
    * The data format flag from the Header section.
    */
-  protected int   dataFormat;
+  private int   dataFormat;
 
   //~ Constructors -------------------------------------------------------------
 
@@ -141,7 +149,7 @@ public class DataSection {
    */
   public DataSection( RandomAccessFile rawFile, Header header, TimeSection ts ) {
   	this();
-    startAddress = ( header.startAddressData - 1 ) * 4;
+    startAddress = ( header.getStartAddressDATASection() - 1 ) * 4;
 
     try {
       rawFile.seek( startAddress );
@@ -149,7 +157,7 @@ public class DataSection {
 
       if( version == 1 ) {
         //dealt with in Get1DSpectrum
-        dataFormat = header.dataFormatFlag;
+        dataFormat = header.getDataFormatFlag();
       } else if( version == 2 ) {
         compressionType             = Header.readUnsignedInteger( rawFile, 4 );
         reserved                    = Header.readUnsignedInteger( rawFile, 4 );
@@ -159,9 +167,8 @@ public class DataSection {
         compRatioWholeFile          = ( float )Header.ReadVAXReal4( rawFile );
         nspec                       = 0;
 
-        for( int ii = 0; ii < ts.numOfRegimes; ii++ ) {
-          nspec += ts.numSpectra[ii];
-        }
+        for( int ii = 1; ii <= ts.getNumOfTimeRegimes(); ii++ )
+          nspec += ts.getNumSpectraForRegime(ii);
 
         spectrumDescArray = new int[( 2 * nspec ) + 1];
         rawFile.seek( startAddress + ( offsetToSpectrumDescArray * 4 ) );
@@ -311,25 +318,31 @@ public class DataSection {
    * exactly specified correctly for all rawfiles.
    *
    * @param rawFile The rawfile to use.
-   * @param spect The spectrum number.
+   * @param spect The spectrum number.  Note:  The first spectrum is at spect=1 
+   * not at spect=0.
    * @param ts The time section to use.
    *
-   * @return The spectrum in a float array.
+   * @return The spectrum in a float array or <code>null</code> if <code>spect</code> is 
+   * invalid.
    */
    public float[] get1DSpectrum(RandomAccessFile rawFile, int spect, TimeSection ts)
    {
       float[] result = null;
-      try
+      if (spect>=1 && spect<=nspec)
       {
-         if (version == 1)
-            result = getDataForDataVersion1(rawFile,spect,ts);
-         else if (version == 2)
-            result = getDataForDataVersion2(rawFile,spect,ts);
+         spect--;
+         try
+         {
+            if (version == 1)
+               result = getDataForDataVersion1(rawFile,spect,ts);
+            else if (version == 2)
+               result = getDataForDataVersion2(rawFile,spect,ts);
+         } catch(IOException e) { e.printStackTrace(); }
       }
-      catch(IOException e)
-      {
-         e.printStackTrace();
-      }
+      else
+         System.out.println("A request for an invalid spectrum was made in get1DSpectrum1(RandomAccessFil, int, TimeSection)" +
+            "\n  Spectrum requested:  "+spect+
+            "\n  Returning null.");
       return result;
    }
   
@@ -349,8 +362,8 @@ public class DataSection {
       float[]   rawData;
 
       rawFile.seek( startAddress +
-        ( spect * ( ts.numTimeChannels[0] + 1 ) * 4 ) );
-      size      = ts.numTimeChannels[0] + 1;
+        ( spect * ( ts.getNumTimeChannelsForRegime(1) + 1 ) * 4 ) );
+      size      = ts.getNumTimeChannelsForRegime(1) + 1;
       rawData   = new float[size];
 
       byte[] num = new byte[4];
@@ -379,14 +392,14 @@ public class DataSection {
       {
          boolean sectionFound = false;
          int actualSpectraNumber = spect+1;
-         int regimeNumber = 0;
+         int regimeNumber = 1;
          int total = 0;
          int previousTotal = total;
          int spectraNumberInRegime = 0;
-         while (!sectionFound && regimeNumber<ts.numSpectra.length)
+         while (!sectionFound && regimeNumber<=ts.getNumOfTimeRegimes())
          {
             previousTotal = total;
-            total += ts.numSpectra[regimeNumber]+1;
+            total += ts.getNumSpectraForRegime(regimeNumber)+1;
             if (total>=actualSpectraNumber)
             {
                sectionFound = true;
@@ -399,13 +412,13 @@ public class DataSection {
          {
             //the spectra that is to be found is "spectraNumberInRegime" in regime "regimeNumber"
             int offset = 0;
-            for (int i=0; i<regimeNumber; i++)
-               offset += (ts.numSpectra[i]+1)*(ts.numTimeChannels[i]+1)*4;
+            for (int i=1; i<=regimeNumber; i++)
+               offset += (ts.getNumSpectraForRegime(i)+1)*(ts.getNumTimeChannelsForRegime(i)+1)*4;
 
             //skip ahead to the regime
             rawFile.seek(startAddress+offset);
-            int skipAhead = (ts.numSpectra[regimeNumber]+1-spectraNumberInRegime-1)*4;
-            float[] data = new float[ts.numTimeChannels[regimeNumber]+1];
+            int skipAhead = (ts.getNumSpectraForRegime(regimeNumber)+1-spectraNumberInRegime-1)*4;
+            float[] data = new float[ts.getNumTimeChannelsForRegime(regimeNumber)+1];
             for (int i=0; i<data.length; i++)
             {
                rawFile.seek(rawFile.getFilePointer()+spectraNumberInRegime*4);
@@ -446,7 +459,7 @@ public class DataSection {
 		int    numWords  = spectrumDescArray[2 * spect];
 		byte[] compBytes = new byte[( numWords ) * 4];
 
-		size      = ts.numTimeChannels[0] + 1;
+		size      = ts.getNumTimeChannelsForRegime(1) + 1;
 		rawData   = new int[size];
 
 		//read the bytes from the file
