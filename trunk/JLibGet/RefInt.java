@@ -28,18 +28,20 @@
  * the National Science Foundation under grant number DMR-0218882.
  *
  * For further information, see <http://www.pns.anl.gov/ISAW/>
- * 
+ *
  * $Log$
- * Revision 1.1  2004/04/30 00:02:09  bouzekc
- * Initial revision
+ * Revision 1.2  2004/04/30 00:18:18  bouzekc
+ * New version.  Old version should not have been in CVS.
  *
  */
 package ISIS.JLibGet;
 
 /**
- * This is a class to simulate passing ints by reference.
- * It has one inner int which is initialized to zero.
+ * This is a class to simulate passing ints by reference. It has one inner int
+ * which is initialized to zero.
  */
 public class RefInt {
+  //~ Instance fields **********************************************************
+
   public int innerInt = 0;
 }

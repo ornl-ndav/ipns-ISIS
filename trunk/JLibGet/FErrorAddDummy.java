@@ -6,8 +6,8 @@
  * Converted to Java by Chris M. Bouzek February 2004
  *
  * $Log$
- * Revision 1.1  2004/04/30 00:02:09  bouzekc
- * Initial revision
+ * Revision 1.2  2004/04/30 00:18:16  bouzekc
+ * New version.  Old version should not have been in CVS.
  *
  */
 package ISIS.JLibGet;

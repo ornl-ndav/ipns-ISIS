@@ -28,18 +28,20 @@
  * the National Science Foundation under grant number DMR-0218882.
  *
  * For further information, see <http://www.pns.anl.gov/ISAW/>
- * 
+ *
  * $Log$
- * Revision 1.1  2004/04/30 00:02:09  bouzekc
- * Initial revision
+ * Revision 1.2  2004/04/30 00:18:18  bouzekc
+ * New version.  Old version should not have been in CVS.
  *
  */
 package ISIS.JLibGet;
 
 /**
- * Class to simulate passing floats by reference.  It has one inner
- * float initalized to 0.
+ * Class to simulate passing floats by reference.  It has one inner float
+ * initalized to 0.
  */
 public class RefFloat {
+  //~ Instance fields **********************************************************
+
   public float innerFloat = 0.0f;
 }
