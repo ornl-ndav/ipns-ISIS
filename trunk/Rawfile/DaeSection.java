@@ -29,6 +29,13 @@
  * of Argonne National Laboratory, Argonne, IL 60439-4845, USA.
  *
  * For further information, see <http://www.pns.anl.gov/ISAW/>
+ * $Log$
+ * Revision 1.6  2004/06/16 20:40:49  kramer
+ * Now the source will contain the cvs logs.  Replaced tabs with 3 spaces,
+ * created a default contstructor where fields will be initialized (instead
+ * of when they are first declared), and when exceptions are caught a stack
+ * trace is now printed to standard output.
+ *
  */
 
 package ISIS.Rawfile;
@@ -52,7 +59,7 @@ public class DaeSection {
    * 
    * @see InstrumentSection#nDet
    */
-  protected int[] crateNum               = new int[0];
+  protected int[] crateNum;
   /**
    * Position in module for each detector.  The length of 
    * this array equals 1 more than the number of 
@@ -60,7 +67,7 @@ public class DaeSection {
    * 
    * @see InstrumentSection#nDet
    */
-  protected int[] inputNum               = new int[0];
+  protected int[] inputNum;
   /**
    * The module number for each detector.  The length of 
    * this array equals 1 more than the number of 
@@ -68,7 +75,7 @@ public class DaeSection {
    * 
    * @see InstrumentSection#nDet
    */
-  protected int[] moduleNum              = new int[0];
+  protected int[] moduleNum;
   /**
    * Time regime number table.  The length of 
    * this array equals 1 more than the number of 
@@ -76,7 +83,7 @@ public class DaeSection {
    * 
    * @see InstrumentSection#nDet
    */
-  protected int[] timeRegimeTable        = new int[0];
+  protected int[] timeRegimeTable;
   /**
    * 'User detector number' for each detector.  The length of 
    * this array equals 1 more than the number of 
@@ -84,7 +91,7 @@ public class DaeSection {
    * 
    * @see InstrumentSection#nDet
    */
-  protected int[] userDetectorNumber     = new int[0];
+  protected int[] userDetectorNumber;
   /** Crate for monitor 1. */
   protected int   crateMon1;
   /** Crate for monitor 2. */
@@ -151,7 +158,44 @@ public class DaeSection {
   /**
    * Creates a new DaeSection object.
    */
-  DaeSection(  ) {}
+  DaeSection(  )
+  {
+      crateNum = new int[0];
+      inputNum = new int[0];
+      moduleNum = new int[0];
+      timeRegimeTable = new int[0];
+      userDetectorNumber = new int[0];
+      crateMon1 = -1;
+      crateMon2 = -1;
+      detectorMon1 = -1;
+      detectorMon2 = -1;
+      extNeutGateT1 = -1;
+      extNeutGateT2 = -1;
+      externalVeto1 = -1;
+      externalVeto2 = -1;
+      externalVeto3 = -1;
+      frameSyncDelay = -1;
+      frameSyncOrigin = -1;
+      goodExtNeutTotalHigh32 = -1;
+      goodExtNeutTotalLow32 = -1;
+      goodPppTotalHigh32 = -1;
+      goodPppTotalLow32 = -1;
+      lengthOfBulkStore = -1;
+      maskMon1 = -1;
+      maskMon2 = -1;
+      moduleMon1 = -1;
+      moduleMon2 = -1;
+      pppMinValue = -1;
+      rawExtNeutTotalHigh32 = -1;
+      rawExtNeutTotalLow32 = -1;
+      rawPppTotalHigh32 = -1;
+      rawPppTotalLow32 = -1;
+      secondaryMasterPulse = -1;
+      totalGoodEventsHigh32 = -1;
+      totalGoodEventsLow32 = -1;
+      version = -1;
+      wordLength = -1;
+  }
 
   /**
    * Creates a new DaeSection object.
@@ -161,6 +205,7 @@ public class DaeSection {
    * @param nDet The number of detectors.
    */
   DaeSection( RandomAccessFile rawFile, Header header, int nDet ) {
+  	this();
     int startAddress = ( header.startAddressDae - 1 ) * 4;
 
     try {
@@ -225,7 +270,7 @@ public class DaeSection {
       for( int ii = 1; ii <= nDet; ii++ ) {
         userDetectorNumber[ii] = Header.readUnsignedInteger( rawFile, 4 );
       }
-    } catch( IOException ex ) {}
+    } catch( IOException ex ) { ex.printStackTrace(); }
 
     //looks complete based on libget.txt
   }

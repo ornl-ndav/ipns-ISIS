@@ -27,14 +27,19 @@
  * of Argonne National Laboratory, Argonne, IL 60439-4845, USA.
  *
  * For further information, see <http://www.pns.anl.gov/ISAW/>
- * 
+ * $Log$
+ * Revision 1.4  2004/06/16 20:40:50  kramer
+ * Now the source will contain the cvs logs.  Replaced tabs with 3 spaces,
+ * created a default contstructor where fields will be initialized (instead
+ * of when they are first declared), and when exceptions are caught a stack
+ * trace is now printed to standard output.
+ *
  */
  
 package ISIS.Rawfile;
 
 import java.io.IOException;
 import java.io.RandomAccessFile;
-import java.io.FileNotFoundException;
 
 /**
  * This class represents the Sample Environment (SE) Section of an 
@@ -102,19 +107,45 @@ public class SESection
    /** Can number density (atoms.A-3). */
    protected float canNumDensity;
    /** Sample name or chemical formula. */
-   protected String sampleName = new String();
+   protected String sampleName;
    /** Number of SE parameters. */
    protected int numParams;
    /**
     * An array of the SE parameter blocks in the section.  The length of this 
     * array is equal to the number of SE parameters.
     */
-   protected SEParameterBlock[] paramBlockArray = new SEParameterBlock[0];
+   protected SEParameterBlock[] paramBlockArray;
    /** The offset in the file where this data starts. */
    protected int startAddress;
    
    /** Default constructor. */
-   public SESection() {}
+   public SESection()
+   {
+      version = -1;
+      posSampleChamber = -1;
+      sampleType = -1;
+      sampleGeometry = -1;
+      sampleThickness = Float.NaN;
+      sampleHeight = Float.NaN;
+      sampleWidth = Float.NaN;
+      omega = Float.NaN;
+      psi = Float.NaN;
+      phi = Float.NaN;
+      scatGeom = Float.NaN;
+      sample_sCOH = Float.NaN;
+      sample_sINC = Float.NaN;
+      sample_sABS = Float.NaN;
+      sampleNumDensity = Float.NaN;
+      canWallThickness = Float.NaN;
+      can_sCOH = Float.NaN;
+      can_sINC = Float.NaN;
+      can_sABS = Float.NaN;
+      canNumDensity = Float.NaN;
+      sampleName = new String();
+      numParams = -1;
+      paramBlockArray = new SEParameterBlock[0];
+      startAddress = -1;
+   }
    
    /**
    *  Reads the SE section in the file specified and creates an SESection object.  
@@ -125,6 +156,7 @@ public class SESection
    */
    public SESection(RandomAccessFile rawFile, Header header)
    {
+      this();
    	  startAddress = ( header.startAddressSe - 1 ) * 4;
    	  
    	  try
@@ -169,7 +201,7 @@ public class SESection
    	  }
    	  catch (IOException e)
    	  {
-   	  	System.out.println("A "+e.getMessage()+" has been thrown in SESection(RandomAccessFile,header,ts) in SESection.java");
+   	  	e.printStackTrace();
    	  }
    }
    
@@ -217,7 +249,7 @@ public class SESection
             System.out.println(section.paramBlockArray[i].toString());
 	   }
       }
-      catch (FileNotFoundException e)
+      catch (IOException e)
       {
          e.printStackTrace();
       }
@@ -230,13 +262,13 @@ public class SESection
    private class SEParameterBlock
    {
       /** Name. */
-      protected String[] nameArr = new String[2];
+      protected String[] nameArr;
       /** Value. */
       protected int value;
       /** Value exponent. */
       protected int valExponent;
       /** Units of value. */
-      protected String[] unitsOfValueArr = new String[2];
+      protected String[] unitsOfValueArr;
       /** Low trip. */
       protected int lowTrip;
       /** High trip. */
@@ -266,7 +298,31 @@ public class SESection
       /** Pre process routine number. */
       protected int routineNumber;
       /** CAMAC values.  This array has 12 elements. */
-      protected int[] camacValuesArr = new int[12];
+      protected int[] camacValuesArr;
+      
+      /** Default constructor. */
+      public SEParameterBlock()
+      {
+         nameArr = new String[2];
+         value = -1;
+         valExponent = -1;
+         unitsOfValueArr = new String[2];
+         lowTrip = -1;
+         highTrip = -1;
+         currentVal = -1;
+         status = -1;
+         controlledParam = -1;
+         runControlParam = -1;
+         logParamChanges = -1;
+         stabilityVal = Float.NaN;
+         monRepeatPeriod = Float.NaN;
+         camacLocationN = -1;
+         camacLocationA = -1;
+         camacOffset = -1;
+         camacRegisterGroup = -1;
+         routineNumber = -1;
+         camacValuesArr = new int[12];
+      }
       
       /**
       *  Creates an SEParameterBlock object by reading the file given.  This 
@@ -277,6 +333,7 @@ public class SESection
       */
       public SEParameterBlock(RandomAccessFile rawFile) throws IOException
       {
+         this();
          nameArr = new String[2];
          for (int i=0; i<2; i++)
          {
