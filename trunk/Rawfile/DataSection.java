@@ -30,7 +30,14 @@
  *
  * For further information, see <http://www.pns.anl.gov/ISAW/>
  * $Log$
+ * Revision 1.11  2004/07/12 19:26:08  kramer
+ * Added a TimeSection field used to acquire time regime information.  Modified,
+ * the getDataForDataFormatFlag0() method to use the number of time channels in
+ * the smallest numbered time regime (instead of regime 1) to determine where
+ * data is located in the file.
+ *
  * Revision 1.10  2004/06/24 21:38:04  kramer
+ *
  * Changed all of the fields' visiblity from protected to private.  Fields
  * are now accessed from other classes in this package through getter methods
  * instead of using <object>.<field name>.  Also, this class should now be
@@ -119,6 +126,12 @@ public class DataSection {
    * The data format flag from the Header section.
    */
   private int   dataFormat;
+  
+  /**
+   * Represents the time section object used to get 
+   * time regime information.
+   */
+  private TimeSection timeSection;
 
   //~ Constructors -------------------------------------------------------------
 
@@ -138,6 +151,7 @@ public class DataSection {
      spectrumDescArray = new int[0];
      startAddress = -1;
      dataFormat = -1;
+     timeSection = new TimeSection();
   }
 
   /**
@@ -147,8 +161,9 @@ public class DataSection {
    * @param header The header for the RAW file.
    * @param ts The time section for the RAW file.
    */
-  public DataSection( RandomAccessFile rawFile, Header header, TimeSection ts ) {
+  public DataSection( RandomAccessFile rawFile, Header header, TimeSection ts) {
   	this();
+    timeSection = ts;
     startAddress = ( header.getStartAddressDATASection() - 1 ) * 4;
 
     try {
@@ -166,8 +181,11 @@ public class DataSection {
         compRatioDataSect           = ( float )Header.ReadVAXReal4( rawFile );
         compRatioWholeFile          = ( float )Header.ReadVAXReal4( rawFile );
         nspec                       = 0;
-
-        for( int ii = 1; ii <= ts.getNumOfTimeRegimes(); ii++ )
+        
+        int min = timeSection.getMinimumRegimeNumber();
+        int max = timeSection.getMaximumRegimeNumber();
+        
+        for( int ii = min; ii <= max; ii++ )
           nspec += ts.getNumSpectraForRegime(ii);
 
         spectrumDescArray = new int[( 2 * nspec ) + 1];
@@ -362,8 +380,8 @@ public class DataSection {
       float[]   rawData;
 
       rawFile.seek( startAddress +
-        ( spect * ( ts.getNumTimeChannelsForRegime(1) + 1 ) * 4 ) );
-      size      = ts.getNumTimeChannelsForRegime(1) + 1;
+        ( spect * ( ts.getNumTimeChannelsForRegime(timeSection.getMinimumRegimeNumber()) + 1 ) * 4 ) );
+      size      = ts.getNumTimeChannelsForRegime(timeSection.getMinimumRegimeNumber()) + 1;
       rawData   = new float[size];
 
       byte[] num = new byte[4];
@@ -392,11 +410,11 @@ public class DataSection {
       {
          boolean sectionFound = false;
          int actualSpectraNumber = spect+1;
-         int regimeNumber = 1;
+         int regimeNumber = timeSection.getMinimumRegimeNumber();
          int total = 0;
          int previousTotal = total;
          int spectraNumberInRegime = 0;
-         while (!sectionFound && regimeNumber<=ts.getNumOfTimeRegimes())
+         while (!sectionFound && regimeNumber<=timeSection.getMaximumRegimeNumber())
          {
             previousTotal = total;
             total += ts.getNumSpectraForRegime(regimeNumber)+1;
@@ -412,7 +430,7 @@ public class DataSection {
          {
             //the spectra that is to be found is "spectraNumberInRegime" in regime "regimeNumber"
             int offset = 0;
-            for (int i=1; i<=regimeNumber; i++)
+            for (int i=timeSection.getMinimumRegimeNumber(); i<=regimeNumber; i++)
                offset += (ts.getNumSpectraForRegime(i)+1)*(ts.getNumTimeChannelsForRegime(i)+1)*4;
 
             //skip ahead to the regime
@@ -459,7 +477,7 @@ public class DataSection {
 		int    numWords  = spectrumDescArray[2 * spect];
 		byte[] compBytes = new byte[( numWords ) * 4];
 
-		size      = ts.getNumTimeChannelsForRegime(1) + 1;
+		size      = ts.getNumTimeChannelsForRegime(timeSection.getMinimumRegimeNumber()) + 1;
 		rawData   = new int[size];
 
 		//read the bytes from the file
@@ -515,8 +533,10 @@ public class DataSection {
 		  System.out.println("--------------------------------------------------------------------------------");
           RandomAccessFile  rawFile = new RandomAccessFile( args[fileNum], "r" );
           Header            header = new Header( rawFile );
-          TimeSection       ts     = new TimeSection( rawFile, header );
-          DataSection       ds     = new DataSection( rawFile, header, ts );
+          InstrumentSection iSect  = new InstrumentSection( rawFile, header);
+          DaeSection         dSect  = new DaeSection( rawFile, header, iSect.getNumberOfDetectors() );
+          TimeSection       ts     = new TimeSection( rawFile, header, dSect );
+          DataSection       ds     = new DataSection( rawFile, header, ts);
 
          System.out.println( "versionNumber:        " + ds.version );
          if( ds.version == 2 )
