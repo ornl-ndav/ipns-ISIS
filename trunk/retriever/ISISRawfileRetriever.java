@@ -30,6 +30,10 @@
  * For further information, see <http://www.pns.anl.gov/ISAW/>
  *
  * $Log$
+ * Revision 1.3  2004/06/24 21:42:47  kramer
+ * Modified the code in getDataSet(int data_set_num) to work with the new
+ * code in Rawfile.java.
+ *
  * Revision 1.2  2004/04/30 00:21:26  bouzekc
  * Commented out the adding of the total count attribute, as it is likely
  * incorrect.
@@ -120,18 +124,18 @@ public class ISISRawfileRetriever extends Retriever {
    * @return The DataSet consisting of all spectra.
    */
   public DataSet getDataSet( int data_set_num ) {
-    DataSet ds2 = new DataSetFactory( rawfile.RunTitle(  ) ).getDataSet(  );
+    DataSet ds2 = new DataSetFactory( rawfile.getRunID() ).getDataSet(  );
 
     setOneTimeDSAttributes( ds2 );
 
     Data             data;
     DetectorPosition detPos;
-    int              totalSpectra = rawfile.numSpectra(  )[0];
+    int              totalSpectra = rawfile.getNumSpectraForRegime(1);
     float[]          errors       = new float[1];
 
     //data block consists of a spectra and an XScale
     //XScale comes from tcb, and element of TCB at time regime
-    VariableXScale xscale = new VariableXScale( rawfile.TCBArray(  ) );
+    VariableXScale xscale = new VariableXScale( rawfile.TimeChannelBoundariesForRegime(1) );
 
     //ID is spectrum number
     for( int i = 0; i < totalSpectra; i++ ) {
