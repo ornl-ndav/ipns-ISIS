@@ -29,7 +29,11 @@
  *
  * For further information, see <http://www.pns.anl.gov/ISAW/>
  * $Log$
+ * Revision 1.2  2005/01/20 21:48:34  dennis
+ * Fixed dead @link in javadoc comment.
+ *
  * Revision 1.1  2004/06/24 21:49:22  kramer
+ *
  * This class is a hashtable used to find the detector number associated with
  * a spectrum number more efficiently than with a linear search.
  *
@@ -37,10 +41,10 @@
 package ISIS.Rawfile;
 
 /**
- * This class keeps a relationship between detector numbers and spectrum numbers.  This 
- * makes finding a detector number for its spectrum number easy.  Note:  You can find a 
- * spectrum number given a detector number using {@link 
- * InstrumentSection.html#getSpectrumNumberForDetector(int detectorNum) 
+ * This class keeps a relationship between detector numbers and spectrum 
+ * numbers.  This makes finding a detector number for its spectrum number easy.
+ * Note:  You can find a spectrum number given a detector number using 
+ * {@link InstrumentSection#getSpectrumNumberForDetector(int detectorNum) 
  * getSpectrumNumberForDetector(int detectorNum)}.
  * @author Dominic Kramer
  */
@@ -57,12 +61,12 @@ public class InstrumentSectionHashtable
    public InstrumentSectionHashtable() { dataArray = new int[0]; }
       
    /**
-    * Creates a hashtable where the spectrum number and detector id relationship 
-    * is established.
-    * @param spectrumNumbers The array of spectrum numbers.  Element '0' in this 
-    * array is assumed to hold a garbage value, which complies with the array holding the 
-    * spectrum numbers in InstrumentSection.java.  Thus, the element with the first 
-    * meaningful information is at element '1'.
+    * Creates a hashtable where the spectrum number and detector id 
+    * relationship is established.
+    * @param spectrumNumbers The array of spectrum numbers.  Element '0' in 
+    * this array is assumed to hold a garbage value, which complies with the  
+    * array holding the spectrum numbers in InstrumentSection.java.  Thus, the  
+    * element with the first meaningful information is at element '1'.
     * @param numOfSpectra The number of spectra that exist.
     */
    public InstrumentSectionHashtable(int[] spectrumNumbers, int numOfSpectra)
@@ -140,13 +144,16 @@ public class InstrumentSectionHashtable
          }
          
          spectArr[detNum] = val;
-         System.out.println("Detector Number = "+detNum+":  Spectrum Number = "+val);
+         System.out.println("Detector Number = "+detNum+
+                            ":  Spectrum Number = "+val);
       }
       
       System.out.println("Now to retrieve the data from the hashtable");
-      InstrumentSectionHashtable table = new InstrumentSectionHashtable(spectArr,max);
+      InstrumentSectionHashtable table = 
+                                new InstrumentSectionHashtable(spectArr,max);
       System.out.println("largest spectrum number = "+max);
       for (int i=1; i<=max; i++)
-         System.out.println("Spectrum Number="+i+":  Detector Number = "+table.getDetectorNum(i));
+         System.out.println("Spectrum Number="+i+
+                            ":  Detector Number = "+table.getDetectorNum(i));
    }
 }
