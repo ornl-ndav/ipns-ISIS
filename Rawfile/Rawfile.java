@@ -30,7 +30,13 @@
  *
  * For further information, see <http://www.pns.anl.gov/ISAW/>
  * $Log$
+ * Revision 1.12  2004/07/02 16:29:02  kramer
+ * Now the instrument name returned from InstrumentName() is trimmed.  Also,
+ * added methods to get the crate, slot, and input number; the number of
+ * pulses; and the number of the 'detector' a 'pixel' is on.
+ *
  * Revision 1.11  2004/07/01 22:12:32  kramer
+ *
  * Added methods to get the min and max detector IDs corresponding to monitors.
  * Also, fixed MinSubgroupID() to return a non-zero result.  Fixed,
  * MinSubgroupID() and MaxSubgroupID() to use 1 as the first histogram (not 0).
@@ -618,7 +624,7 @@ public class Rawfile {
    */
   public String InstrumentName(  )
   {
-    return instSect.getInstrumentName();
+    return instSect.getInstrumentName().trim();
   }
   
   /**
@@ -657,6 +663,87 @@ public class Rawfile {
   public float FlightPath( int detID )
   {
      return instSect.getFlightPathForDetector(detID);
+  }
+  
+  /**
+   * Get the crate number at detector <code>detectorNum</code>.  
+   * Note:  The first detector is at <code>detectorNum</code>=1 not 0.
+   * @param detectorNum The number of the detector you are 
+   * refering you.  Note:  for <code>detectorNum</code> to be 
+   * valid, 1 <= <code>detectorNum</code> <= 
+   * {@link InstrumentSection#getNumberOfDetectors() 
+   * InstrumentSection.getNumberOfDetectors()}.
+   * @return The crate number for the specified detector or -1 if 
+   * <code>detectorNum</code> is invalid.
+   */
+  public int CrateNum( int detID )
+  {
+     return daeSect.getCrateNumForDetector(detID);
+  }
+  
+  /**
+   * Get the slot number at detector <code>detectorNum</code>.  
+   * Note:  The first detector is at <code>detectorNum</code>=1 not 0.
+   * @param detectorNum The number of the detector you are 
+   * refering you.  Note:  for <code>detectorNum</code> to be 
+   * valid, 1 <= <code>detectorNum</code> <= 
+   * {@link InstrumentSection#getNumberOfDetectors() 
+   * InstrumentSection.getNumberOfDetectors()}.
+   * @return The slot number for the specified detector or -1 if 
+   * <code>detectorNum</code> is invalid.
+   */
+  public int SlotNum( int detID )
+  {
+     return daeSect.getModuleNumForDetector(detID);
+  }
+  
+  /**
+   * Get the position in the slot for detector <code>detectorNum</code>.  
+   * Note:  The first detector is at <code>detectorNum</code>=1 not 0.
+   * @param detectorNum The number of the detector you are 
+   * refering you.  Note:  for <code>detectorNum</code> to be 
+   * valid, 1 <= <code>detectorNum</code> <= 
+   * {@link InstrumentSection#getNumberOfDetectors() 
+   * InstrumentSection.getNumberOfDetectors()}.
+   * @return The position in the slot for the specified detector or -1 if 
+   * <code>detectorNum</code> is invalid.
+   */
+  public int InputNum( int detID )
+  {
+     return daeSect.getInputNumForDetector(detID);
+  }
+  
+  /**
+   * Get which physical detector 
+   * <code>detID</code> corresponds to.  
+   * A group of 'detectors' each with 
+   * its own detector ID are grouped 
+   * together on one physical detector.  
+   * Note:  The value returned is the same 
+   * as the crate number corresponding to 
+   * the detector with detector id <code>
+   * detID</code>.
+  * @param detectorNum The number of the detector you are 
+   * refering you.  Note:  for <code>detectorNum</code> to be 
+   * valid, 1 <= <code>detectorNum</code> <= 
+   * {@link InstrumentSection#getNumberOfDetectors() 
+   * InstrumentSection.getNumberOfDetectors()}.
+   * @return The physical detector (ie crate) the 
+   * detector with ID <code>detID</code> is located or 
+   * -1 if <code>detID</code> is invalid.
+   */
+  public int GetID( int detID )
+  {
+     return daeSect.getCrateNumForDetector(detID);
+  }
+  
+  /**
+   * Get the number of pulses.
+   * @return The number of pulses.
+   */
+  public int NumOfPulses()
+  {
+     return runSect.getNumberOfGoodFrames();
   }
 
 
