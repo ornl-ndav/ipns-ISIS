@@ -31,6 +31,9 @@
  * Modified:
  *
  *  $Log$
+ *  Revision 1.2  2004/06/29 16:29:32  dennis
+ *  Now makes the vectors and grids private data members.
+ *
  *  Revision 1.1  2004/06/24 20:13:02  dennis
  *  This class reads an sxdII.config file, then calculates and prints detector
  *  center, size and orientation information needed to make a UniformGrid
@@ -60,10 +63,10 @@ import gov.anl.ipns.Util.File.*;
    */
 public class Write_SXD_Grid_Info 
 {
-                             // The size and number of detectors is needed to read the
-                             // configuration file, since the configuration file just
-                             // lists the id, longitude, latitude and distance for 
-                             // each pixel, without any "meta" data.
+                      // The size and number of detectors is needed to read the
+                      // configuration file, since the configuration file just
+                      // lists the id, longitude, latitude and distance for 
+                      // each pixel, without any "meta" data.
   static int N_ROWS = 64;
   static int N_COLS = 64;
 
@@ -121,7 +124,7 @@ public class Write_SXD_Grid_Info
       ShowMakeVector( det, "y_vec",  y_vec  ); 
 
       System.out.println();
-      System.out.println("  public static final UniformGrid  SXD_Det" 
+      System.out.println("  private static final UniformGrid  SXD_Det" 
                                +(det+1)+" =");
       System.out.print  ("         new UniformGrid( " );
       System.out.print  ( (det+1) + ", " );
@@ -145,7 +148,7 @@ public class Write_SXD_Grid_Info
    */
   private static void ShowMakeVector( int det, String name, Vector3D vec )
   {
-    System.out.print  ("  static Vector3D " + name + (det+1) + 
+    System.out.print  (" private static Vector3D " + name + (det+1) + 
                        " = new Vector3D( ");
     System.out.print  ( vec.get()[0] + "f, " );
     System.out.print  ( vec.get()[1] + "f, " );
@@ -154,15 +157,15 @@ public class Write_SXD_Grid_Info
 
 
   /**
-   *  Load a sxdII.config file and print the information for each detector either
-   *  as a list of raw information, or as java code to construct ISAW Data grids.
-   *  Since the sxdII.config file does not have any descriptive information, this
-   *  program will need to be updated if the number (11) or size (64x64) of the 
-   *  detectors is changed.
+   *  Load a sxdII.config file and print the information for each detector
+   *  either as a list of raw information, or as java code to construct ISAW
+   *  data grids.  Since the sxdII.config file does not have any descriptive
+   *  information, this program will need to be updated if the number (11) 
+   *  or size (64x64) of the detectors is changed.
    *
-   *  @param args   The first command line parameter specifies the fully qualified
-   *                 sxdII.config file.  If not present, a default file (that
-   *                 probably does not exist on your system) will be tried.
+   *  @param args The first command line parameter specifies the fully qualified
+   *              sxdII.config file.  If not present, a default file (that
+   *              probably does not exist on your system) will be tried.
    */
   public static void main( String args[] )
   {
@@ -174,8 +177,8 @@ public class Write_SXD_Grid_Info
 
     float r, theta, phi;
     DetectorPosition pos = new DetectorPosition();
-                                                    // load the pixel locations into
-    try                                             // a list of Vector3D points
+                                              // load the pixel locations into
+    try                                       // a list of Vector3D points
     {
       TextFileReader tfr = 
                      new TextFileReader("/home/dennis/ISIS_SXD/sxdII.config");
