@@ -18,6 +18,7 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307, USA.
  *
  * Contact : Dennis Mikkelson <mikkelsond@uwstout.edu>
+ *           J.P. Hammonds <jphammonds@anl.gov>
  *           Dominic Kramer <kramerd@uwstout.edu>
  *           Department of Mathematics, Statistics and Computer Science
  *           University of Wisconsin-Stout
@@ -328,13 +329,20 @@ public class InstrumentSection {
   /**
    * Testbed.
    */
-  public static void main( String[] args ) {
-    try {
-      RandomAccessFile  rawFile = new RandomAccessFile( args[0], "r" );
-      Header            header = new Header( rawFile );
-      InstrumentSection is     = new InstrumentSection( rawFile, header );
+  public static void main( String[] args )
+  {
+    try
+    {
+		for (int fileNum=0; fileNum<args.length; fileNum++)
+		{
+		  System.out.println("--------------------------------------------------------------------------------");
+		  System.out.println("Testing file "+args[fileNum]);
+		  System.out.println("--------------------------------------------------------------------------------");
+          RandomAccessFile  rawFile = new RandomAccessFile( args[fileNum], "r" );
+          Header            header = new Header( rawFile );
+          InstrumentSection is     = new InstrumentSection( rawFile, header );
 
-      /*System.out.println( "version: " + is.version );
+         System.out.println( "version: " + is.version );
          System.out.println( "iName: " + is.iName );
          System.out.println( "chopFreq1: " + is.chopFreq1 );
          System.out.println( "chopFreq2: " + is.chopFreq2 );
@@ -383,14 +391,14 @@ public class InstrumentSection {
             for( int ii = 0; ii < is.nMon; ii++ ) {
               System.out.print( is.monPrescale[ii] + "  " );
             }
-            System.out.println(  );*/
+            System.out.println(  );
       System.out.println( "spectrumNumbers: " );
 
       for( int ii = 1; ii <= is.nDet; ii++ ) {
         System.out.println( is.spectrumNumbers[ii] + "  " );
       }
 
-      /*
+      
          System.out.println(  );
          System.out.println( "holdOff: " );
          for( int ii = 1; ii <= is.nDet; ii++ ) {
@@ -399,7 +407,7 @@ public class InstrumentSection {
       
          System.out.println(  );
          System.out.println( "flightPath: " );
-         for( int ii = 1; ii <= 30; ii++ ) {
+         for( int ii = 1; ii <= is.nDet; ii++ ) {
            System.out.println( is.flightPath[ii] + "  " );
          }
       
@@ -411,10 +419,10 @@ public class InstrumentSection {
       
          System.out.println(  );
          System.out.println( "detectorAngle: " );
-         for( int ii = 1; ii <= 30; ii++ ) {
+         for( int ii = 1; ii <= is.nDet; ii++ ) {
            System.out.println( is.detectorAngle[ii] + "  " );
          }
-         /*
+         
             System.out.println(  );
             System.out.println( "userTable: " );
             for( int jj = 0; jj < is.nUserTables; jj++ ) {
@@ -424,8 +432,13 @@ public class InstrumentSection {
               }
               System.out.println(  );
             }
-            System.out.println(  );*/
-    } catch( IOException ex ) {}
+            System.out.println(  );
+		}
+    }
+    catch( IOException ex )
+    {
+    	ex.printStackTrace();
+    }
   }
 
   /**
