@@ -30,7 +30,11 @@
  *
  * For further information, see <http://www.pns.anl.gov/ISAW/>
  * $Log$
+ * Revision 1.9  2004/06/22 16:49:03  kramer
+ * Made the constructors public.
+ *
  * Revision 1.8  2004/06/21 19:11:16  kramer
+ *
  * Added getter methods (with documentation).  Now the class imports 2 classes
  * instead of the entire java.io package.  Also, if the class thinks it may
  * read data from the file wrong, it warns the user.
@@ -107,7 +111,7 @@ public class Header {
   /**
    * Creates a new Header object.
    */
-   Header(  )
+   public Header(  )
    {
       runDuration = new String();
       runID = new String();
@@ -133,7 +137,7 @@ public class Header {
    *
    * @param rawFile The ISIS rawfile to use.
    */
-  Header( RandomAccessFile rawFile ) {
+   public Header( RandomAccessFile rawFile ) {
   	this();
     try {
       rawFile.seek( 0 );

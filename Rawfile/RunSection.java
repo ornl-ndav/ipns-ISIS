@@ -30,7 +30,11 @@
  *
  * For further information, see <http://www.pns.anl.gov/ISAW/>
  * $Log$
+ * Revision 1.8  2004/06/22 16:49:03  kramer
+ * Made the constructors public.
+ *
  * Revision 1.7  2004/06/22 14:51:09  kramer
+ *
  * Added getter methos (with documentation).  Now this class imports 2 classes
  * instead of the entire java.io package.
  *
@@ -165,7 +169,7 @@ public class RunSection {
    * The Header contains the information used to locate the RUN 
    * section in the rawfile.
    */
-  RunSection( RandomAccessFile rawFile, Header header ) {
+  public RunSection( RandomAccessFile rawFile, Header header ) {
   	this();
     int startAddress = ( header.startAddressRun - 1 ) * 4;
 
