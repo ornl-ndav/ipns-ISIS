@@ -30,7 +30,14 @@
  *
  * For further information, see <http://www.pns.anl.gov/ISAW/>
  * $Log$
+ * Revision 1.10  2004/06/24 21:33:00  kramer
+ * Changed all of the fields' visiblity from protected to private.  Fields
+ * are now accessed from other classes in this package through getter methods
+ * instead of using <object>.<field name>.  Also, this class should now be
+ * immutable.
+ *
  * Revision 1.9  2004/06/22 16:49:02  kramer
+ *
  * Made the constructors public.
  *
  * Revision 1.8  2004/06/18 16:36:03  kramer
@@ -75,7 +82,7 @@ public class DaeSection {
    * 
    * @see InstrumentSection#nDet
    */
-  protected int[] crateNum;
+  private int[] crateNum;
   /**
    * Position in module for each detector.  The length of 
    * this array equals 1 more than the number of 
@@ -84,7 +91,7 @@ public class DaeSection {
    * 
    * @see InstrumentSection#nDet
    */
-  protected int[] inputNum;
+  private int[] inputNum;
   /**
    * The module number for each detector.  The length of 
    * this array equals 1 more than the number of 
@@ -93,7 +100,7 @@ public class DaeSection {
    * 
    * @see InstrumentSection#nDet
    */
-  protected int[] moduleNum;
+  private int[] moduleNum;
   /**
    * Time regime number table.  The length of 
    * this array equals 1 more than the number of 
@@ -102,7 +109,7 @@ public class DaeSection {
    * 
    * @see InstrumentSection#nDet
    */
-  protected int[] timeRegimeTable;
+  private int[] timeRegimeTable;
   /**
    * 'User detector number' for each detector.  The length of 
    * this array equals 1 more than the number of 
@@ -111,67 +118,67 @@ public class DaeSection {
    * 
    * @see InstrumentSection#nDet
    */
-  protected int[] userDetectorNumber;
+  private int[] userDetectorNumber;
   /** Crate for monitor 1. */
-  protected int   crateMon1;
+  private int   crateMon1;
   /** Crate for monitor 2. */
-  protected int   crateMon2;
+  private int   crateMon2;
   /** Detector for monitor 1. */
-  protected int   detectorMon1;
+  private int   detectorMon1;
   /** Detector for monitor 2. */
-  protected int   detectorMon2;
+  private int   detectorMon2;
   /** external neutron gate (t1) (in microseconds). */
-  protected int   extNeutGateT1;
+  private int   extNeutGateT1;
   /** external nuetron gate (t2) (in microseconds). */
-  protected int   extNeutGateT2;
+  private int   extNeutGateT2;
   /**External veto 0 (0 dis, 1 en). */
-  protected int   externalVeto1;
+  private int   externalVeto1;
   /**External veto 1 (0 dis, 1 en). */
-  protected int   externalVeto2;
+  private int   externalVeto2;
   /**External veto 2 (0 dis, 1 en). */
-  protected int   externalVeto3;
+  private int   externalVeto3;
   /** Frame synch delay (4 microsecond steps). */
-  protected int   frameSyncDelay;
+  private int   frameSyncDelay;
   /** Frame synch origin (0:none/1:ext/2:int). */
-  protected int   frameSyncOrigin;
+  private int   frameSyncOrigin;
   /** Good ext. neut tot (high 32 bits). */
-  protected int   goodExtNeutTotalHigh32;
+  private int   goodExtNeutTotalHigh32;
   /** Good ext. neut tot (low 32 bits). */
-  protected int   goodExtNeutTotalLow32;
+  private int   goodExtNeutTotalLow32;
   /** Good PPP total (high 32 bits). */
-  protected int   goodPppTotalHigh32;
+  private int   goodPppTotalHigh32;
   /** Good PPP total (low 32 bits). */
-  protected int   goodPppTotalLow32;
+  private int   goodPppTotalLow32;
   /** Length of bulk store memory (bytes). */
-  protected int   lengthOfBulkStore;
+  private int   lengthOfBulkStore;
   /** Mask for monitor 1. */
-  protected int   maskMon1;
+  private int   maskMon1;
   /** Mask for monitor 2. */
-  protected int   maskMon2;
+  private int   maskMon2;
   /** Module for monitor 1. */
-  protected int   moduleMon1;
+  private int   moduleMon1;
   /** Module for monitor 2. */
-  protected int   moduleMon2;
+  private int   moduleMon2;
   /** PPP minimum value. */
-  protected int   pppMinValue;
+  private int   pppMinValue;
   /** Raw ext. neut tot (high 32 bits). */
-  protected int   rawExtNeutTotalHigh32;
+  private int   rawExtNeutTotalHigh32;
   /** Raw ext. neut tot (low 32 bits). */
-  protected int   rawExtNeutTotalLow32;
+  private int   rawExtNeutTotalLow32;
   /** Raw PPP total (high 32 bits). */
-  protected int   rawPppTotalHigh32;
+  private int   rawPppTotalHigh32;
   /** Row PPP total (low 32 bits). */
-  protected int   rawPppTotalLow32;
+  private int   rawPppTotalLow32;
   /** Secondary Master Pulse (0:en, 1:dis). */
-  protected int   secondaryMasterPulse;
+  private int   secondaryMasterPulse;
   /** Total GOOD EVENTS (high 32 bits). */
-  protected int   totalGoodEventsHigh32;
+  private int   totalGoodEventsHigh32;
   /** Total GOOD EVENTS (low 32 bits). */
-  protected int   totalGoodEventsLow32;
+  private int   totalGoodEventsLow32;
   /** DAE section version number. */
-  protected int   version;
+  private int   version;
   /** Word length in bulk store memory. */
-  protected int   wordLength;
+  private int   wordLength;
 
   //~ Constructors -------------------------------------------------------------
 
@@ -226,7 +233,7 @@ public class DaeSection {
    */
    public DaeSection( RandomAccessFile rawFile, Header header, int nDet ) {
   	this();
-    int startAddress = ( header.startAddressDae - 1 ) * 4;
+    int startAddress = ( header.getStartAddressDAESection() - 1 ) * 4;
 
     try {
       rawFile.seek( startAddress );
@@ -317,7 +324,7 @@ public class DaeSection {
           RandomAccessFile  rawFile = new RandomAccessFile( args[fileNum], "r" );
           Header            header = new Header( rawFile );
           InstrumentSection is     = new InstrumentSection( rawFile, header );
-          DaeSection        ds     = new DaeSection( rawFile, header, is.nDet );
+          DaeSection        ds     = new DaeSection( rawFile, header, is.getNumberOfDetectors() );
 
           System.out.println( "versionNumber:        " + ds.version );
           System.out.println( "wordLength:           " + ds.wordLength );
@@ -357,7 +364,7 @@ public class DaeSection {
           System.out.println( 
             "Detector   Crate   Module  Input   timeRegime  userDetectorNum" );
 
-          for( int ii = 1; ii <= is.nDet; ii++ )
+          for( int ii = 1; ii <= is.getNumberOfDetectors(); ii++ )
           {
             System.out.println( "  " + ii + "          " + ds.crateNum[ii] +
               "       " + ds.moduleNum[ii] + "      " + ds.inputNum[ii] +
@@ -705,7 +712,7 @@ public class DaeSection {
     * @return The time regime number for the specified detector or -1 if 
     * <code>detectorNum</code> is invalid.
     */
-   public int getTimeRegimeTableForDetector(int detectorNum)
+   public int getTimeRegimeForDetector(int detectorNum)
    {
       if (detectorNum>=1 && detectorNum<timeRegimeTable.length)
          return timeRegimeTable[detectorNum];
