@@ -18,6 +18,7 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307, USA.
  *
  * Contact : Dennis Mikkelson <mikkelsond@uwstout.edu>
+ *           J.P. Hammonds <jphammonds@anl.gov>
  *           Dominic Kramer <kramerd@uwstout.edu>
  *           Department of Mathematics, Statistics and Computer Science
  *           University of Wisconsin-Stout
@@ -29,7 +30,11 @@
  *
  * For further information, see <http://www.pns.anl.gov/ISAW/>
  * $Log$
+ * Revision 1.7  2004/06/16 16:43:01  kramer
+ * Added J.P. Hammonds <jphammonds@anl.gov> to the list of contacts.
+ *
  * Revision 1.6  2004/06/16 16:13:08  kramer
+ *
  * Fixed the GNU license header.
  *
  * Revision 1.5  2004/06/16 15:20:46  kramer

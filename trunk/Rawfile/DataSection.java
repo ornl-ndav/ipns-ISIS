@@ -18,6 +18,7 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307, USA.
  *
  * Contact : Dennis Mikkelson <mikkelsond@uwstout.edu>
+ *           J.P. Hammonds <jphammonds@anl.gov>
  *           Dominic Kramer <kramerd@uwstout.edu>
  *           Department of Mathematics, Statistics and Computer Science
  *           University of Wisconsin-Stout
@@ -461,16 +462,24 @@ public class DataSection {
   /**
    * Testbed
    */
-  public static void main( String[] args ) {
-    try {
-      RandomAccessFile  rawFile = new RandomAccessFile( args[0], "r" );
-      Header            header = new Header( rawFile );
-      TimeSection       ts     = new TimeSection( rawFile, header );
-      InstrumentSection is     = new InstrumentSection( rawFile, header );
-      DataSection       ds     = new DataSection( rawFile, header, ts );
+  public static void main( String[] args )
+  {
+    try
+    {
+		for (int fileNum=0; fileNum<args.length; fileNum++)
+		{
+		  System.out.println("--------------------------------------------------------------------------------");
+		  System.out.println("Testing file "+args[fileNum]);
+		  System.out.println("--------------------------------------------------------------------------------");
+          RandomAccessFile  rawFile = new RandomAccessFile( args[fileNum], "r" );
+          Header            header = new Header( rawFile );
+          TimeSection       ts     = new TimeSection( rawFile, header );
+          InstrumentSection is     = new InstrumentSection( rawFile, header );
+          DataSection       ds     = new DataSection( rawFile, header, ts );
 
-      /*System.out.println( "versionNumber:        " + ds.version );
-         if( ds.version == 2 ) {
+         System.out.println( "versionNumber:        " + ds.version );
+         if( ds.version == 2 )
+         {
            System.out.println(
              "compressionType:            " + ds.compressionType );
            System.out.println(
@@ -483,13 +492,19 @@ public class DataSection {
              "compRatioWholeFile:      " + ds.compRatioWholeFile );
            System.out.println( "nspec:                      " + ds.nspec );
            System.out.println( "nspec   numWords    offset" );
-           for( int ii = 0; ii < ds.nspec; ii++ ) {
+           for( int ii = 0; ii < ds.nspec; ii++ )
+           {
              System.out.println(
                ii + "       " + ds.spectrumDescArray[( 2 * ii ) + 1] + "       " +
                ds.spectrumDescArray[( 2 * ii ) + 2] );
            }
-         }*/
-    } catch( IOException ex ) {}
+         }
+	  }
+    } 
+    catch( IOException ex )
+    {
+    	ex.printStackTrace();
+    }
   }
 
   /**

@@ -18,6 +18,7 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307, USA.
  *
  * Contact : Dennis Mikkelson <mikkelsond@uwstout.edu>
+ *           J.P. Hammonds <jphammonds@anl.gov>
  *           Dominic Kramer <kramerd@uwstout.edu>
  *           Department of Mathematics, Statistics and Computer Science
  *           University of Wisconsin-Stout
@@ -227,39 +228,51 @@ public class RunSection {
    * RunSection( RandomAccessFile rawFile, Header header )}.
    * @param args args[0] specifies the filename for the rawfile to use.
    */
-  public static void main( String[] args ) {
-    try {
-      RandomAccessFile rawFile = new RandomAccessFile( args[0], "r" );
-      Header           header = new Header( rawFile );
-      RunSection       rs     = new RunSection( rawFile, header );
+  public static void main( String[] args )
+  {
+    try
+    {
+		for (int fileNum=0; fileNum<args.length; fileNum++)
+		{
+		   System.out.println("--------------------------------------------------------------------------------");
+		   System.out.println("Testing file "+args[fileNum]);
+		   System.out.println("--------------------------------------------------------------------------------");
+           RandomAccessFile rawFile = new RandomAccessFile( args[fileNum], "r" );
+           Header           header = new Header( rawFile );
+           RunSection       rs     = new RunSection( rawFile, header );
 
-      System.out.println( "versionNumber:        " + rs.version );
-      System.out.println( "runNumber:            " + rs.runNumber );
-      System.out.println( "runTitle:             " + rs.runTitle );
-      System.out.println( "userName:             " + rs.userName );
-      System.out.println( "userPhone1:           " + rs.userPhone1 );
-      System.out.println( "userPhone2:           " + rs.userPhone2 );
-      System.out.println( "userPhone3:           " + rs.userPhone3 );
-      System.out.println( "userInstitution:      " + rs.userInstitution );
-      System.out.println( "actualRunDuration:    " + rs.actualRunDuration );
-      System.out.println( "scalerForRPB1:        " + rs.scalerForRPB1 );
-      System.out.println( "testInterval2:        " + rs.testInterval2 );
-      System.out.println( "dumpInterval:         " + rs.dumpInterval );
-      System.out.println( "scalerForRPB4:        " + rs.scalerForRPB4 );
-      System.out.println( "testInterval5:        " + rs.testInterval5 );
-      System.out.println( "twobyk:               " + rs.twobyk );
-      System.out.println( "goodProtonCharge:     " + rs.goodProtonCharge );
-      System.out.println( "totalProtonCharge:    " + rs.totalProtonCharge );
-      System.out.println( "numberOfGoodFrames:   " + rs.numberOfGoodFrames );
-      System.out.println( "totalNumberOfFrames:  " + rs.totalNumberOfFrames );
-      System.out.println( "requiredRunDuration:  " + rs.requiredRunDuration );
-      System.out.println( "actualRunDurationSec: " + rs.actualRunDurationSec );
-      System.out.println( "monitorSum1:          " + rs.monitorSum1 );
-      System.out.println( "monitorSum2:          " + rs.monitorSum2 );
-      System.out.println( "monitorSum3:          " + rs.monitorSum3 );
-      System.out.println( "finishDate:           " + rs.finishDate );
-      System.out.println( "finishTime:           " + rs.finishTime );
-      System.out.println( "ralProposalNumber:    " + rs.ralProposalNum );
-    } catch( IOException ex ) {}
+           System.out.println( "versionNumber:        " + rs.version );
+           System.out.println( "runNumber:            " + rs.runNumber );
+           System.out.println( "runTitle:             " + rs.runTitle );
+           System.out.println( "userName:             " + rs.userName );
+           System.out.println( "userPhone1:           " + rs.userPhone1 );
+           System.out.println( "userPhone2:           " + rs.userPhone2 );
+           System.out.println( "userPhone3:           " + rs.userPhone3 );
+           System.out.println( "userInstitution:      " + rs.userInstitution );
+           System.out.println( "actualRunDuration:    " + rs.actualRunDuration );
+           System.out.println( "scalerForRPB1:        " + rs.scalerForRPB1 );
+           System.out.println( "testInterval2:        " + rs.testInterval2 );
+           System.out.println( "dumpInterval:         " + rs.dumpInterval );
+           System.out.println( "scalerForRPB4:        " + rs.scalerForRPB4 );
+           System.out.println( "testInterval5:        " + rs.testInterval5 );
+           System.out.println( "twobyk:               " + rs.twobyk );
+           System.out.println( "goodProtonCharge:     " + rs.goodProtonCharge );
+           System.out.println( "totalProtonCharge:    " + rs.totalProtonCharge );
+           System.out.println( "numberOfGoodFrames:   " + rs.numberOfGoodFrames );
+           System.out.println( "totalNumberOfFrames:  " + rs.totalNumberOfFrames );
+           System.out.println( "requiredRunDuration:  " + rs.requiredRunDuration );
+           System.out.println( "actualRunDurationSec: " + rs.actualRunDurationSec );
+           System.out.println( "monitorSum1:          " + rs.monitorSum1 );
+           System.out.println( "monitorSum2:          " + rs.monitorSum2 );
+           System.out.println( "monitorSum3:          " + rs.monitorSum3 );
+           System.out.println( "finishDate:           " + rs.finishDate );
+           System.out.println( "finishTime:           " + rs.finishTime );
+           System.out.println( "ralProposalNumber:    " + rs.ralProposalNum );
+		}
+    }
+    catch( IOException ex )
+    {
+    	ex.printStackTrace();
+    }
   }
 }
