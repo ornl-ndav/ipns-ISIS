@@ -30,7 +30,11 @@
  *
  * For further information, see <http://www.pns.anl.gov/ISAW/>
  * $Log$
+ * Revision 1.8  2004/06/18 16:36:03  kramer
+ * Fixed the Javadoc statements.
+ *
  * Revision 1.7  2004/06/18 15:59:15  kramer
+ *
  * Added getter methods (with documentation) for all fields.  Improved Javadoc
  * comments.  Now the class imports 2 classes instead of the entire java.io
  * package.  It also warns the user if it thinks it is reading an ISIS file it
@@ -112,9 +116,9 @@ public class DaeSection {
   protected int   detectorMon1;
   /** Detector for monitor 2. */
   protected int   detectorMon2;
-  /** ext. neutron gate (t1) (in microseconds). */
+  /** external neutron gate (t1) (in microseconds). */
   protected int   extNeutGateT1;
-  /** ext. nuetron gate (t2) (in microseconds). */
+  /** external nuetron gate (t2) (in microseconds). */
   protected int   extNeutGateT2;
   /**External veto 0 (0 dis, 1 en). */
   protected int   externalVeto1;
@@ -389,7 +393,7 @@ public class DaeSection {
     * refering you.  Note:  for <code>detectorNum</code> to be 
     * valid, 1 <= <code>detectorNum</code> <= 
     * {@link InstrumentSection#getNumberOfDetectors() 
-    * getNumberOfDetectors()}.
+    * InstrumentSection.getNumberOfDetectors()}.
     * @return The crate number for the specified detector or -1 if 
     * <code>detectorNum</code> is invalid.
     */
@@ -539,7 +543,7 @@ public class DaeSection {
     * refering you.  Note:  for <code>detectorNum</code> to be 
     * valid, 1 <= <code>detectorNum</code> <= 
     * {@link InstrumentSection#getNumberOfDetectors() 
-    * getNumberOfDetectors()}.
+    * InstrumentSection.getNumberOfDetectors()}.
     * @return The position in the module for the specified detector or -1 if 
     * <code>detectorNum</code> is invalid.
     */
@@ -617,7 +621,7 @@ public class DaeSection {
     * refering you.  Note:  for <code>detectorNum</code> to be 
     * valid, 1 <= <code>detectorNum</code> <= 
     * {@link InstrumentSection#getNumberOfDetectors() 
-    * getNumberOfDetectors()}.
+    * InstrumentSection.getNumberOfDetectors()}.
     * @return The module number for the specified detector or -1 if 
     * <code>detectorNum</code> is invalid.
     */
@@ -693,7 +697,7 @@ public class DaeSection {
     * refering you.  Note:  for <code>detectorNum</code> to be 
     * valid, 1 <= <code>detectorNum</code> <= 
     * {@link InstrumentSection#getNumberOfDetectors() 
-    * getNumberOfDetectors()}.
+    * InstrumentSection.getNumberOfDetectors()}.
     * @return The time regime number for the specified detector or -1 if 
     * <code>detectorNum</code> is invalid.
     */
@@ -730,14 +734,14 @@ public class DaeSection {
     * refering you.  Note:  for <code>detectorNum</code> to be 
     * valid, 1 <= <code>detectorNum</code> <= 
     * {@link InstrumentSection#getNumberOfDetectors() 
-    * getNumberOfDetectors()}.
+    * InstrumentSection.getNumberOfDetectors()}.
     * @return The user detector number for the specified detector or -1 if 
     * <code>detectorNum</code> is invalid.
     */
-   public int getUserDetectorNumForDetector(int detectorNumber)
+   public int getUserDetectorNumForDetector(int detectorNum)
    {
-      if (detectorNumber>=1 && detectorNumber<userDetectorNumber.length)
-         return userDetectorNumber[detectorNumber];
+      if (detectorNum>=1 && detectorNum<userDetectorNumber.length)
+         return userDetectorNumber[detectorNum];
       else
          return -1;
    }
