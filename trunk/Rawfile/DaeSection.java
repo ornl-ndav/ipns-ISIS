@@ -30,7 +30,11 @@
  *
  * For further information, see <http://www.pns.anl.gov/ISAW/>
  * $Log$
+ * Revision 1.9  2004/06/22 16:49:02  kramer
+ * Made the constructors public.
+ *
  * Revision 1.8  2004/06/18 16:36:03  kramer
+ *
  * Fixed the Javadoc statements.
  *
  * Revision 1.7  2004/06/18 15:59:15  kramer
@@ -174,7 +178,7 @@ public class DaeSection {
   /**
    * Creates a new DaeSection object.
    */
-  DaeSection(  )
+  public DaeSection(  )
   {
       crateNum = new int[0];
       inputNum = new int[0];
@@ -220,7 +224,7 @@ public class DaeSection {
    * @param header The header for the RAW file.
    * @param nDet The number of detectors.
    */
-  DaeSection( RandomAccessFile rawFile, Header header, int nDet ) {
+   public DaeSection( RandomAccessFile rawFile, Header header, int nDet ) {
   	this();
     int startAddress = ( header.startAddressDae - 1 ) * 4;
 

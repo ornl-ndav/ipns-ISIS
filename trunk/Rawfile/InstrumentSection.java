@@ -30,7 +30,11 @@
  *
  * For further information, see <http://www.pns.anl.gov/ISAW/>
  * $Log$
+ * Revision 1.9  2004/06/22 16:49:03  kramer
+ * Made the constructors public.
+ *
  * Revision 1.8  2004/06/18 18:29:18  kramer
+ *
  * Added getter methods (with documentation) for all of the fields.  Now the
  * class imports two classes instead of the entire java.io package.  It also
  * warns the user if it thinks it cannot accurately read data from the file.
@@ -214,7 +218,7 @@ public class InstrumentSection {
   /**
    * Creates a new InstrumentSection object.
    */
-  InstrumentSection(  )
+  public InstrumentSection(  )
   {
      iName = new String();
      codeForUserTableValues = new int[0];
@@ -274,7 +278,7 @@ public class InstrumentSection {
    * header contains information used to locate the Instrument 
    * section in the RAW file.
    */
-  InstrumentSection( RandomAccessFile rawFile, Header header ) {
+   public InstrumentSection( RandomAccessFile rawFile, Header header ) {
     this();
     int startAddress = ( header.startAddressInst - 1 ) * 4;
 
