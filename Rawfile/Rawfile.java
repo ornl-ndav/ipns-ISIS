@@ -28,8 +28,26 @@
  * of Argonne National Laboratory, Argonne, IL 60439-4845, USA.
  *
  * For further information, see <http://www.pns.anl.gov/ISAW/>
+ * $Log$
+ * Revision 1.6  2004/06/16 16:13:08  kramer
+ * Fixed the GNU license header.
+ *
+ * Revision 1.5  2004/06/16 15:20:46  kramer
+ *
+ * Added:
+ *        The GNU license header
+ *        an SESection field
+ * The main method was also improved.
+ *
+ * Revision 1.4  2004/06/15 20:08:28  kramer
+ *
+ * Fixed indents (the code was indented too far into the page).
+ *
+ * Revision 1.2  2004/04/30 00:16:51  bouzekc
+ * Newer version.  Old version should not have been in CVS.
+ *
  */
-
+ 
 package ISIS.Rawfile;
 
 import java.io.*;
@@ -45,22 +63,6 @@ import java.io.*;
  *         Laboratory
  */
 
-/*
- * $Log$
- * Revision 1.5  2004/06/16 15:20:46  kramer
- * Added:
- *        The GNU license header
- *        an SESection field
- * The main method was also improved.
- *
- * Revision 1.4  2004/06/15 20:08:28  kramer
- *
- * Fixed indents (the code was indented too far into the page).
- *
- * Revision 1.2  2004/04/30 00:16:51  bouzekc
- * Newer version.  Old version should not have been in CVS.
- *
- */
 public class Rawfile {
   //~ Instance fields ----------------------------------------------------------
 
