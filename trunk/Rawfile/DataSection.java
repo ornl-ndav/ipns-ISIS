@@ -30,7 +30,12 @@
  *
  * For further information, see <http://www.pns.anl.gov/ISAW/>
  * $Log$
+ * Revision 1.8  2004/06/17 15:31:10  kramer
+ * Modified getDataForDataFormatFlag0 to directly use a float[] instead of
+ * converting from ints to floats.
+ *
  * Revision 1.7  2004/06/16 20:40:49  kramer
+ *
  * Now the source will contain the cvs logs.  Replaced tabs with 3 spaces,
  * created a default contstructor where fields will be initialized (instead
  * of when they are first declared), and when exceptions are caught a stack
@@ -326,17 +331,13 @@ public class DataSection {
     
    private float[] getDataForDataFormatFlag0(RandomAccessFile rawFile, int spect, TimeSection ts) throws IOException
    {
-      //note: at some point, this should deal directly with float[] rather than converting
-      //from int[] to float[]
       int     size;
-      int[]   rawData;
-      float[] data;
+      float[]   rawData;
 
       rawFile.seek( startAddress +
         ( spect * ( ts.numTimeChannels[0] + 1 ) * 4 ) );
       size      = ts.numTimeChannels[0] + 1;
-      rawData   = new int[size];
-      data      = new float[rawData.length];
+      rawData   = new float[size];
 
       byte[] num = new byte[4];
 
@@ -346,10 +347,7 @@ public class DataSection {
          rawData[mm] = convertLSBIntToMSBInt( num );
       }
 
-      for( int jj = 0; jj < size; jj++ )
-        data[jj] = rawData[jj];
-
-      return data;
+      return rawData;
    }
     
     /**
