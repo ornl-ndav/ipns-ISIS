@@ -107,39 +107,39 @@ public class DataSection {
    * @param ts The time section for the RAW file.
    */
   DataSection( RandomAccessFile rawFile, Header header, TimeSection ts ) {
-	startAddress = ( header.startAddressData - 1 ) * 4;
+    startAddress = ( header.startAddressData - 1 ) * 4;
 
-	try {
-	  rawFile.seek( startAddress );
-	  version = Header.readUnsignedInteger( rawFile, 4 );
+    try {
+      rawFile.seek( startAddress );
+      version = Header.readUnsignedInteger( rawFile, 4 );
 
-	  if( version == 1 ) {
-		//dealt with in Get1DSpectrum
-		dataFormat = header.dataFormatFlag;
-	  } else if( version == 2 ) {
-		compressionType             = Header.readUnsignedInteger( rawFile, 4 );
-		reserved                    = Header.readUnsignedInteger( rawFile, 4 );
-		offsetToSpectrumDescArray   = Header.readUnsignedInteger( rawFile, 4 );
-		equivV1FileSize             = Header.readUnsignedInteger( rawFile, 4 );
-		compRatioDataSect           = ( float )Header.ReadVAXReal4( rawFile );
-		compRatioWholeFile          = ( float )Header.ReadVAXReal4( rawFile );
-		nspec                       = 0;
+      if( version == 1 ) {
+        //dealt with in Get1DSpectrum
+        dataFormat = header.dataFormatFlag;
+      } else if( version == 2 ) {
+        compressionType             = Header.readUnsignedInteger( rawFile, 4 );
+        reserved                    = Header.readUnsignedInteger( rawFile, 4 );
+        offsetToSpectrumDescArray   = Header.readUnsignedInteger( rawFile, 4 );
+        equivV1FileSize             = Header.readUnsignedInteger( rawFile, 4 );
+        compRatioDataSect           = ( float )Header.ReadVAXReal4( rawFile );
+        compRatioWholeFile          = ( float )Header.ReadVAXReal4( rawFile );
+        nspec                       = 0;
 
-		for( int ii = 0; ii < ts.numOfRegimes; ii++ ) {
-		  nspec += ts.numSpectra[ii];
-		}
+        for( int ii = 0; ii < ts.numOfRegimes; ii++ ) {
+          nspec += ts.numSpectra[ii];
+        }
 
-		spectrumDescArray = new int[( 2 * nspec ) + 1];
-		rawFile.seek( startAddress + ( offsetToSpectrumDescArray * 4 ) );
+        spectrumDescArray = new int[( 2 * nspec ) + 1];
+        rawFile.seek( startAddress + ( offsetToSpectrumDescArray * 4 ) );
 
-		for( int ii = 0; ii < nspec; ii++ ) {
-		  spectrumDescArray[( 2 * ii )]   = Header.readUnsignedInteger( rawFile,
-			  4 );
-		  spectrumDescArray[( 2 * ii ) + 1] = Header.readUnsignedInteger( rawFile,
-			  4 );
-		}
-	  }
-	} catch( IOException ex ) {}
+        for( int ii = 0; ii < nspec; ii++ ) {
+          spectrumDescArray[( 2 * ii )]   = Header.readUnsignedInteger( rawFile,
+              4 );
+          spectrumDescArray[( 2 * ii ) + 1] = Header.readUnsignedInteger( rawFile,
+              4 );
+        }
+      }
+    } catch( IOException ex ) {}
   }
 
   //~ Methods ------------------------------------------------------------------
@@ -186,82 +186,82 @@ public class DataSection {
 /*
   //this was the old method for getting a specified spectrum
   public float[] get1DSpectrum( RandomAccessFile rawFile, int spect,
-	TimeSection ts ) {
-	//note: at some point, this should deal directly with float[] rather than converting
-	//from int[] to float[]
-	int     size;
-	int[]   rawData;
-	float[] data;
+    TimeSection ts ) {
+    //note: at some point, this should deal directly with float[] rather than converting
+    //from int[] to float[]
+    int     size;
+    int[]   rawData;
+    float[] data;
     
-	System.out.println("version="+version);
+    System.out.println("version="+version);
 	System.out.println("data format flag="+dataFormat);
 	System.out.println("compression type="+compressionType);
     
-	try {
-	  if( version == 1 ) {
-		//read raw data for the time regimes: (ntc1+1)*(nsp1+1) channels
-		//If data format flag=0 then data is arranged (ntc1+1,nsp1+1); 
-		//i.e. (nsp1 spectra each containing ntc1 data points)
-		//If data format flag=1, then data is arranged (nsp1+1,ntc1+1);
-		//i.e (for each time channel all spectra stored together)
-		if( dataFormat == 0 ) {
-		  rawFile.seek( startAddress +
-			( spect * ( ts.numTimeChannels[0] + 1 ) * 4 ) );
-		  size      = ts.numTimeChannels[0] + 1;
-		  rawData   = new int[size];
-		  data      = new float[rawData.length];
+    try {
+      if( version == 1 ) {
+        //read raw data for the time regimes: (ntc1+1)*(nsp1+1) channels
+        //If data format flag=0 then data is arranged (ntc1+1,nsp1+1); 
+        //i.e. (nsp1 spectra each containing ntc1 data points)
+        //If data format flag=1, then data is arranged (nsp1+1,ntc1+1);
+        //i.e (for each time channel all spectra stored together)
+        if( dataFormat == 0 ) {
+          rawFile.seek( startAddress +
+            ( spect * ( ts.numTimeChannels[0] + 1 ) * 4 ) );
+          size      = ts.numTimeChannels[0] + 1;
+          rawData   = new int[size];
+          data      = new float[rawData.length];
 
-		  byte[] num = new byte[4];
+          byte[] num = new byte[4];
 
-		  for( int mm = 0; mm < size; mm++ ) {
-			rawFile.read( num );
-			rawData[mm] = convertLSBIntToMSBInt( num );
-		  }
+          for( int mm = 0; mm < size; mm++ ) {
+            rawFile.read( num );
+            rawData[mm] = convertLSBIntToMSBInt( num );
+          }
 
-		  for( int jj = 0; jj < size; jj++ ) {
-			data[jj] = rawData[jj];
-		  }
+          for( int jj = 0; jj < size; jj++ ) {
+            data[jj] = rawData[jj];
+          }
 
-		  return data;
-		} else if( dataFormat == 1 ) {
-		  return null;
-		} else {
-		  return null;
-		}
-	  } else if( version == 2 ) {
-		//get the compressed data
-		if( compressionType == 1 ) {
-		  //byte relative compression
-		  //need total bytes for all spectra-read and uncompress
-		  int    numWords  = spectrumDescArray[2 * spect];
-		  byte[] compBytes = new byte[( numWords ) * 4];
+          return data;
+        } else if( dataFormat == 1 ) {
+          return null;
+        } else {
+          return null;
+        }
+      } else if( version == 2 ) {
+        //get the compressed data
+        if( compressionType == 1 ) {
+          //byte relative compression
+          //need total bytes for all spectra-read and uncompress
+          int    numWords  = spectrumDescArray[2 * spect];
+          byte[] compBytes = new byte[( numWords ) * 4];
 
-		  size      = ts.numTimeChannels[0] + 1;
-		  rawData   = new int[size];
+          size      = ts.numTimeChannels[0] + 1;
+          rawData   = new int[size];
 
-		  //read the bytes from the file
-		  rawFile.seek( startAddress +
-			( spectrumDescArray[( 2 * spect ) + 1] * 4 ) );
-		  rawFile.read( compBytes );
-		  byteRelExpn( compBytes, rawData );
-		  data = new float[rawData.length];
+          //read the bytes from the file
+          rawFile.seek( startAddress +
+            ( spectrumDescArray[( 2 * spect ) + 1] * 4 ) );
+          rawFile.read( compBytes );
+          byteRelExpn( compBytes, rawData );
+          data = new float[rawData.length];
 
-		  for( int k = 0; k < data.length; k++ ) {
-			data[k] = rawData[k];
-		  }
+          for( int k = 0; k < data.length; k++ ) {
+            data[k] = rawData[k];
+          }
 
-		  return data;
-		} else if( compressionType == 0 ) {
-		  return null;
-		} else {
-		  return null;
-		}
-	  } else {
-		return null;
-	  }
-	} catch( IOException ioe ) {
-	  return null;
-	}
+          return data;
+        } else if( compressionType == 0 ) {
+          return null;
+        } else {
+          return null;
+        }
+      } else {
+        return null;
+      }
+    } catch( IOException ioe ) {
+      return null;
+    }
   }
 */
 
@@ -335,38 +335,38 @@ public class DataSection {
 		return data;
 	}
     
-	/**
-	 * Get the spectrum specified from the ISIS RAW file assuming that the data was 
-	 * written to the file with the data version number = 1 and the data format flag =1.
-	 * THIS METHOD NEEDS TO BE TESTED.  CURRENTLY, IT IS NOT 
-	 * GAURANTEED TO WORK.
-	 * @param rawFile Reader for the ISIS RAW file that is to be read.
-	 * @param spect The spectrum that is to be read.
-	 * @param ts The TimeSection of the ISIS RAW file that is to be read.
-	 * @return The spectrum.
-	 * @throws IOException
-	 */
+    /**
+     * Get the spectrum specified from the ISIS RAW file assuming that the data was 
+     * written to the file with the data version number = 1 and the data format flag =1.
+     * THIS METHOD NEEDS TO BE TESTED.  CURRENTLY, IT IS NOT 
+     * GAURANTEED TO WORK.
+     * @param rawFile Reader for the ISIS RAW file that is to be read.
+     * @param spect The spectrum that is to be read.
+     * @param ts The TimeSection of the ISIS RAW file that is to be read.
+     * @return The spectrum.
+     * @throws IOException
+     */
 	private float[] getDataForDataFormatFlag1(RandomAccessFile rawFile, int spect, TimeSection ts) throws IOException
 	{
-		boolean sectionFound = false;
-		int actualSpectraNumber = spect+1;
-		int regimeNumber = 0;
-		int total = 0;
-		int previousTotal = total;
-		int spectraNumberInRegime = 0;
-		while (!sectionFound && regimeNumber<ts.numSpectra.length)
-		{
-			previousTotal = total;
-			total += ts.numSpectra[regimeNumber]+1;
-			if (total>=actualSpectraNumber)
-			{
-				sectionFound = true;
-				spectraNumberInRegime = actualSpectraNumber-previousTotal-1;
-			}
-			else
-				regimeNumber++;
-		}
-		if (sectionFound)	    	
+	    boolean sectionFound = false;
+	    int actualSpectraNumber = spect+1;
+	    int regimeNumber = 0;
+	    int total = 0;
+	    int previousTotal = total;
+	    int spectraNumberInRegime = 0;
+	    while (!sectionFound && regimeNumber<ts.numSpectra.length)
+	    {
+	    	previousTotal = total;
+	    	total += ts.numSpectra[regimeNumber]+1;
+	    	if (total>=actualSpectraNumber)
+	    	{
+	    		sectionFound = true;
+	    		spectraNumberInRegime = actualSpectraNumber-previousTotal-1;
+	    	}
+	    	else
+	    		regimeNumber++;
+	    }
+	    if (sectionFound)	    	
 		{
 			//the spectra that is to be found is "spectraNumberInRegime" in regime "regimeNumber"
 			int offset = 0;
@@ -401,7 +401,7 @@ public class DataSection {
     
    private float[] getDataForCompressionType0(RandomAccessFile rawFile, int spect, TimeSection ts) throws IOException
    {
-	   return null;
+   	   return null;
    }
     
 	private float[] getDataForCompressionType1(RandomAccessFile rawFile, int spect, TimeSection ts) throws IOException
@@ -463,34 +463,34 @@ public class DataSection {
    * Testbed
    */
   public static void main( String[] args ) {
-	try {
-	  RandomAccessFile  rawFile = new RandomAccessFile( args[0], "r" );
-	  Header            header = new Header( rawFile );
-	  TimeSection       ts     = new TimeSection( rawFile, header );
-	  InstrumentSection is     = new InstrumentSection( rawFile, header );
-	  DataSection       ds     = new DataSection( rawFile, header, ts );
+    try {
+      RandomAccessFile  rawFile = new RandomAccessFile( args[0], "r" );
+      Header            header = new Header( rawFile );
+      TimeSection       ts     = new TimeSection( rawFile, header );
+      InstrumentSection is     = new InstrumentSection( rawFile, header );
+      DataSection       ds     = new DataSection( rawFile, header, ts );
 
-	  /*System.out.println( "versionNumber:        " + ds.version );
-		 if( ds.version == 2 ) {
-		   System.out.println(
-			 "compressionType:            " + ds.compressionType );
-		   System.out.println(
-			 "offsetToSpectrumDescArray:  " + ds.offsetToSpectrumDescArray );
-		   System.out.println(
-			 "equivV1FileSize:            " + ds.equivV1FileSize );
-		   System.out.println(
-			 "compRatioDataSect:       " + ds.compRatioDataSect );
-		   System.out.println(
-			 "compRatioWholeFile:      " + ds.compRatioWholeFile );
-		   System.out.println( "nspec:                      " + ds.nspec );
-		   System.out.println( "nspec   numWords    offset" );
-		   for( int ii = 0; ii < ds.nspec; ii++ ) {
-			 System.out.println(
-			   ii + "       " + ds.spectrumDescArray[( 2 * ii ) + 1] + "       " +
-			   ds.spectrumDescArray[( 2 * ii ) + 2] );
-		   }
-		 }*/
-	} catch( IOException ex ) {}
+      /*System.out.println( "versionNumber:        " + ds.version );
+         if( ds.version == 2 ) {
+           System.out.println(
+             "compressionType:            " + ds.compressionType );
+           System.out.println(
+             "offsetToSpectrumDescArray:  " + ds.offsetToSpectrumDescArray );
+           System.out.println(
+             "equivV1FileSize:            " + ds.equivV1FileSize );
+           System.out.println(
+             "compRatioDataSect:       " + ds.compRatioDataSect );
+           System.out.println(
+             "compRatioWholeFile:      " + ds.compRatioWholeFile );
+           System.out.println( "nspec:                      " + ds.nspec );
+           System.out.println( "nspec   numWords    offset" );
+           for( int ii = 0; ii < ds.nspec; ii++ ) {
+             System.out.println(
+               ii + "       " + ds.spectrumDescArray[( 2 * ii ) + 1] + "       " +
+               ds.spectrumDescArray[( 2 * ii ) + 2] );
+           }
+         }*/
+    } catch( IOException ex ) {}
   }
 
   /**
@@ -536,35 +536,35 @@ public class DataSection {
    * =2  NIN .le.0 =4  NOUT .gt.NIN =6  number of channels lt NOUT
    */
   private void byteRelExpn( byte[] inData, int[] outData ) {
-	int    j;
-	int    iTemp;
-	byte[] bTemp = new byte[4];
+    int    j;
+    int    iTemp;
+    byte[] bTemp = new byte[4];
 
-	// Set initial absolute value to zero and channel counter to zero
-	iTemp   = 0;
-	j       = 0;
+    // Set initial absolute value to zero and channel counter to zero
+    iTemp   = 0;
+    j       = 0;
 
-	// Loop over all expected 32bit integers
-	for( int i = 0; i < outData.length; i++ ) {
-	  // if number is contained in a byte
-	  if( inData[j] != -128 ) {
-		// add in offset to base
-		iTemp = iTemp + inData[j];
-	  } else {
-		// Else skip marker and pick up new absolute value
-		// unpack next 4 bytes
-		bTemp[0]   = inData[j + 1];
-		bTemp[1]   = inData[j + 2];
-		bTemp[2]   = inData[j + 3];
-		bTemp[3]   = inData[j + 4];
-		iTemp      = convertLSBIntToMSBInt( bTemp );
-		j          = j + 4;
-	  }
+    // Loop over all expected 32bit integers
+    for( int i = 0; i < outData.length; i++ ) {
+      // if number is contained in a byte
+      if( inData[j] != -128 ) {
+        // add in offset to base
+        iTemp = iTemp + inData[j];
+      } else {
+        // Else skip marker and pick up new absolute value
+        // unpack next 4 bytes
+        bTemp[0]   = inData[j + 1];
+        bTemp[1]   = inData[j + 2];
+        bTemp[2]   = inData[j + 3];
+        bTemp[3]   = inData[j + 4];
+        iTemp      = convertLSBIntToMSBInt( bTemp );
+        j          = j + 4;
+      }
 
-	  // update current value
-	  outData[i] = iTemp;
-	  j++;
-	}
+      // update current value
+      outData[i] = iTemp;
+      j++;
+    }
   }
 
   /**
@@ -599,24 +599,24 @@ public class DataSection {
    * @throws IllegalArgumentException If the byte array is not of size 4.
    */
   private int convertLSBIntToMSBInt( byte[] b ) throws IllegalArgumentException {
-	if( b.length != 4 ) {
-	  throw new IllegalArgumentException( 
-		"Byte array must have length 4: byteArrayToInt" );
-	}
+    if( b.length != 4 ) {
+      throw new IllegalArgumentException( 
+        "Byte array must have length 4: byteArrayToInt" );
+    }
 
-	int[] c   = new int[b.length];
-	int   num = 0;
+    int[] c   = new int[b.length];
+    int   num = 0;
 
-	for( int i = 0; i < b.length; ++i ) {
-	  if( b[i] < 0 ) {
-		c[i] = b[i] + 256;
-	  } else {
-		c[i] = b[i];
-	  }
+    for( int i = 0; i < b.length; ++i ) {
+      if( b[i] < 0 ) {
+        c[i] = b[i] + 256;
+      } else {
+        c[i] = b[i];
+      }
 
-	  num += ( c[i] * ( int )Math.pow( 256.0, ( double )i ) );
-	}
+      num += ( c[i] * ( int )Math.pow( 256.0, ( double )i ) );
+    }
 
-	return num;
+    return num;
   }
 }

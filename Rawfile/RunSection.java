@@ -124,100 +124,100 @@ public class RunSection {
    * section in the rawfile.
    */
   RunSection( RandomAccessFile rawFile, Header header ) {
-	int startAddress = ( header.startAddressRun - 1 ) * 4;
+    int startAddress = ( header.startAddressRun - 1 ) * 4;
 
-	try {
-	  rawFile.seek( startAddress );
-	  version     = Header.readUnsignedInteger( rawFile, 4 );
-	  runNumber   = Header.readUnsignedInteger( rawFile, 4 );
+    try {
+      rawFile.seek( startAddress );
+      version     = Header.readUnsignedInteger( rawFile, 4 );
+      runNumber   = Header.readUnsignedInteger( rawFile, 4 );
 
-	  StringBuffer temp;
+      StringBuffer temp;
 
-	  temp = new StringBuffer( 80 );
+      temp = new StringBuffer( 80 );
 
-	  for( int ii = 0; ii < 80; ii++ ) {
-		temp.append( ( char )rawFile.readByte(  ) );
-	  }
+      for( int ii = 0; ii < 80; ii++ ) {
+        temp.append( ( char )rawFile.readByte(  ) );
+      }
 
-	  runTitle   = temp.toString(  );
-	  temp       = new StringBuffer( 20 );
+      runTitle   = temp.toString(  );
+      temp       = new StringBuffer( 20 );
 
-	  for( int ii = 0; ii < 20; ii++ ) {
-		temp.append( ( char )rawFile.readByte(  ) );
-	  }
+      for( int ii = 0; ii < 20; ii++ ) {
+        temp.append( ( char )rawFile.readByte(  ) );
+      }
 
-	  userName   = temp.toString(  );
-	  temp       = new StringBuffer( 20 );
+      userName   = temp.toString(  );
+      temp       = new StringBuffer( 20 );
 
-	  for( int ii = 0; ii < 20; ii++ ) {
-		temp.append( ( char )rawFile.readByte(  ) );
-	  }
+      for( int ii = 0; ii < 20; ii++ ) {
+        temp.append( ( char )rawFile.readByte(  ) );
+      }
 
-	  userPhone1   = temp.toString(  );
-	  temp         = new StringBuffer( 20 );
+      userPhone1   = temp.toString(  );
+      temp         = new StringBuffer( 20 );
 
-	  for( int ii = 0; ii < 20; ii++ ) {
-		temp.append( ( char )rawFile.readByte(  ) );
-	  }
+      for( int ii = 0; ii < 20; ii++ ) {
+        temp.append( ( char )rawFile.readByte(  ) );
+      }
 
-	  userPhone2   = temp.toString(  );
-	  temp         = new StringBuffer( 20 );
+      userPhone2   = temp.toString(  );
+      temp         = new StringBuffer( 20 );
 
-	  for( int ii = 0; ii < 20; ii++ ) {
-		temp.append( ( char )rawFile.readByte(  ) );
-	  }
+      for( int ii = 0; ii < 20; ii++ ) {
+        temp.append( ( char )rawFile.readByte(  ) );
+      }
 
-	  userPhone3   = temp.toString(  );
-	  temp         = new StringBuffer( 20 );
+      userPhone3   = temp.toString(  );
+      temp         = new StringBuffer( 20 );
 
-	  for( int ii = 0; ii < 20; ii++ ) {
-		temp.append( ( char )rawFile.readByte(  ) );
-	  }
+      for( int ii = 0; ii < 20; ii++ ) {
+        temp.append( ( char )rawFile.readByte(  ) );
+      }
 
-	  userInstitution   = temp.toString(  );
-	  temp              = new StringBuffer( 60 );
+      userInstitution   = temp.toString(  );
+      temp              = new StringBuffer( 60 );
 
-	  //spare section
-	  for( int ii = 0; ii < 60; ii++ ) {
-		temp.append( ( char )rawFile.readByte(  ) );
-	  }
+      //spare section
+      for( int ii = 0; ii < 60; ii++ ) {
+        temp.append( ( char )rawFile.readByte(  ) );
+      }
 
-	  actualRunDuration   = Header.readUnsignedInteger( rawFile, 4 );
-	  scalerForRPB1       = Header.readUnsignedInteger( rawFile, 4 );
-	  testInterval2       = Header.readUnsignedInteger( rawFile, 4 );
-	  dumpInterval        = Header.readUnsignedInteger( rawFile, 4 );
-	  scalerForRPB4       = Header.readUnsignedInteger( rawFile, 4 );
-	  testInterval5       = Header.readUnsignedInteger( rawFile, 4 );
+      actualRunDuration   = Header.readUnsignedInteger( rawFile, 4 );
+      scalerForRPB1       = Header.readUnsignedInteger( rawFile, 4 );
+      testInterval2       = Header.readUnsignedInteger( rawFile, 4 );
+      dumpInterval        = Header.readUnsignedInteger( rawFile, 4 );
+      scalerForRPB4       = Header.readUnsignedInteger( rawFile, 4 );
+      testInterval5       = Header.readUnsignedInteger( rawFile, 4 );
 
-	  // 2**k (SNS frequency(Hz)=50/2**k)
-	  twobyk                 = Header.readUnsignedInteger( rawFile, 4 );
-	  goodProtonCharge       = ( float )Header.ReadVAXReal4( rawFile );
-	  totalProtonCharge      = ( float )Header.ReadVAXReal4( rawFile );
-	  numberOfGoodFrames     = Header.readUnsignedInteger( rawFile, 4 );
-	  totalNumberOfFrames    = Header.readUnsignedInteger( rawFile, 4 );
-	  requiredRunDuration    = Header.readUnsignedInteger( rawFile, 4 );
-	  actualRunDurationSec   = Header.readUnsignedInteger( rawFile, 4 );
-	  monitorSum1            = Header.readUnsignedInteger( rawFile, 4 );
-	  monitorSum2            = Header.readUnsignedInteger( rawFile, 4 );
-	  monitorSum3            = Header.readUnsignedInteger( rawFile, 4 );
-	  temp                   = new StringBuffer( 12 );
+      // 2**k (SNS frequency(Hz)=50/2**k)
+      twobyk                 = Header.readUnsignedInteger( rawFile, 4 );
+      goodProtonCharge       = ( float )Header.ReadVAXReal4( rawFile );
+      totalProtonCharge      = ( float )Header.ReadVAXReal4( rawFile );
+      numberOfGoodFrames     = Header.readUnsignedInteger( rawFile, 4 );
+      totalNumberOfFrames    = Header.readUnsignedInteger( rawFile, 4 );
+      requiredRunDuration    = Header.readUnsignedInteger( rawFile, 4 );
+      actualRunDurationSec   = Header.readUnsignedInteger( rawFile, 4 );
+      monitorSum1            = Header.readUnsignedInteger( rawFile, 4 );
+      monitorSum2            = Header.readUnsignedInteger( rawFile, 4 );
+      monitorSum3            = Header.readUnsignedInteger( rawFile, 4 );
+      temp                   = new StringBuffer( 12 );
 
-	  for( int ii = 0; ii < 12; ii++ ) {
-		temp.append( ( char )rawFile.readByte(  ) );
-	  }
+      for( int ii = 0; ii < 12; ii++ ) {
+        temp.append( ( char )rawFile.readByte(  ) );
+      }
 
-	  finishDate   = temp.toString(  );
-	  temp         = new StringBuffer( 8 );
+      finishDate   = temp.toString(  );
+      temp         = new StringBuffer( 8 );
 
-	  for( int ii = 0; ii < 8; ii++ ) {
-		temp.append( ( char )rawFile.readByte(  ) );
-	  }
+      for( int ii = 0; ii < 8; ii++ ) {
+        temp.append( ( char )rawFile.readByte(  ) );
+      }
 
-	  finishTime       = temp.toString(  );
-	  ralProposalNum   = Header.readUnsignedInteger( rawFile, 4 );
+      finishTime       = temp.toString(  );
+      ralProposalNum   = Header.readUnsignedInteger( rawFile, 4 );
 
-	  //complete except for missing spare section (RPB(-32)) ?
-	} catch( IOException ex ) {}
+      //complete except for missing spare section (RPB(-32)) ?
+    } catch( IOException ex ) {}
   }
 
   //~ Methods ------------------------------------------------------------------
@@ -228,38 +228,38 @@ public class RunSection {
    * @param args args[0] specifies the filename for the rawfile to use.
    */
   public static void main( String[] args ) {
-	try {
-	  RandomAccessFile rawFile = new RandomAccessFile( args[0], "r" );
-	  Header           header = new Header( rawFile );
-	  RunSection       rs     = new RunSection( rawFile, header );
+    try {
+      RandomAccessFile rawFile = new RandomAccessFile( args[0], "r" );
+      Header           header = new Header( rawFile );
+      RunSection       rs     = new RunSection( rawFile, header );
 
-	  System.out.println( "versionNumber:        " + rs.version );
-	  System.out.println( "runNumber:            " + rs.runNumber );
-	  System.out.println( "runTitle:             " + rs.runTitle );
-	  System.out.println( "userName:             " + rs.userName );
-	  System.out.println( "userPhone1:           " + rs.userPhone1 );
-	  System.out.println( "userPhone2:           " + rs.userPhone2 );
-	  System.out.println( "userPhone3:           " + rs.userPhone3 );
-	  System.out.println( "userInstitution:      " + rs.userInstitution );
-	  System.out.println( "actualRunDuration:    " + rs.actualRunDuration );
-	  System.out.println( "scalerForRPB1:        " + rs.scalerForRPB1 );
-	  System.out.println( "testInterval2:        " + rs.testInterval2 );
-	  System.out.println( "dumpInterval:         " + rs.dumpInterval );
-	  System.out.println( "scalerForRPB4:        " + rs.scalerForRPB4 );
-	  System.out.println( "testInterval5:        " + rs.testInterval5 );
-	  System.out.println( "twobyk:               " + rs.twobyk );
-	  System.out.println( "goodProtonCharge:     " + rs.goodProtonCharge );
-	  System.out.println( "totalProtonCharge:    " + rs.totalProtonCharge );
-	  System.out.println( "numberOfGoodFrames:   " + rs.numberOfGoodFrames );
-	  System.out.println( "totalNumberOfFrames:  " + rs.totalNumberOfFrames );
-	  System.out.println( "requiredRunDuration:  " + rs.requiredRunDuration );
-	  System.out.println( "actualRunDurationSec: " + rs.actualRunDurationSec );
-	  System.out.println( "monitorSum1:          " + rs.monitorSum1 );
-	  System.out.println( "monitorSum2:          " + rs.monitorSum2 );
-	  System.out.println( "monitorSum3:          " + rs.monitorSum3 );
-	  System.out.println( "finishDate:           " + rs.finishDate );
-	  System.out.println( "finishTime:           " + rs.finishTime );
-	  System.out.println( "ralProposalNumber:    " + rs.ralProposalNum );
-	} catch( IOException ex ) {}
+      System.out.println( "versionNumber:        " + rs.version );
+      System.out.println( "runNumber:            " + rs.runNumber );
+      System.out.println( "runTitle:             " + rs.runTitle );
+      System.out.println( "userName:             " + rs.userName );
+      System.out.println( "userPhone1:           " + rs.userPhone1 );
+      System.out.println( "userPhone2:           " + rs.userPhone2 );
+      System.out.println( "userPhone3:           " + rs.userPhone3 );
+      System.out.println( "userInstitution:      " + rs.userInstitution );
+      System.out.println( "actualRunDuration:    " + rs.actualRunDuration );
+      System.out.println( "scalerForRPB1:        " + rs.scalerForRPB1 );
+      System.out.println( "testInterval2:        " + rs.testInterval2 );
+      System.out.println( "dumpInterval:         " + rs.dumpInterval );
+      System.out.println( "scalerForRPB4:        " + rs.scalerForRPB4 );
+      System.out.println( "testInterval5:        " + rs.testInterval5 );
+      System.out.println( "twobyk:               " + rs.twobyk );
+      System.out.println( "goodProtonCharge:     " + rs.goodProtonCharge );
+      System.out.println( "totalProtonCharge:    " + rs.totalProtonCharge );
+      System.out.println( "numberOfGoodFrames:   " + rs.numberOfGoodFrames );
+      System.out.println( "totalNumberOfFrames:  " + rs.totalNumberOfFrames );
+      System.out.println( "requiredRunDuration:  " + rs.requiredRunDuration );
+      System.out.println( "actualRunDurationSec: " + rs.actualRunDurationSec );
+      System.out.println( "monitorSum1:          " + rs.monitorSum1 );
+      System.out.println( "monitorSum2:          " + rs.monitorSum2 );
+      System.out.println( "monitorSum3:          " + rs.monitorSum3 );
+      System.out.println( "finishDate:           " + rs.finishDate );
+      System.out.println( "finishTime:           " + rs.finishTime );
+      System.out.println( "ralProposalNumber:    " + rs.ralProposalNum );
+    } catch( IOException ex ) {}
   }
 }

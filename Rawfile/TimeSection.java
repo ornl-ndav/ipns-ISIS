@@ -134,53 +134,53 @@ public class TimeSection {
    * @param header The header for the RAW file.
    */
   TimeSection( RandomAccessFile rawFile, Header header ) {
-	int startAddress = ( header.startAddressTcb - 1 ) * 4;
+    int startAddress = ( header.startAddressTcb - 1 ) * 4;
 
-	try {
-	  rawFile.seek( startAddress );
-	  version                = Header.readUnsignedInteger( rawFile, 4 );
-	  numOfRegimes           = Header.readUnsignedInteger( rawFile, 4 );
-	  numOfFramesPerPeriod   = Header.readUnsignedInteger( rawFile, 4 );
-	  numOfPeriods           = Header.readUnsignedInteger( rawFile, 4 );
+    try {
+      rawFile.seek( startAddress );
+      version                = Header.readUnsignedInteger( rawFile, 4 );
+      numOfRegimes           = Header.readUnsignedInteger( rawFile, 4 );
+      numOfFramesPerPeriod   = Header.readUnsignedInteger( rawFile, 4 );
+      numOfPeriods           = Header.readUnsignedInteger( rawFile, 4 );
 
-	  for( int ii = 0; ii < PMAP_SIZE; ii++ ) {
-		periodMap[ii] = Header.readUnsignedInteger( rawFile, 4 );
-	  }
+      for( int ii = 0; ii < PMAP_SIZE; ii++ ) {
+        periodMap[ii] = Header.readUnsignedInteger( rawFile, 4 );
+      }
 
-	  numSpectra              = new int[numOfRegimes];
-	  numTimeChannels         = new int[numOfRegimes];
-	  timeChannelMode         = new int[numOfRegimes][5];
-	  timeChannelParameters   = new float[numOfRegimes][4][5];
-	  clockPrescale           = new int[numOfRegimes];
-	  timeChannelBoundaries   = new int[numOfRegimes][];
+      numSpectra              = new int[numOfRegimes];
+      numTimeChannels         = new int[numOfRegimes];
+      timeChannelMode         = new int[numOfRegimes][5];
+      timeChannelParameters   = new float[numOfRegimes][4][5];
+      clockPrescale           = new int[numOfRegimes];
+      timeChannelBoundaries   = new int[numOfRegimes][];
 
-	  for( int ii = 0; ii < numOfRegimes; ii++ )
-	  {
-		numSpectra[ii]        = Header.readUnsignedInteger( rawFile, 4 );
-		numTimeChannels[ii]   = Header.readUnsignedInteger( rawFile, 4 );
+      for( int ii = 0; ii < numOfRegimes; ii++ )
+      {
+        numSpectra[ii]        = Header.readUnsignedInteger( rawFile, 4 );
+        numTimeChannels[ii]   = Header.readUnsignedInteger( rawFile, 4 );
 
-		for( int jj = 0; jj < 5; jj++ )
-		  timeChannelMode[ii][jj] = Header.readUnsignedInteger( rawFile, 4 );
+        for( int jj = 0; jj < 5; jj++ )
+          timeChannelMode[ii][jj] = Header.readUnsignedInteger( rawFile, 4 );
 
-		for( int jj = 0; jj < 4; jj++ )
-		{
-		  for( int kk = 0; kk < 5; kk++ )
-			timeChannelParameters[ii][jj][kk] = ( float )Header.ReadVAXReal4( rawFile );
-		}
+        for( int jj = 0; jj < 4; jj++ )
+        {
+          for( int kk = 0; kk < 5; kk++ )
+            timeChannelParameters[ii][jj][kk] = ( float )Header.ReadVAXReal4( rawFile );
+        }
 
-		clockPrescale[ii]           = Header.readUnsignedInteger( rawFile, 4 );
-		timeChannelBoundaries[ii]   = new int[numTimeChannels[ii] + 1];
-	  }
+        clockPrescale[ii]           = Header.readUnsignedInteger( rawFile, 4 );
+        timeChannelBoundaries[ii]   = new int[numTimeChannels[ii] + 1];
+      }
 
-	  for( int ii = 0; ii < numOfRegimes; ii++ )
-	  {
-		for( int jj = 0; jj < ( numTimeChannels[ii] + 1 ); jj++ )
-		  timeChannelBoundaries[ii][jj] = Header.readUnsignedInteger( rawFile, 4 );
-	  }
+      for( int ii = 0; ii < numOfRegimes; ii++ )
+      {
+        for( int jj = 0; jj < ( numTimeChannels[ii] + 1 ); jj++ )
+          timeChannelBoundaries[ii][jj] = Header.readUnsignedInteger( rawFile, 4 );
+      }
       
-	} catch( IOException ex ) {}
+    } catch( IOException ex ) {}
 
-	//looks complete based on libget.txt
+    //looks complete based on libget.txt
   }
 
   //~ Methods ------------------------------------------------------------------
@@ -193,54 +193,54 @@ public class TimeSection {
    * @return The time channel boundary array (second dimension).
    */
   public int[] getTimeChannelBoundaries(  ) {
-	if( timeChannelBoundaries == null ) {
-	  return null;
-	}
+    if( timeChannelBoundaries == null ) {
+      return null;
+    }
 
-	return timeChannelBoundaries[0];
+    return timeChannelBoundaries[0];
   }
 
   /**
    * Testbed.
    */
   public static void main( String[] args ) {
-	try {
-	  RandomAccessFile rawFile = new RandomAccessFile( args[0], "r" );
-	  Header           header = new Header( rawFile );
-	  TimeSection      ts     = new TimeSection( rawFile, header );
+    try {
+      RandomAccessFile rawFile = new RandomAccessFile( args[0], "r" );
+      Header           header = new Header( rawFile );
+      TimeSection      ts     = new TimeSection( rawFile, header );
 
-	  /*System.out.println( "version: " + ts.version );
-		 System.out.println( "numOfRegimes:  " + ts.numOfRegimes );
-		 System.out.println( "numOfFramesPerPeriod:  " + ts.numOfFramesPerPeriod );
-		 System.out.println( "numOfPeriods: " + ts.numOfPeriods );
-		 System.out.println( "periodMap: " );
-		 for( int ii = 0; ii < 256; ii++ ) {
-		   System.out.print( ts.periodMap[ii] + "  " );
-		 }
-		 System.out.println(  );
-		 for( int ii = 0; ii < ts.numOfRegimes; ii++ ) {
-		   System.out.println( "-Regime " + ii );
-		   System.out.println( "---numSpectra:       " + ts.numSpectra[ii] );
-		   System.out.println( "---numTimeChannels:  " + ts.numTimeChannels[ii] );
-		   System.out.println( "---timeChannelMode:  " );
-		   for( int jj = 0; jj < 5; jj++ ) {
-			 System.out.print( ts.timeChannelMode[ii][jj] + "   " );
-		   }
-		   System.out.println(  );
-		   System.out.println( "---timeChannelParameters:" );
-		   for( int jj = 0; jj < 4; jj++ ) {
-			 System.out.print( jj + "-- " );
-			 for( int kk = 0; kk < 5; kk++ ) {
-			   System.out.print( ts.timeChannelParameters[ii][jj][kk] + "  " );
-			 }
-			 System.out.println(  );
-		   }
-		   System.out.println( "---clockPrescale:    " + ts.clockPrescale[ii] );
-		   System.out.println( "---timeChannelBoundaries:" );
-		   for( int jj = 0; jj < ( ts.numTimeChannels[ii] + 1 ); jj++ ) {
-			 System.out.print( ts.timeChannelBoundaries[ii][jj] + "   " );
-		   }
-		 }*/
-	} catch( IOException ex ) {}
+      /*System.out.println( "version: " + ts.version );
+         System.out.println( "numOfRegimes:  " + ts.numOfRegimes );
+         System.out.println( "numOfFramesPerPeriod:  " + ts.numOfFramesPerPeriod );
+         System.out.println( "numOfPeriods: " + ts.numOfPeriods );
+         System.out.println( "periodMap: " );
+         for( int ii = 0; ii < 256; ii++ ) {
+           System.out.print( ts.periodMap[ii] + "  " );
+         }
+         System.out.println(  );
+         for( int ii = 0; ii < ts.numOfRegimes; ii++ ) {
+           System.out.println( "-Regime " + ii );
+           System.out.println( "---numSpectra:       " + ts.numSpectra[ii] );
+           System.out.println( "---numTimeChannels:  " + ts.numTimeChannels[ii] );
+           System.out.println( "---timeChannelMode:  " );
+           for( int jj = 0; jj < 5; jj++ ) {
+             System.out.print( ts.timeChannelMode[ii][jj] + "   " );
+           }
+           System.out.println(  );
+           System.out.println( "---timeChannelParameters:" );
+           for( int jj = 0; jj < 4; jj++ ) {
+             System.out.print( jj + "-- " );
+             for( int kk = 0; kk < 5; kk++ ) {
+               System.out.print( ts.timeChannelParameters[ii][jj][kk] + "  " );
+             }
+             System.out.println(  );
+           }
+           System.out.println( "---clockPrescale:    " + ts.clockPrescale[ii] );
+           System.out.println( "---timeChannelBoundaries:" );
+           for( int jj = 0; jj < ( ts.numTimeChannels[ii] + 1 ); jj++ ) {
+             System.out.print( ts.timeChannelBoundaries[ii][jj] + "   " );
+           }
+         }*/
+    } catch( IOException ex ) {}
   }
 }

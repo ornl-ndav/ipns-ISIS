@@ -160,73 +160,73 @@ public class DaeSection {
    * @param nDet The number of detectors.
    */
   DaeSection( RandomAccessFile rawFile, Header header, int nDet ) {
-	int startAddress = ( header.startAddressDae - 1 ) * 4;
+    int startAddress = ( header.startAddressDae - 1 ) * 4;
 
-	try {
-	  rawFile.seek( startAddress );
-	  version                  = Header.readUnsignedInteger( rawFile, 4 );
-	  wordLength               = Header.readUnsignedInteger( rawFile, 4 );
-	  lengthOfBulkStore        = Header.readUnsignedInteger( rawFile, 4 );
-	  pppMinValue              = Header.readUnsignedInteger( rawFile, 4 );
-	  goodPppTotalHigh32       = Header.readUnsignedInteger( rawFile, 4 );
-	  goodPppTotalLow32        = Header.readUnsignedInteger( rawFile, 4 );
-	  rawPppTotalHigh32        = Header.readUnsignedInteger( rawFile, 4 );
-	  rawPppTotalLow32         = Header.readUnsignedInteger( rawFile, 4 );
-	  goodExtNeutTotalHigh32   = Header.readUnsignedInteger( rawFile, 4 );
-	  goodExtNeutTotalLow32    = Header.readUnsignedInteger( rawFile, 4 );
-	  rawExtNeutTotalHigh32    = Header.readUnsignedInteger( rawFile, 4 );
-	  rawExtNeutTotalLow32     = Header.readUnsignedInteger( rawFile, 4 );
-	  extNeutGateT1            = Header.readUnsignedInteger( rawFile, 4 );
-	  extNeutGateT2            = Header.readUnsignedInteger( rawFile, 4 );
-	  detectorMon1             = Header.readUnsignedInteger( rawFile, 4 );
-	  moduleMon1               = Header.readUnsignedInteger( rawFile, 4 );
-	  crateMon1                = Header.readUnsignedInteger( rawFile, 4 );
-	  maskMon1                 = Header.readUnsignedInteger( rawFile, 4 );
-	  detectorMon2             = Header.readUnsignedInteger( rawFile, 4 );
-	  moduleMon2               = Header.readUnsignedInteger( rawFile, 4 );
-	  crateMon2                = Header.readUnsignedInteger( rawFile, 4 );
-	  maskMon2                 = Header.readUnsignedInteger( rawFile, 4 );
-	  totalGoodEventsHigh32    = Header.readUnsignedInteger( rawFile, 4 );
-	  totalGoodEventsLow32     = Header.readUnsignedInteger( rawFile, 4 );
-	  frameSyncDelay           = Header.readUnsignedInteger( rawFile, 4 );
-	  frameSyncOrigin          = Header.readUnsignedInteger( rawFile, 4 );
-	  secondaryMasterPulse     = Header.readUnsignedInteger( rawFile, 4 );
-	  externalVeto1            = Header.readUnsignedInteger( rawFile, 4 );
-	  externalVeto2            = Header.readUnsignedInteger( rawFile, 4 );
-	  externalVeto3            = Header.readUnsignedInteger( rawFile, 4 );
+    try {
+      rawFile.seek( startAddress );
+      version                  = Header.readUnsignedInteger( rawFile, 4 );
+      wordLength               = Header.readUnsignedInteger( rawFile, 4 );
+      lengthOfBulkStore        = Header.readUnsignedInteger( rawFile, 4 );
+      pppMinValue              = Header.readUnsignedInteger( rawFile, 4 );
+      goodPppTotalHigh32       = Header.readUnsignedInteger( rawFile, 4 );
+      goodPppTotalLow32        = Header.readUnsignedInteger( rawFile, 4 );
+      rawPppTotalHigh32        = Header.readUnsignedInteger( rawFile, 4 );
+      rawPppTotalLow32         = Header.readUnsignedInteger( rawFile, 4 );
+      goodExtNeutTotalHigh32   = Header.readUnsignedInteger( rawFile, 4 );
+      goodExtNeutTotalLow32    = Header.readUnsignedInteger( rawFile, 4 );
+      rawExtNeutTotalHigh32    = Header.readUnsignedInteger( rawFile, 4 );
+      rawExtNeutTotalLow32     = Header.readUnsignedInteger( rawFile, 4 );
+      extNeutGateT1            = Header.readUnsignedInteger( rawFile, 4 );
+      extNeutGateT2            = Header.readUnsignedInteger( rawFile, 4 );
+      detectorMon1             = Header.readUnsignedInteger( rawFile, 4 );
+      moduleMon1               = Header.readUnsignedInteger( rawFile, 4 );
+      crateMon1                = Header.readUnsignedInteger( rawFile, 4 );
+      maskMon1                 = Header.readUnsignedInteger( rawFile, 4 );
+      detectorMon2             = Header.readUnsignedInteger( rawFile, 4 );
+      moduleMon2               = Header.readUnsignedInteger( rawFile, 4 );
+      crateMon2                = Header.readUnsignedInteger( rawFile, 4 );
+      maskMon2                 = Header.readUnsignedInteger( rawFile, 4 );
+      totalGoodEventsHigh32    = Header.readUnsignedInteger( rawFile, 4 );
+      totalGoodEventsLow32     = Header.readUnsignedInteger( rawFile, 4 );
+      frameSyncDelay           = Header.readUnsignedInteger( rawFile, 4 );
+      frameSyncOrigin          = Header.readUnsignedInteger( rawFile, 4 );
+      secondaryMasterPulse     = Header.readUnsignedInteger( rawFile, 4 );
+      externalVeto1            = Header.readUnsignedInteger( rawFile, 4 );
+      externalVeto2            = Header.readUnsignedInteger( rawFile, 4 );
+      externalVeto3            = Header.readUnsignedInteger( rawFile, 4 );
 
-	  //skip over the spare space
-	  rawFile.seek( startAddress + ( 64 * 4 ) );
+      //skip over the spare space
+      rawFile.seek( startAddress + ( 64 * 4 ) );
 
-	  //keep reading
-	  crateNum             = new int[nDet + 1];
-	  moduleNum            = new int[nDet + 1];
-	  inputNum             = new int[nDet + 1];
-	  timeRegimeTable      = new int[nDet + 1];
-	  userDetectorNumber   = new int[nDet + 1];
+      //keep reading
+      crateNum             = new int[nDet + 1];
+      moduleNum            = new int[nDet + 1];
+      inputNum             = new int[nDet + 1];
+      timeRegimeTable      = new int[nDet + 1];
+      userDetectorNumber   = new int[nDet + 1];
 
-	  for( int ii = 1; ii <= nDet; ii++ ) {
-		crateNum[ii] = Header.readUnsignedInteger( rawFile, 4 );
-	  }
+      for( int ii = 1; ii <= nDet; ii++ ) {
+        crateNum[ii] = Header.readUnsignedInteger( rawFile, 4 );
+      }
 
-	  for( int ii = 1; ii <= nDet; ii++ ) {
-		moduleNum[ii] = Header.readUnsignedInteger( rawFile, 4 );
-	  }
+      for( int ii = 1; ii <= nDet; ii++ ) {
+        moduleNum[ii] = Header.readUnsignedInteger( rawFile, 4 );
+      }
 
-	  for( int ii = 1; ii <= nDet; ii++ ) {
-		inputNum[ii] = Header.readUnsignedInteger( rawFile, 4 );
-	  }
+      for( int ii = 1; ii <= nDet; ii++ ) {
+        inputNum[ii] = Header.readUnsignedInteger( rawFile, 4 );
+      }
 
-	  for( int ii = 1; ii <= nDet; ii++ ) {
-		timeRegimeTable[ii] = Header.readUnsignedInteger( rawFile, 4 );
-	  }
+      for( int ii = 1; ii <= nDet; ii++ ) {
+        timeRegimeTable[ii] = Header.readUnsignedInteger( rawFile, 4 );
+      }
 
-	  for( int ii = 1; ii <= nDet; ii++ ) {
-		userDetectorNumber[ii] = Header.readUnsignedInteger( rawFile, 4 );
-	  }
-	} catch( IOException ex ) {}
+      for( int ii = 1; ii <= nDet; ii++ ) {
+        userDetectorNumber[ii] = Header.readUnsignedInteger( rawFile, 4 );
+      }
+    } catch( IOException ex ) {}
 
-	//looks complete based on libget.txt
+    //looks complete based on libget.txt
   }
 
   //~ Methods ------------------------------------------------------------------
@@ -235,56 +235,56 @@ public class DaeSection {
    * Testbed.
    */
   public static void main( String[] args ) {
-	try {
-	  RandomAccessFile  rawFile = new RandomAccessFile( args[0], "r" );
-	  Header            header = new Header( rawFile );
-	  InstrumentSection is     = new InstrumentSection( rawFile, header );
-	  DaeSection        ds     = new DaeSection( rawFile, header, is.nDet );
+    try {
+      RandomAccessFile  rawFile = new RandomAccessFile( args[0], "r" );
+      Header            header = new Header( rawFile );
+      InstrumentSection is     = new InstrumentSection( rawFile, header );
+      DaeSection        ds     = new DaeSection( rawFile, header, is.nDet );
 
-	  System.out.println( "versionNumber:        " + ds.version );
-	  System.out.println( "wordLength:           " + ds.wordLength );
-	  System.out.println( "lengthOfBulkStore:    " + ds.lengthOfBulkStore );
-	  System.out.println( "pppMinValue:          " + ds.pppMinValue );
-	  System.out.println( "goodPppTotalHigh32:   " + ds.goodPppTotalHigh32 );
-	  System.out.println( "goodPppTotalLow32:   " + ds.goodPppTotalLow32 );
-	  System.out.println( "rawPppTotalHigh32:   " + ds.rawPppTotalHigh32 );
-	  System.out.println( "rawPppTotalLow32:   " + ds.rawPppTotalLow32 );
-	  System.out.println( "goodExtNeutTotalHigh32:   " +
-		ds.goodExtNeutTotalHigh32 );
-	  System.out.println( "goodExtNeutTotalLow32:   " +
-		ds.goodExtNeutTotalLow32 );
-	  System.out.println( "rawExtNeutTotalHigh32:   " +
-		ds.rawExtNeutTotalHigh32 );
-	  System.out.println( "rawExtNeutTotalLow32:   " + ds.rawExtNeutTotalLow32 );
-	  System.out.println( "extNeutGateT1:          " + ds.extNeutGateT1 );
-	  System.out.println( "extNeutGateT2:          " + ds.extNeutGateT2 );
-	  System.out.println( "detectorMon1:           " + ds.detectorMon1 );
-	  System.out.println( "moduleMon1:             " + ds.moduleMon1 );
-	  System.out.println( "crateMon1:              " + ds.crateMon1 );
-	  System.out.println( "maskMon1:               " + ds.maskMon1 );
-	  System.out.println( "detectorMon2:           " + ds.detectorMon2 );
-	  System.out.println( "moduleMon2:             " + ds.moduleMon2 );
-	  System.out.println( "crateMon2:              " + ds.crateMon2 );
-	  System.out.println( "maskMon2:               " + ds.maskMon2 );
-	  System.out.println( "totalGoodEventsHigh32:  " +
-		ds.totalGoodEventsHigh32 );
-	  System.out.println( "totalGoodEventsLow32:   " + ds.totalGoodEventsLow32 );
-	  System.out.println( "frameSyncDelay:         " + ds.frameSyncDelay );
-	  System.out.println( "frameSyncOrigin:         " + ds.frameSyncOrigin );
-	  System.out.println( "secondaryMasterPulse:    " +
-		ds.secondaryMasterPulse );
-	  System.out.println( "externalVeto1:           " + ds.externalVeto1 );
-	  System.out.println( "externalVeto2:           " + ds.externalVeto2 );
-	  System.out.println( "externalVeto3:           " + ds.externalVeto3 );
-	  System.out.println( 
-		"Detector   Crate   Module  Input   timeRegime  userDetectorNum" );
+      System.out.println( "versionNumber:        " + ds.version );
+      System.out.println( "wordLength:           " + ds.wordLength );
+      System.out.println( "lengthOfBulkStore:    " + ds.lengthOfBulkStore );
+      System.out.println( "pppMinValue:          " + ds.pppMinValue );
+      System.out.println( "goodPppTotalHigh32:   " + ds.goodPppTotalHigh32 );
+      System.out.println( "goodPppTotalLow32:   " + ds.goodPppTotalLow32 );
+      System.out.println( "rawPppTotalHigh32:   " + ds.rawPppTotalHigh32 );
+      System.out.println( "rawPppTotalLow32:   " + ds.rawPppTotalLow32 );
+      System.out.println( "goodExtNeutTotalHigh32:   " +
+        ds.goodExtNeutTotalHigh32 );
+      System.out.println( "goodExtNeutTotalLow32:   " +
+        ds.goodExtNeutTotalLow32 );
+      System.out.println( "rawExtNeutTotalHigh32:   " +
+        ds.rawExtNeutTotalHigh32 );
+      System.out.println( "rawExtNeutTotalLow32:   " + ds.rawExtNeutTotalLow32 );
+      System.out.println( "extNeutGateT1:          " + ds.extNeutGateT1 );
+      System.out.println( "extNeutGateT2:          " + ds.extNeutGateT2 );
+      System.out.println( "detectorMon1:           " + ds.detectorMon1 );
+      System.out.println( "moduleMon1:             " + ds.moduleMon1 );
+      System.out.println( "crateMon1:              " + ds.crateMon1 );
+      System.out.println( "maskMon1:               " + ds.maskMon1 );
+      System.out.println( "detectorMon2:           " + ds.detectorMon2 );
+      System.out.println( "moduleMon2:             " + ds.moduleMon2 );
+      System.out.println( "crateMon2:              " + ds.crateMon2 );
+      System.out.println( "maskMon2:               " + ds.maskMon2 );
+      System.out.println( "totalGoodEventsHigh32:  " +
+        ds.totalGoodEventsHigh32 );
+      System.out.println( "totalGoodEventsLow32:   " + ds.totalGoodEventsLow32 );
+      System.out.println( "frameSyncDelay:         " + ds.frameSyncDelay );
+      System.out.println( "frameSyncOrigin:         " + ds.frameSyncOrigin );
+      System.out.println( "secondaryMasterPulse:    " +
+        ds.secondaryMasterPulse );
+      System.out.println( "externalVeto1:           " + ds.externalVeto1 );
+      System.out.println( "externalVeto2:           " + ds.externalVeto2 );
+      System.out.println( "externalVeto3:           " + ds.externalVeto3 );
+      System.out.println( 
+        "Detector   Crate   Module  Input   timeRegime  userDetectorNum" );
 
-	  for( int ii = 1; ii <= is.nDet; ii++ ) {
-		System.out.println( "  " + ii + "          " + ds.crateNum[ii] +
-		  "       " + ds.moduleNum[ii] + "      " + ds.inputNum[ii] +
-		  "          " + ds.timeRegimeTable[ii] + "           " +
-		  ds.userDetectorNumber[ii] );
-	  }
-	} catch( IOException ex ) {}
+      for( int ii = 1; ii <= is.nDet; ii++ ) {
+        System.out.println( "  " + ii + "          " + ds.crateNum[ii] +
+          "       " + ds.moduleNum[ii] + "      " + ds.inputNum[ii] +
+          "          " + ds.timeRegimeTable[ii] + "           " +
+          ds.userDetectorNumber[ii] );
+      }
+    } catch( IOException ex ) {}
   }
 }
