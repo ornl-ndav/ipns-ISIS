@@ -30,7 +30,11 @@
  *
  * For further information, see <http://www.pns.anl.gov/ISAW/>
  * $Log$
+ * Revision 1.11  2004/07/01 20:41:58  kramer
+ * Fixed the isAMonitor method.  Now it does not cause an infinite loop.
+ *
  * Revision 1.10  2004/06/24 21:40:43  kramer
+ *
  * Changed all of the fields' visiblity from protected to private.  Fields
  * are now accessed from other classes in this package through getter methods
  * instead of using <object>.<field name>.  Also, this class should now be
@@ -1054,7 +1058,11 @@ public class InstrumentSection {
       boolean found = false;
       int i=1;
       while (i<=getNumberOfMonitors() && !found)
+      {
          found = (getMonDetNumForMonitor(i)==detNum);
+	 i++;
+      }
+      
       return found;
    }
 }
