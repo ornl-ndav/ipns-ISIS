@@ -30,7 +30,13 @@
  *
  * For further information, see <http://www.pns.anl.gov/ISAW/>
  * $Log$
+ * Revision 1.13  2004/07/02 18:43:47  kramer
+ * Fixed method LeaveOpen() to use 'filename' as the name of the file to
+ * open.  Commented out the field rawfileName because it was never used.
+ * Now when the rawfile is opened it is opened as read only.
+ *
  * Revision 1.12  2004/07/02 16:29:02  kramer
+ *
  * Now the instrument name returned from InstrumentName() is trimmed.  Also,
  * added methods to get the crate, slot, and input number; the number of
  * pulses; and the number of the 'detector' a 'pixel' is on.
@@ -105,7 +111,7 @@ import IPNS.Runfile.InstrumentType;
 public class Rawfile {
   //~ Instance fields ----------------------------------------------------------
 
-  private String            rawfileName;
+ // private String            rawfileName;
   private RandomAccessFile  rawfile;
   private Header            header;
   private RunSection        runSect;
@@ -128,7 +134,7 @@ public class Rawfile {
    */
    public Rawfile(  )
    {
-      rawfileName = new String();
+      //rawfileName = new String();
       rawfile = null;
       header = new Header();
       runSect = new RunSection();
@@ -153,7 +159,7 @@ public class Rawfile {
   	this();
     try {
       filename   = infileName;
-      rawfile    = new RandomAccessFile( filename, "rw" );
+      rawfile    = new RandomAccessFile( filename, "r" );
       header     = new Header( rawfile );
       runSect    = new RunSection( rawfile, header );
       instSect   = new InstrumentSection( rawfile, header );
@@ -176,7 +182,7 @@ public class Rawfile {
     try {
       rawfile.close(  );
     } catch( IOException e ) {
-      System.out.println( "Problem Closing File: " + rawfileName );
+      System.out.println( "Problem Closing File: " + filename );
       e.printStackTrace(  );
     }
 
@@ -197,9 +203,9 @@ public class Rawfile {
     }
 
     try {
-      rawfile = new RandomAccessFile( rawfileName, "r" );
+      rawfile = new RandomAccessFile( filename, "r" );
     } catch( IOException e ) {
-      System.out.println( "Problem Opening File: " + rawfileName );
+      System.out.println( "Problem Opening File: " + filename );
       e.printStackTrace(  );
     }
 
@@ -760,7 +766,6 @@ public class Rawfile {
       String[] fileArr = new String[1];
          fileArr[0] = args[fileNum];
       System.out.println("Processing ISIS RAW file:  "+rawfile.filename);
-      System.out.println("    RAW File name = "+rawfile.rawfileName);
       
       System.out.println("*******************************************************");
       System.out.println("HEADER Section");
