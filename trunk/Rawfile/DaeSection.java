@@ -30,7 +30,13 @@
  *
  * For further information, see <http://www.pns.anl.gov/ISAW/>
  * $Log$
+ * Revision 1.11  2004/07/07 18:54:11  kramer
+ * Added methods to get the minimum and maximum regime numbers as recorded in
+ * the rawfile.  Also added a method to determine if a given integer is a valid
+ * regime number.
+ *
  * Revision 1.10  2004/06/24 21:33:00  kramer
+ *
  * Changed all of the fields' visiblity from protected to private.  Fields
  * are now accessed from other classes in this package through getter methods
  * instead of using <object>.<field name>.  Also, this class should now be
@@ -179,6 +185,11 @@ public class DaeSection {
   private int   version;
   /** Word length in bulk store memory. */
   private int   wordLength;
+  
+  /** The smallest regime number. */
+  private int minRegimeNumber;
+  /** The largest regime number. */
+  private int maxRegimeNumber;
 
   //~ Constructors -------------------------------------------------------------
 
@@ -222,6 +233,9 @@ public class DaeSection {
       totalGoodEventsLow32 = -1;
       version = -1;
       wordLength = -1;
+      
+      minRegimeNumber = -1;
+      maxRegimeNumber = -1;
   }
 
   /**
@@ -773,5 +787,72 @@ public class DaeSection {
    public int getWordLength()
    {
       return wordLength;
+   }
+   
+   /**
+    * Get the smallest regime number.
+    * @return The smallest regime number or 
+    * -1 if it cannot be determined.
+    */
+   public int getMinimumRegimeNumber()
+   {
+      if (minRegimeNumber != -1)
+         return minRegimeNumber;
+      else
+      {
+         if (timeRegimeTable.length==2)
+         {
+            int min = timeRegimeTable[1];
+            for (int i=2; i<timeRegimeTable.length; i++)
+               min = Math.min(min,timeRegimeTable[i]);
+            minRegimeNumber = min;
+            return min;
+         }
+         else
+            return -1;
+      }
+   }
+   
+   /**
+    * Get the largest regime number.
+    * @return The largest regime number or 
+    * -1 if it cannot be determined.
+    */
+   public int getMaximumRegimeNumber()
+   {
+      if (maxRegimeNumber != -1)
+         return maxRegimeNumber;
+      else
+      {
+         if (timeRegimeTable.length==2)
+         {
+            int max = timeRegimeTable[1];
+            for (int i=2; i<timeRegimeTable.length; i++)
+               max = Math.max(max,timeRegimeTable[i]);
+            maxRegimeNumber = max;
+            return max;
+         }
+         else
+            return -1;
+      }
+   }
+   
+   /**
+    * Determine if the given integer is a 
+    * valid regime number.
+    * @return True if the integer is a valid 
+    * regime number and false otherwise.  This 
+    * method looks at the minimum and maximum 
+    * regime number as written in the rawfile to 
+    * determine if the specified integer is valid.
+    */
+   public boolean isAValidRegimeNumber(int num)
+   {
+      int min = getMinimumRegimeNumber();
+      int max = getMaximumRegimeNumber();
+      if (min==-1 && max==-1) //then the min and max 
+         return false;        //could not be determined
+      else
+         return (num>=min && num<=max);
    }
 }
