@@ -10,7 +10,7 @@ import java.io.*;
  *         Laboratory
  */
 public class DaeSection {
-  //~ Instance fields **********************************************************
+  //~ Instance fields ----------------------------------------------------------
 
   protected int[] crateNum               = new int[0];
   protected int[] inputNum               = new int[0];
@@ -48,7 +48,7 @@ public class DaeSection {
   protected int   version;
   protected int   wordLength;
 
-  //~ Constructors *************************************************************
+  //~ Constructors -------------------------------------------------------------
 
   /**
    * Creates a new DaeSection object.
@@ -132,7 +132,7 @@ public class DaeSection {
     //looks complete based on libget.txt
   }
 
-  //~ Methods ******************************************************************
+  //~ Methods ------------------------------------------------------------------
 
   /**
    * Testbed.
@@ -152,12 +152,12 @@ public class DaeSection {
       System.out.println( "goodPppTotalLow32:   " + ds.goodPppTotalLow32 );
       System.out.println( "rawPppTotalHigh32:   " + ds.rawPppTotalHigh32 );
       System.out.println( "rawPppTotalLow32:   " + ds.rawPppTotalLow32 );
-      System.out.println( 
-        "goodExtNeutTotalHigh32:   " + ds.goodExtNeutTotalHigh32 );
-      System.out.println( 
-        "goodExtNeutTotalLow32:   " + ds.goodExtNeutTotalLow32 );
-      System.out.println( 
-        "rawExtNeutTotalHigh32:   " + ds.rawExtNeutTotalHigh32 );
+      System.out.println( "goodExtNeutTotalHigh32:   " +
+        ds.goodExtNeutTotalHigh32 );
+      System.out.println( "goodExtNeutTotalLow32:   " +
+        ds.goodExtNeutTotalLow32 );
+      System.out.println( "rawExtNeutTotalHigh32:   " +
+        ds.rawExtNeutTotalHigh32 );
       System.out.println( "rawExtNeutTotalLow32:   " + ds.rawExtNeutTotalLow32 );
       System.out.println( "extNeutGateT1:          " + ds.extNeutGateT1 );
       System.out.println( "extNeutGateT2:          " + ds.extNeutGateT2 );
@@ -169,13 +169,13 @@ public class DaeSection {
       System.out.println( "moduleMon2:             " + ds.moduleMon2 );
       System.out.println( "crateMon2:              " + ds.crateMon2 );
       System.out.println( "maskMon2:               " + ds.maskMon2 );
-      System.out.println( 
-        "totalGoodEventsHigh32:  " + ds.totalGoodEventsHigh32 );
+      System.out.println( "totalGoodEventsHigh32:  " +
+        ds.totalGoodEventsHigh32 );
       System.out.println( "totalGoodEventsLow32:   " + ds.totalGoodEventsLow32 );
       System.out.println( "frameSyncDelay:         " + ds.frameSyncDelay );
       System.out.println( "frameSyncOrigin:         " + ds.frameSyncOrigin );
-      System.out.println( 
-        "secondaryMasterPulse:    " + ds.secondaryMasterPulse );
+      System.out.println( "secondaryMasterPulse:    " +
+        ds.secondaryMasterPulse );
       System.out.println( "externalVeto1:           " + ds.externalVeto1 );
       System.out.println( "externalVeto2:           " + ds.externalVeto2 );
       System.out.println( "externalVeto3:           " + ds.externalVeto3 );
@@ -183,10 +183,10 @@ public class DaeSection {
         "Detector   Crate   Module  Input   timeRegime  userDetectorNum" );
 
       for( int ii = 1; ii <= is.nDet; ii++ ) {
-        System.out.println( 
-          "  " + ii + "          " + ds.crateNum[ii] + "       " +
-          ds.moduleNum[ii] + "      " + ds.inputNum[ii] + "          " +
-          ds.timeRegimeTable[ii] + "           " + ds.userDetectorNumber[ii] );
+        System.out.println( "  " + ii + "          " + ds.crateNum[ii] +
+          "       " + ds.moduleNum[ii] + "      " + ds.inputNum[ii] +
+          "          " + ds.timeRegimeTable[ii] + "           " +
+          ds.userDetectorNumber[ii] );
       }
     } catch( IOException ex ) {}
   }

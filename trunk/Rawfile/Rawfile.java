@@ -15,12 +15,12 @@ import java.io.*;
 
 /*
  * $Log$
- * Revision 1.1  2004/04/30 00:02:09  bouzekc
- * Initial revision
+ * Revision 1.2  2004/04/30 00:16:51  bouzekc
+ * Newer version.  Old version should not have been in CVS.
  *
  */
 public class Rawfile {
-  //~ Instance fields **********************************************************
+  //~ Instance fields ----------------------------------------------------------
 
   protected String            rawfileName = new String(  );
   protected RandomAccessFile  rawfile;
@@ -33,7 +33,7 @@ public class Rawfile {
   protected boolean           leaveOpen = false;
   protected String            filename;
 
-  //~ Constructors *************************************************************
+  //~ Constructors -------------------------------------------------------------
 
   /**
    * Default Constructor with empty rawfile
@@ -58,7 +58,7 @@ public class Rawfile {
     } catch( IOException ex ) {}
   }
 
-  //~ Methods ******************************************************************
+  //~ Methods ------------------------------------------------------------------
 
   /**
    * @return The actual run duration as stored in the run section
@@ -67,15 +67,9 @@ public class Rawfile {
     return runSect.actualRunDuration;
   }
 
-  /**
-   * @return A clone of the integer array holding the number of spectra.
-   */
-  public int[] numSpectra(  ) {
-    return ( int[] )timeSect.numSpectra.clone(  );
-  }
-  
   /*public int[] getTCB( int start, int end ) {
-    return timeSect.timeChannelBoundaries[0][0]*/
+     return timeSect.timeChannelBoundaries[0][0]*/
+
   /**
    * Closes files opened with LeaveOpen.
    */
@@ -123,21 +117,15 @@ public class Rawfile {
   }
 
   /**
-   * Retrieves the spectrum of a 1D detector.  This method is not complete nor
-   * completely usable yet.
+   * Retrieves the spectrum of a 1D detector.  This method is not complete yet,
+   * as the underlying code in DataSection is not yet complete (04/16/2004).
    *
-   * @param subgroup Subgroup ID to be retrieved. (currently unused)
+   * @param subgroup Subgroup ID to be retrieved.
    *
    * @return The retrieved spectrum.
    */
   public float[] Get1DSpectrum( int spect ) {
     return dataSect.get1DSpectrum( rawfile, spect, timeSect );
-
-    /*float[] spectra = new float[dataSect.rawData.length];
-       for( int k = 0; k < spectra.length; k++ ) {
-         spectra[k] = dataSect.rawData[k];
-       }
-       return spectra;*/
   }
 
   /**
@@ -167,6 +155,13 @@ public class Rawfile {
     }
 
     return sgList;
+  }
+
+  /**
+   * @return The instrument name.
+   */
+  public String InstrumentName(  ) {
+    return instSect.iName;
   }
 
   /**
@@ -317,6 +312,27 @@ public class Rawfile {
   }
 
   /**
+   * Accessor method for the time channel boundary array.  This assumes one
+   * time regime.
+   *
+   * @return The TCB array.  If it does not exist, this returns null.
+   */
+  public float[] TCBArray(  ) {
+    if( timeSect.timeChannelBoundaries == null ) {
+      return null;
+    }
+
+    float[] TCBFloatArray = new float[timeSect.timeChannelBoundaries[0].length];
+
+    for( int i = 0; i < TCBFloatArray.length; i++ ) {
+      TCBFloatArray[i] = ( timeSect.timeChannelBoundaries[0][i] * 0.0125f ) +
+        ( timeSect.timeChannelParameters[0][0][0] * 0.1f );
+    }
+
+    return TCBFloatArray;
+  }
+
+  /**
    * @return The total proton charge for this run from the runSection
    */
   public float TotalProtonCharge(  ) {
@@ -393,18 +409,15 @@ public class Rawfile {
     System.out.println( file.UserName(  ) );
     file.Close(  );
   }
-  /**
-   * @return The instrument section for this rawfile.
-   */
-  public InstrumentSection getInstSect() {
-    return instSect;
-  }
 
   /**
-   * @param section
+   * @return A clone of the integer array holding the number of spectra.
    */
-  public void setInstSect(InstrumentSection section) {
-    instSect = section;
-  }
+  public int[] numSpectra(  ) {
+    int[] tempSpect = new int[timeSect.numSpectra.length];
 
+    System.arraycopy( timeSect.numSpectra, 0, tempSpect, 0, tempSpect.length );
+
+    return tempSpect;
+  }
 }

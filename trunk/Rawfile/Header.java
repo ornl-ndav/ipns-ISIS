@@ -10,7 +10,7 @@ import java.io.*;
  *         Laboratory
  */
 public class Header {
-  //~ Instance fields **********************************************************
+  //~ Instance fields ----------------------------------------------------------
 
   protected String runDuration       = new String( "" );
   protected String runID             = new String( "" );
@@ -30,7 +30,7 @@ public class Header {
   protected int    startAddressTcb;
   protected int    startAddressUser;
 
-  //~ Constructors *************************************************************
+  //~ Constructors -------------------------------------------------------------
 
   /**
    * Creates a new Header object.
@@ -52,36 +52,36 @@ public class Header {
         temp.append( ( char )rawFile.readByte(  ) );
       }
 
-      runID               = temp.toString(  );
-      temp                = new StringBuffer( 20 );
+      runID   = temp.toString(  );
+      temp    = new StringBuffer( 20 );
 
       for( int ii = 0; ii < 20; ii++ ) {
         temp.append( ( char )rawFile.readByte(  ) );
       }
 
-      userName            = temp.toString(  );
-      temp                = new StringBuffer( 24 );
+      userName   = temp.toString(  );
+      temp       = new StringBuffer( 24 );
 
       for( int ii = 0; ii < 24; ii++ ) {
         temp.append( ( char )rawFile.readByte(  ) );
       }
 
-      runTitleShort       = temp.toString(  );
-      temp                = new StringBuffer( 12 );
+      runTitleShort   = temp.toString(  );
+      temp            = new StringBuffer( 12 );
 
       for( int ii = 0; ii < 12; ii++ ) {
         temp.append( ( char )rawFile.readByte(  ) );
       }
 
-      startDate           = temp.toString(  );
-      temp                = new StringBuffer( 8 );
+      startDate   = temp.toString(  );
+      temp        = new StringBuffer( 8 );
 
       for( int ii = 0; ii < 8; ii++ ) {
         temp.append( ( char )rawFile.readByte(  ) );
       }
 
-      startTime           = temp.toString(  );
-      temp                = new StringBuffer( 8 );
+      startTime   = temp.toString(  );
+      temp        = new StringBuffer( 8 );
 
       for( int ii = 0; ii < 8; ii++ ) {
         temp.append( ( char )rawFile.readByte(  ) );
@@ -104,7 +104,7 @@ public class Header {
     } catch( IOException ex ) {}
   }
 
-  //~ Methods ******************************************************************
+  //~ Methods ------------------------------------------------------------------
 
   /**
    * DOCUMENT ME!
@@ -132,8 +132,8 @@ public class Header {
       System.out.println( "startAddressUser       " + header.startAddressUser );
       System.out.println( "startAddressData       " + header.startAddressData );
       System.out.println( "startAddressLog       " + header.startAddressLog );
-      System.out.println( 
-        "startAddressSpare       " + header.startAddressSpare );
+      System.out.println( "startAddressSpare       " +
+        header.startAddressSpare );
       System.out.println( "dataFormatFlag       " + header.dataFormatFlag );
     } catch( IOException ex ) {}
   }
@@ -154,8 +154,8 @@ public class Header {
     }
 
     /* add 128 to put in the implied 1 */
-    hi_mant    = ( val & 127 ) + 128;
-    val        = val >> 7;
+    hi_mant   = ( val & 127 ) + 128;
+    val       = val >> 7;
 
     /* exponent is "excess 128" */
     exp        = ( ( int )( val & 255 ) ) - 128;
@@ -167,8 +167,8 @@ public class Header {
     if( exp == -128 ) {
       f_val = 0;
     } else {
-      f_val = ( ( hi_mant / 256.0 ) + ( low_mant / 16777216.0 ) ) * Math.pow( 
-          2.0, ( double )exp );
+      f_val = ( ( hi_mant / 256.0 ) + ( low_mant / 16777216.0 ) ) * Math.pow( 2.0,
+          ( double )exp );
     }
 
     if( sign == 1 ) {

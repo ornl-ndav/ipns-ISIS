@@ -10,7 +10,7 @@ import java.io.*;
  *         Laboratory
  */
 public class InstrumentSection {
-  //~ Instance fields **********************************************************
+  //~ Instance fields ----------------------------------------------------------
 
   //instrument name
   protected String iName = new String(  );
@@ -76,7 +76,7 @@ public class InstrumentSection {
   protected int thermalShutter;
   protected int version;
 
-  //~ Constructors *************************************************************
+  //~ Constructors -------------------------------------------------------------
 
   /**
    * Creates a new InstrumentSection object.
@@ -145,10 +145,10 @@ public class InstrumentSection {
       rawFile.seek( startAddress + ( 67 * 4 ) );
 
       //keep reading
-      nDet                     = header.readUnsignedInteger( rawFile, 4 );
-      nMon                     = header.readUnsignedInteger( rawFile, 4 );
-      nUserTables              = header.readUnsignedInteger( rawFile, 4 );
-      monDetNums               = new int[nMon];
+      nDet          = header.readUnsignedInteger( rawFile, 4 );
+      nMon          = header.readUnsignedInteger( rawFile, 4 );
+      nUserTables   = header.readUnsignedInteger( rawFile, 4 );
+      monDetNums    = new int[nMon];
 
       for( int ii = 0; ii < nMon; ii++ ) {
         monDetNums[ii] = header.readUnsignedInteger( rawFile, 4 );
@@ -202,7 +202,7 @@ public class InstrumentSection {
     //looks complete based on libget.txt
   }
 
-  //~ Methods ******************************************************************
+  //~ Methods ------------------------------------------------------------------
 
   /**
    * Testbed.
@@ -214,112 +214,102 @@ public class InstrumentSection {
       InstrumentSection is     = new InstrumentSection( rawFile, header );
 
       /*System.out.println( "version: " + is.version );
-      System.out.println( "iName: " + is.iName );
-      System.out.println( "chopFreq1: " + is.chopFreq1 );
-      System.out.println( "chopFreq2: " + is.chopFreq2 );
-      System.out.println( "chopFreq3: " + is.chopFreq3 );
-      System.out.println( "delayC1: " + is.delayC1 );
-      System.out.println( "delayC2: " + is.delayC2 );
-      System.out.println( "delayC3: " + is.delayC3 );
-      System.out.println( "maxErrorDelayC1: " + is.maxErrorDelayC1 );
-      System.out.println( "maxErrorDelayC2: " + is.maxErrorDelayC2 );
-      System.out.println( "maxErrorDelayC3: " + is.maxErrorDelayC3 );
-      System.out.println( "apertureC1: " + is.apertureC1 );
-      System.out.println( "apertureC2: " + is.apertureC2 );
-      System.out.println( "apertureC3: " + is.apertureC3 );
-      System.out.println( "statusC1: " + is.statusC1 );
-      System.out.println( "statusC2: " + is.statusC2 );
-      System.out.println( "statusC3: " + is.statusC3 );
-      System.out.println( "mainShutter: " + is.mainShutter );
-      System.out.println( "thermalShutter: " + is.thermalShutter );
-      System.out.println( "beamapertureHoriz: " + is.beamapertureHoriz );
-      System.out.println( "beamapertureVert: " + is.beamapertureVert );
-      System.out.println( "scatteringPosition: " + is.scatteringPosition );
-      System.out.println( "moderatorTypeNum: " + is.moderatorTypeNum );
-      System.out.println( "detectorTankVacuum: " + is.detectorTankVacuum );*/
-      System.out.println( "L1: " + is.L1 );/*
-      System.out.println( "rotorFrequency: " + is.rotorFrequency );
-      System.out.println( "rotorEnergy: " + is.rotorEnergy );
-      System.out.println( "rotorPhase: " + is.rotorPhase );
-      System.out.println( "rotorSlitPackage: " + is.rotorSlitPackage );
-      System.out.println( "slowChopper: " + is.slowChopper );*/
-      System.out.println( "loqXCenter: " + is.loqXCenter );
-      System.out.println( "loqYCenter: " + is.loqYCenter );/*
-      System.out.println( "beamStop: " + is.beamStop );
-      System.out.println( "radiusBeamStop: " + is.radiusBeamStop );*/
-      System.out.println( "sourceToDetectorDist: " + is.sourceToDetectorDist );
-      System.out.println( "foeAngle: " + is.foeAngle );
-      System.out.println( "angleOfIncidence: " + is.angleOfIncidence );
-      System.out.println( "nDet: " + is.nDet );
-      System.out.println( "nMon: " + is.nMon );/*
-      System.out.println( "nUserTables: " + is.nUserTables );
-      System.out.println( "monDetNums: " );
-
-      for( int ii = 0; ii < is.nMon; ii++ ) {
-        System.out.print( is.monDetNums[ii] + "  " );
-      }
-
-      System.out.println(  );
-      System.out.println( "monPrescale: " );
-
-      for( int ii = 0; ii < is.nMon; ii++ ) {
-        System.out.print( is.monPrescale[ii] + "  " );
-      }
-
-      System.out.println(  );
+         System.out.println( "iName: " + is.iName );
+         System.out.println( "chopFreq1: " + is.chopFreq1 );
+         System.out.println( "chopFreq2: " + is.chopFreq2 );
+         System.out.println( "chopFreq3: " + is.chopFreq3 );
+         System.out.println( "delayC1: " + is.delayC1 );
+         System.out.println( "delayC2: " + is.delayC2 );
+         System.out.println( "delayC3: " + is.delayC3 );
+         System.out.println( "maxErrorDelayC1: " + is.maxErrorDelayC1 );
+         System.out.println( "maxErrorDelayC2: " + is.maxErrorDelayC2 );
+         System.out.println( "maxErrorDelayC3: " + is.maxErrorDelayC3 );
+         System.out.println( "apertureC1: " + is.apertureC1 );
+         System.out.println( "apertureC2: " + is.apertureC2 );
+         System.out.println( "apertureC3: " + is.apertureC3 );
+         System.out.println( "statusC1: " + is.statusC1 );
+         System.out.println( "statusC2: " + is.statusC2 );
+         System.out.println( "statusC3: " + is.statusC3 );
+         System.out.println( "mainShutter: " + is.mainShutter );
+         System.out.println( "thermalShutter: " + is.thermalShutter );
+         System.out.println( "beamapertureHoriz: " + is.beamapertureHoriz );
+         System.out.println( "beamapertureVert: " + is.beamapertureVert );
+         System.out.println( "scatteringPosition: " + is.scatteringPosition );
+         System.out.println( "moderatorTypeNum: " + is.moderatorTypeNum );
+         System.out.println( "detectorTankVacuum: " + is.detectorTankVacuum );
+         System.out.println( "L1: " + is.L1 );
+            System.out.println( "rotorFrequency: " + is.rotorFrequency );
+            System.out.println( "rotorEnergy: " + is.rotorEnergy );
+            System.out.println( "rotorPhase: " + is.rotorPhase );
+            System.out.println( "rotorSlitPackage: " + is.rotorSlitPackage );
+            System.out.println( "slowChopper: " + is.slowChopper );
+         System.out.println( "loqXCenter: " + is.loqXCenter );
+         System.out.println( "loqYCenter: " + is.loqYCenter );
+            System.out.println( "beamStop: " + is.beamStop );
+            System.out.println( "radiusBeamStop: " + is.radiusBeamStop );
+         System.out.println( "sourceToDetectorDist: " + is.sourceToDetectorDist );
+         System.out.println( "foeAngle: " + is.foeAngle );
+         System.out.println( "angleOfIncidence: " + is.angleOfIncidence );
+         System.out.println( "nDet: " + is.nDet );
+         System.out.println( "nMon: " + is.nMon );
+            System.out.println( "nUserTables: " + is.nUserTables );
+            System.out.println( "monDetNums: " );
+            for( int ii = 0; ii < is.nMon; ii++ ) {
+              System.out.print( is.monDetNums[ii] + "  " );
+            }
+            System.out.println(  );
+            System.out.println( "monPrescale: " );
+            for( int ii = 0; ii < is.nMon; ii++ ) {
+              System.out.print( is.monPrescale[ii] + "  " );
+            }
+            System.out.println(  );*/
       System.out.println( "spectrumNumbers: " );
 
       for( int ii = 1; ii <= is.nDet; ii++ ) {
         System.out.println( is.spectrumNumbers[ii] + "  " );
       }
 
-      System.out.println(  );
-      System.out.println( "holdOff: " );
-
-      for( int ii = 1; ii <= is.nDet; ii++ ) {
-        System.out.print( is.holdOff[ii] + "  " );
-      }
-*/
-      System.out.println(  );
-      System.out.println( "flightPath: " );
-
-      for( int ii = 1; ii <= 30; ii++ ) {
-        System.out.println( is.flightPath[ii] + "  " );
-      }
-/*
-      System.out.println(  );
-      System.out.println( "codeforUserTableValues: " );
-
-      for( int ii = 1; ii <= is.nDet; ii++ ) {
-        System.out.print( is.codeForUserTableValues[ii] + "  " );
-      }
-*/
-      System.out.println(  );
-      System.out.println( "detectorAngle: " );
-
-      for( int ii = 1; ii <= 30; ii++ ) {
-        System.out.println( is.detectorAngle[ii] + "  " );
-      }
-/*
-      System.out.println(  );
-      System.out.println( "userTable: " );
-
-      for( int jj = 0; jj < is.nUserTables; jj++ ) {
-        System.out.println( "---Table " + jj );
-
-        for( int ii = 1; ii <= is.nDet; ii++ ) {
-          System.out.print( is.userTable[jj][ii] + "  " );
-        }
-
-        System.out.println(  );
-      }
-
-      System.out.println(  );*/
+      /*
+         System.out.println(  );
+         System.out.println( "holdOff: " );
+         for( int ii = 1; ii <= is.nDet; ii++ ) {
+           System.out.print( is.holdOff[ii] + "  " );
+         }
+      
+         System.out.println(  );
+         System.out.println( "flightPath: " );
+         for( int ii = 1; ii <= 30; ii++ ) {
+           System.out.println( is.flightPath[ii] + "  " );
+         }
+      
+            System.out.println(  );
+            System.out.println( "codeforUserTableValues: " );
+            for( int ii = 1; ii <= is.nDet; ii++ ) {
+              System.out.print( is.codeForUserTableValues[ii] + "  " );
+            }
+      
+         System.out.println(  );
+         System.out.println( "detectorAngle: " );
+         for( int ii = 1; ii <= 30; ii++ ) {
+           System.out.println( is.detectorAngle[ii] + "  " );
+         }
+         /*
+            System.out.println(  );
+            System.out.println( "userTable: " );
+            for( int jj = 0; jj < is.nUserTables; jj++ ) {
+              System.out.println( "---Table " + jj );
+              for( int ii = 1; ii <= is.nDet; ii++ ) {
+                System.out.print( is.userTable[jj][ii] + "  " );
+              }
+              System.out.println(  );
+            }
+            System.out.println(  );*/
     } catch( IOException ex ) {}
   }
+
   /**
    * @param detector number
-   * 
+   *
    * @return The detector angle for the specified detector.
    */
   public float getDetectorAngle( int index ) {
@@ -327,10 +317,11 @@ public class InstrumentSection {
   }
 
   /**
-   * @param fs
+   * @param The index for the flight path.
+   *
+   * @return The flight path at the given index.
    */
-  public void setDetectorAngle(float[] fs) {
-    detectorAngle = fs;
+  public float getFlightPath( int index ) {
+    return flightPath[index];
   }
-
 }
