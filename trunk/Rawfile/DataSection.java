@@ -30,7 +30,14 @@
  *
  * For further information, see <http://www.pns.anl.gov/ISAW/>
  * $Log$
+ * Revision 1.9  2004/06/22 15:12:12  kramer
+ * Added getter methods (with documentation).  Now this class imports 2 classes
+ * instead of the entire java.io.package.  Also,  it gives an error and tells
+ * the user the section couldn't be read if the situation exists.  Made the
+ * constructors public.
+ *
  * Revision 1.8  2004/06/17 15:31:10  kramer
+ *
  * Modified getDataForDataFormatFlag0 to directly use a float[] instead of
  * converting from ints to floats.
  *
@@ -45,8 +52,8 @@
 
 package ISIS.Rawfile;
 
-import java.io.*;
-
+import java.io.RandomAccessFile;
+import java.io.IOException;
 
 /**
  * Class to retrieve data from an ISIS rawfile data section.
@@ -110,7 +117,7 @@ public class DataSection {
   /**
    * Creates a new DataSection object.
    */
-  DataSection(  )
+  public DataSection(  )
   {
     version = -1;
      compressionType = -1;
@@ -132,7 +139,7 @@ public class DataSection {
    * @param header The header for the RAW file.
    * @param ts The time section for the RAW file.
    */
-  DataSection( RandomAccessFile rawFile, Header header, TimeSection ts ) {
+  public DataSection( RandomAccessFile rawFile, Header header, TimeSection ts ) {
   	this();
     startAddress = ( header.startAddressData - 1 ) * 4;
 
@@ -165,6 +172,13 @@ public class DataSection {
           spectrumDescArray[( 2 * ii ) + 1] = Header.readUnsignedInteger( rawFile,
               4 );
         }
+      }
+      else
+      {
+         System.out.println("ERROR:  Unrecognized Data Section version number."
+         +"\n          Version found = "+version
+         +"\n          Version numbers corresponding to data that can be processed  = 1, 2"
+         +"\n          The Data Section could not be read.");
       }
     } catch( IOException ex ) { ex.printStackTrace(); }
   }
@@ -489,7 +503,6 @@ public class DataSection {
           RandomAccessFile  rawFile = new RandomAccessFile( args[fileNum], "r" );
           Header            header = new Header( rawFile );
           TimeSection       ts     = new TimeSection( rawFile, header );
-          InstrumentSection is     = new InstrumentSection( rawFile, header );
           DataSection       ds     = new DataSection( rawFile, header, ts );
 
          System.out.println( "versionNumber:        " + ds.version );
@@ -648,4 +661,85 @@ public class DataSection {
 
     return num;
   }
+
+   /**
+    * Get the compression ratio for the data section.
+    * @return The compression ratio for the data section.
+    */
+   public float getCompRatioDataSect()
+   {
+      return compRatioDataSect;
+   }
+
+   /**
+    * Get the compression ratio for the whole file.
+    * @return The compression ratio for the whole file.
+    */
+   public float getCompRatioWholeFile()
+   {
+      return compRatioWholeFile;
+   }
+
+   /**
+    * Get the compression type.
+    * @return The compression type.  
+    * Possible values are:<br>
+    * 0 = no compression<br>
+    * 1 = byte relative compression
+    */
+   public int getCompressionType()
+   {
+      return compressionType;
+   }
+
+   /**
+    * Get the equivalent version 1 filesize.
+    * @return The equivalent version 1 
+    * filesize (in blocks).
+    */
+   public int getEquivV1FileSize()
+   {
+      return equivV1FileSize;
+   }
+
+   /**
+    * Get the total number of spectra in all 
+    * time regimes in all periods.
+    * @return The total number  of spectra 
+    * in all time regimes in all periods.
+    */
+   public int getTotalNumSpectra()
+   {
+      return nspec;
+   }
+
+   /**
+    * Get the offset in the file to the spectra 
+    * descriptor array.
+    * @return The offset in th file to the spectra 
+    * descriptor array.
+    */
+   public int getOffsetToSpectrumDescArray()
+   {
+      return offsetToSpectrumDescArray;
+   }
+
+   /**
+    * Get the start address for this section.
+    * @return The offset in the file where 
+    * this section starts.
+    */
+   public int getStartAddress()
+   {
+      return startAddress;
+   }
+
+   /**
+    * Get the Data Section version number.
+    * @return The Data Section version number.
+    */
+   public int getVersion()
+   {
+      return version;
+   }
 }
