@@ -30,7 +30,14 @@
  *
  * For further information, see <http://www.pns.anl.gov/ISAW/>
  * $Log$
+ * Revision 1.7  2004/06/18 15:59:15  kramer
+ * Added getter methods (with documentation) for all fields.  Improved Javadoc
+ * comments.  Now the class imports 2 classes instead of the entire java.io
+ * package.  It also warns the user if it thinks it is reading an ISIS file it
+ * can't understand.
+ *
  * Revision 1.6  2004/06/16 20:40:49  kramer
+ *
  * Now the source will contain the cvs logs.  Replaced tabs with 3 spaces,
  * created a default contstructor where fields will be initialized (instead
  * of when they are first declared), and when exceptions are caught a stack
@@ -40,8 +47,8 @@
 
 package ISIS.Rawfile;
 
-import java.io.*;
-
+import java.io.RandomAccessFile;
+import java.io.IOException;
 
 /**
  * This class processes DAE (Data Acquistion Electronics) information from an ISIS RAW file.
@@ -55,7 +62,8 @@ public class DaeSection {
   /**
    * The crate number for each detector.  The length of 
    * this array equals 1 more than the number of 
-   * detectors.
+   * detectors.  Indexing starts at 1.  Index 0 contains 
+   * garbage values.
    * 
    * @see InstrumentSection#nDet
    */
@@ -63,7 +71,8 @@ public class DaeSection {
   /**
    * Position in module for each detector.  The length of 
    * this array equals 1 more than the number of 
-   * detectors.
+   * detectors.  Indexing starts at 1.  Index 0 contains 
+   * garbage values.
    * 
    * @see InstrumentSection#nDet
    */
@@ -71,7 +80,8 @@ public class DaeSection {
   /**
    * The module number for each detector.  The length of 
    * this array equals 1 more than the number of 
-   * detectors.
+   * detectors.  Indexing starts at 1.  Index 0 contains 
+   * garbage values.
    * 
    * @see InstrumentSection#nDet
    */
@@ -79,7 +89,8 @@ public class DaeSection {
   /**
    * Time regime number table.  The length of 
    * this array equals 1 more than the number of 
-   * detectors.
+   * detectors.  Indexing starts at 1.  Index 0 contains 
+   * garbage values.
    * 
    * @see InstrumentSection#nDet
    */
@@ -87,7 +98,8 @@ public class DaeSection {
   /**
    * 'User detector number' for each detector.  The length of 
    * this array equals 1 more than the number of 
-   * detectors.
+   * detectors.  Indexing starts at 1.  Index 0 contains 
+   * garbage values.
    * 
    * @see InstrumentSection#nDet
    */
@@ -211,6 +223,11 @@ public class DaeSection {
     try {
       rawFile.seek( startAddress );
       version                  = Header.readUnsignedInteger( rawFile, 4 );
+      if (version != 2)
+         System.out.println("WARNING:  Unrecognized Data Acquisition Electronics version number."
+         +"\n          Version found = "+version
+         +"\n          Version numbers corresponding to data that can be processed  = 2"
+         +"\n          Data may be incorrectly read and/or interpreted from the file.");
       wordLength               = Header.readUnsignedInteger( rawFile, 4 );
       lengthOfBulkStore        = Header.readUnsignedInteger( rawFile, 4 );
       pppMinValue              = Header.readUnsignedInteger( rawFile, 4 );
@@ -346,4 +363,400 @@ public class DaeSection {
     	ex.printStackTrace();
     }
   }
+  
+   /**
+    * Get the crate number for monitor 1.
+    * @return The crate number for monitor 1 (4 bits are used to hold the data).
+    */
+   public int getCrateNumForMonitor1()
+   {
+      return crateMon1;
+   }
+
+   /**
+    * Get the crate number for monitor 2.
+    * @return The crate number for monitor 2 (4 bits are used to hold the data).
+    */
+   public int getCrateNumForMonitor2()
+   {
+      return crateMon2;
+   }
+
+   /**
+    * Get the crate number at detector <code>detectorNum</code>.  
+    * Note:  The first detector is at <code>detectorNum</code>=1 not 0.
+    * @param detectorNum The number of the detector you are 
+    * refering you.  Note:  for <code>detectorNum</code> to be 
+    * valid, 1 <= <code>detectorNum</code> <= 
+    * {@link InstrumentSection#getNumberOfDetectors() 
+    * getNumberOfDetectors()}.
+    * @return The crate number for the specified detector or -1 if 
+    * <code>detectorNum</code> is invalid.
+    */
+   public int getCrateNumForDetector(int detectorNum)
+   {
+      if (detectorNum>=1 && detectorNum<crateNum.length)
+         return crateNum[detectorNum];
+      else
+         return -1;
+   }
+
+   /**
+    * Get the detector number for monitor 1.
+    * @return The detector number for monitor 1 (12 bits are used to store this data).
+    */
+   public int getDetectorNumForMonitor1()
+   {
+      return detectorMon1;
+   }
+
+   /**
+    * Get the detector number for monitor 2.
+    * @return The detector number for monitor 2 (12 bits are used to store this data).
+    */
+   public int getDetectorNumForMonitor2()
+   {
+      return detectorMon2;
+   }
+
+   /**
+    * Get the first external veto.
+    * @return The first external veto (aka veto 0).  An external veto 
+    * is a pulse put into the system to tell it to immediately start or 
+    * stop collecting data.  Possible values:<br>
+    * 0 = disable<br>
+    * 1 = enable<br>
+    */
+   public int getFirstExternalVeto()
+   {
+      return externalVeto1;
+   }
+
+   /**
+    * Get the second external veto.
+    * @return The second external veto (aka veto 1).  An external veto 
+    * is a pulse put into the system to tell it to immediately start or 
+    * stop collecting data.  Possible values:<br>
+    * 0 = disable<br>
+    * 1 = enable<br>
+    */
+   public int getSecondExternalVeto()
+   {
+      return externalVeto2;
+   }
+
+   /**
+    * Get the third external veto.
+    * @return The third external veto (aka veto 2).  An external veto 
+    * is a pulse put into the system to tell it to immediately start or 
+    * stop collecting data.  Possible values:<br>
+    * 0 = disable<br>
+    * 1 = enable<br>
+    */
+   public int getThirdExternalVeto()
+   {
+      return externalVeto3;
+   }
+
+   /**
+    * Get the external neutron gate (t1).
+    * @return The external neutron gate (t1).  
+    * The value is in microseconds.
+    */
+   public int getExtNeutronGateT1()
+   {
+      return extNeutGateT1;
+   }
+
+   /**
+    * Get the external neutron gate (t2).
+    * @return The external neutron gate (t2).  
+    * The value is in microseconds.
+    */
+   public int getExtNeutronGateT2()
+   {
+      return extNeutGateT2;
+   }
+
+   /**
+    * Get the frame synch delay.
+    * @return The frame synch delay (in 4 microsecond steps).
+    */
+   public int getFrameSyncDelay()
+   {
+      return frameSyncDelay;
+   }
+
+   /**
+    * Get the frame synch origin.
+    * @return The frame synch origin (0:none, 1:external, 2:internal).
+    */
+   public int getFrameSyncOrigin()
+   {
+      return frameSyncOrigin;
+   }
+
+   /**
+    * Get the good external neutron total (high 32 bits).
+    * @return The good external neutron total (high 32 bits).
+    */
+   public int getGoodExtNeutronTotalHigh32()
+   {
+      return goodExtNeutTotalHigh32;
+   }
+
+   /**
+    * Get the good external neutron total (low 32 bits).
+    * @return The good external neutron total (low 32 bits).
+    */
+   public int getGoodExtNeutronTotalLow32()
+   {
+      return goodExtNeutTotalLow32;
+   }
+
+   /**
+    * Get the good PPP total (high 32 bits).
+    * @return The good PPP total (high 32 bits).
+    */
+   public int getGoodPPPTotalHigh32()
+   {
+      return goodPppTotalHigh32;
+   }
+
+   /**
+    * Get the good PPP total (low 32 bits).
+    * @return The good PPP total (low 32 bits).
+    */
+   public int getGoodPPPTotalLow32()
+   {
+      return goodPppTotalLow32;
+   }
+
+   /**
+    * Get the position in the module for detector <code>detectorNum</code>.  
+    * Note:  The first detector is at <code>detectorNum</code>=1 not 0.
+    * @param detectorNum The number of the detector you are 
+    * refering you.  Note:  for <code>detectorNum</code> to be 
+    * valid, 1 <= <code>detectorNum</code> <= 
+    * {@link InstrumentSection#getNumberOfDetectors() 
+    * getNumberOfDetectors()}.
+    * @return The position in the module for the specified detector or -1 if 
+    * <code>detectorNum</code> is invalid.
+    */
+   public int getInputNumForDetector(int detectorNum)
+   {
+      if (detectorNum>=1 && detectorNum<inputNum.length)
+         return inputNum[detectorNum];
+      else
+         return -1;
+   }
+
+   /**
+    * Get the length of bulk store memory.
+    * @return The length of bulk store memory (in bytes).
+    */
+   public int getLengthOfBulkStore()
+   {
+      return lengthOfBulkStore;
+   }
+
+   /**
+    * Get the mask for monitor 1.
+    * @return The mask for monitor 1.  
+    * As written in libget.txt (the file describing the 
+    * layout of ISIS RAW files), the data is written 
+    * in the form c4:m4:d12.  It is hypothesized that 
+    * this means that the first 4 bits hold the crate 
+    * data, the next 4 bits hold the module data, and 
+    * the next 12 bits hold the detector data.
+    */
+   public int getMaskForMonitor1()
+   {
+      return maskMon1;
+   }
+
+   /**
+    * Get the mask for monitor 2.
+    * @return The mask for monitor 2.  
+    * As written in libget.txt (the file describing the 
+    * layout of ISIS RAW files), the data is written 
+    * in the form c4:m4:d12.  It is hypothesized that 
+    * this means that the first 4 bits hold the crate 
+    * data, the next 4 bits hold the module data, and 
+    * the next 12 bits hold the detector data.
+    */
+   public int getMaskForMonitor2()
+   {
+      return maskMon2;
+   }
+
+   /**
+    * Get the module for monitor 1.
+    * @return The module for monitor 1 
+    * (4 bits are used to store this information).
+    */
+   public int getModuleForMonitor1()
+   {
+      return moduleMon1;
+   }
+
+   /**
+    * Get the module for monitor 2.
+    * @return The module for monitor 2.  
+    * (4 bits are used to store this information).
+    */
+   public int getModuleForMonitor2()
+   {
+      return moduleMon2;
+   }
+
+   /**
+    * Get the module number at detector <code>detectorNum</code>.  
+    * Note:  The first detector is at <code>detectorNum</code>=1 not 0.
+    * @param detectorNum The number of the detector you are 
+    * refering you.  Note:  for <code>detectorNum</code> to be 
+    * valid, 1 <= <code>detectorNum</code> <= 
+    * {@link InstrumentSection#getNumberOfDetectors() 
+    * getNumberOfDetectors()}.
+    * @return The module number for the specified detector or -1 if 
+    * <code>detectorNum</code> is invalid.
+    */
+   public int getModuleNumForDetector(int detectorNum)
+   {
+      if (detectorNum>=1 && detectorNum<moduleNum.length)
+         return moduleNum[detectorNum];
+      else
+         return -1;
+   }
+
+   /**
+    * Get the PPP minimum value.
+    * @return The PPP minimum value.
+    */
+   public int getPPPMinValue()
+   {
+      return pppMinValue;
+   }
+
+   /**
+    * Get the raw external neutron total (high 32 bits).
+    * @return Get the raw external neutron total (high 32 bits).
+    */
+   public int getRawExtNeutronTotalHigh32()
+   {
+      return rawExtNeutTotalHigh32;
+   }
+
+   /**
+    * Get the raw external neutron total (low 32 bits).
+    * @return The raw external neutron total (low 32 bits).
+    */
+   public int getRawExtNeutronTotalLow32()
+   {
+      return rawExtNeutTotalLow32;
+   }
+
+   /**
+    * Get the raw PPP total (high 32 bits).
+    * @return The raw PPP total (high 32 bits).
+    */
+   public int getRawPPPTotalHigh32()
+   {
+      return rawPppTotalHigh32;
+   }
+
+   /**
+    * Get the raw PPP total (low 32 bits).
+    * @return The raw PPP total (low 32 bits).
+    */
+   public int getRawPPPTotalLow32()
+   {
+      return rawPppTotalLow32;
+   }
+
+   /**
+    * Get the secondary master pulse.
+    * @return The secondary master pulse.  
+    * Possible values:<br>
+    * 0 = enable<br>
+    * 1 = disenable<br>
+    */
+   public int getSecondaryMasterPulse()
+   {
+      return secondaryMasterPulse;
+   }
+
+   /**
+    * Get the time regime number for detector <code>detectorNum</code>.  
+    * Note:  The first detector is at <code>detectorNum</code>=1 not 0.
+    * @param detectorNum The number of the detector you are 
+    * refering you.  Note:  for <code>detectorNum</code> to be 
+    * valid, 1 <= <code>detectorNum</code> <= 
+    * {@link InstrumentSection#getNumberOfDetectors() 
+    * getNumberOfDetectors()}.
+    * @return The time regime number for the specified detector or -1 if 
+    * <code>detectorNum</code> is invalid.
+    */
+   public int getTimeRegimeTableForDetector(int detectorNum)
+   {
+      if (detectorNum>=1 && detectorNum<timeRegimeTable.length)
+         return timeRegimeTable[detectorNum];
+      else
+         return -1;
+   }
+
+   /**
+    * Get the total good events (high 32 bits).
+    * @return The total good events (high 32 bits).
+    */
+   public int getTotalGoodEventsHigh32()
+   {
+      return totalGoodEventsHigh32;
+   }
+
+   /**
+    * Get the total good events (low 32 bits).
+    * @return The total good events (low 32 bits).
+    */
+   public int getTotalGoodEventsLow32()
+   {
+      return totalGoodEventsLow32;
+   }
+
+   /**
+    * Get the user detector number for detector <code>detectorNum</code>.  
+    * Note:  The first detector is at <code>detectorNum</code>=1 not 0.
+    * @param detectorNum The number of the detector you are 
+    * refering you.  Note:  for <code>detectorNum</code> to be 
+    * valid, 1 <= <code>detectorNum</code> <= 
+    * {@link InstrumentSection#getNumberOfDetectors() 
+    * getNumberOfDetectors()}.
+    * @return The user detector number for the specified detector or -1 if 
+    * <code>detectorNum</code> is invalid.
+    */
+   public int getUserDetectorNumForDetector(int detectorNumber)
+   {
+      if (detectorNumber>=1 && detectorNumber<userDetectorNumber.length)
+         return userDetectorNumber[detectorNumber];
+      else
+         return -1;
+   }
+
+   /**
+    * Get the DAE section version number.
+    * @return The DAE section version number.
+    */
+   public int getVersion()
+   {
+      return version;
+   }
+
+   /**
+    * Get the word length in bulk store memory.
+    * @return The word length in bulk store memory.
+    */
+   public int getWordLength()
+   {
+      return wordLength;
+   }
 }
