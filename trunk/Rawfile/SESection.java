@@ -17,7 +17,8 @@
  * along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307, USA.
  *
- * Contact : Ruth Mikkelson <mikkelsonr@uwstout.edu>
+ * Contact : Dennis Mikkelson <mikkelsond@uwstout.edu>
+ *           Dominic Kramer <kramerd@uwstout.edu>
  *           Department of Mathematics, Statistics and Computer Science
  *           University of Wisconsin-Stout
  *           Menomonie, WI 54751, USA
@@ -101,7 +102,7 @@ public class SESection
    /** Can number density (atoms.A-3). */
    protected float canNumDensity;
    /** Sample name or chemical formula. */
-   protected String sampleName;
+   protected String sampleName = new String();
    /** Number of SE parameters. */
    protected int numParams;
    /**
@@ -111,6 +112,9 @@ public class SESection
    protected SEParameterBlock[] paramBlockArray = new SEParameterBlock[0];
    /** The offset in the file where this data starts. */
    protected int startAddress;
+   
+   /** Default constructor. */
+   public SESection() {}
    
    /**
    *  Reads the SE section in the file specified and creates an SESection object.  
@@ -175,50 +179,47 @@ public class SESection
    */
    public static void main(String[] args)
    {
-      if (args.length > 0)
-      {
-         try
-         {
-            RandomAccessFile file = new RandomAccessFile(args[0],"r");
-            Header header = new Header(file);
-            SESection section = new SESection(file,header);
+   	 try
+   	 {
+       for (int fileNum=0; fileNum<args.length; fileNum++)
+	   {
+	     System.out.println("--------------------------------------------------------------------------------");
+	     System.out.println("Testing file "+args[fileNum]);
+	     System.out.println("--------------------------------------------------------------------------------");
+         RandomAccessFile file = new RandomAccessFile(args[fileNum],"r");
+         Header header = new Header(file);
+         SESection section = new SESection(file,header);
              
-            System.out.println("SE section version number="+section.version);
-            System.out.println("Position of sample changer="+section.posSampleChamber);
-            System.out.println("Sample type="+section.sampleType);
-            System.out.println("Sample geometry="+section.sampleGeometry);
-            System.out.println("Sample thickness normal to sample="+section.sampleThickness);
-            System.out.println("Sample height="+section.sampleHeight);
-            System.out.println("Sample width="+section.sampleWidth);
-            System.out.println("Omega sample angle="+section.omega);
-            System.out.println("Psi sample angle="+section.psi);
-            System.out.println("Phi sample angle="+section.phi);
-            System.out.println("Scat. Geom.="+section.scatGeom);
-            System.out.println("Sample sCOH="+section.sample_sCOH);
-            System.out.println("Sample sINC="+section.sample_sINC);
-            System.out.println("Sample sABS="+section.sample_sABS);
-            System.out.println("Sample number density="+section.sampleNumDensity);
-            System.out.println("Can wall thickness="+section.canWallThickness);
-            System.out.println("Can sCOH="+section.can_sCOH);
-            System.out.println("Can sINC="+section.can_sINC);
-            System.out.println("Can sABS="+section.can_sABS);
-            System.out.println("Can number density="+section.canNumDensity);
-            System.out.println("Sample name or chemical formula="+section.sampleName);
-            System.out.println("Number of SE parameters="+section.numParams);
+         System.out.println("SE section version number="+section.version);
+         System.out.println("Position of sample changer="+section.posSampleChamber);
+         System.out.println("Sample type="+section.sampleType);
+         System.out.println("Sample geometry="+section.sampleGeometry);
+         System.out.println("Sample thickness normal to sample="+section.sampleThickness);
+         System.out.println("Sample height="+section.sampleHeight);
+         System.out.println("Sample width="+section.sampleWidth);
+         System.out.println("Omega sample angle="+section.omega);
+         System.out.println("Psi sample angle="+section.psi);
+         System.out.println("Phi sample angle="+section.phi);
+         System.out.println("Scat. Geom.="+section.scatGeom);
+         System.out.println("Sample sCOH="+section.sample_sCOH);
+         System.out.println("Sample sINC="+section.sample_sINC);
+         System.out.println("Sample sABS="+section.sample_sABS);
+         System.out.println("Sample number density="+section.sampleNumDensity);
+         System.out.println("Can wall thickness="+section.canWallThickness);
+         System.out.println("Can sCOH="+section.can_sCOH);
+         System.out.println("Can sINC="+section.can_sINC);
+         System.out.println("Can sABS="+section.can_sABS);
+         System.out.println("Can number density="+section.canNumDensity);
+         System.out.println("Sample name or chemical formula="+section.sampleName);
+         System.out.println("Number of SE parameters="+section.numParams);
     
-            for (int i=0; i<section.paramBlockArray.length; i++)
-               System.out.println(section.paramBlockArray[i].toString());
-	       
-            System.out.println("Section completed.");
-         }
-         catch (FileNotFoundException e)
-         {
-            System.out.println("The file "+args[0]+" could not be found.");
-         }
+         for (int i=0; i<section.paramBlockArray.length; i++)
+            System.out.println(section.paramBlockArray[i].toString());
+	   }
       }
-      else
+      catch (FileNotFoundException e)
       {
-         System.out.println("Please specify a RAW file to read as a command line argument.");
+         e.printStackTrace();
       }
    }
    
