@@ -139,7 +139,7 @@ public class Header {
   }
 
   // ---------------------------- ReadVAXReal4 ----------------------
-  protected double ReadVAXReal4( RandomAccessFile inFile )
+  protected static double ReadVAXReal4( RandomAccessFile inFile )
     throws IOException {
     int    length   = 4;
     long   hi_mant;
@@ -179,7 +179,7 @@ public class Header {
   }
 
   // --------------------------- readUnsignedInteger -------------------
-  protected int readUnsignedInteger( RandomAccessFile inFile, int length )
+  protected static int readUnsignedInteger( RandomAccessFile inFile, int length )
     throws IOException {
     byte[] b          = new byte[length];
     int[]  c          = new int[length];
@@ -204,7 +204,7 @@ public class Header {
   }
 
   // --------------------------- readUnsignedInteger -------------------
-  protected long readUnsignedLong( RandomAccessFile inFile, int length )
+  protected static long readUnsignedLong( RandomAccessFile inFile, int length )
     throws IOException {
     byte[] b          = new byte[length];
     int[]  c          = new int[length];
