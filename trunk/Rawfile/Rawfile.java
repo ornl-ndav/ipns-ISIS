@@ -30,7 +30,12 @@
  *
  * For further information, see <http://www.pns.anl.gov/ISAW/>
  * $Log$
+ * Revision 1.14  2004/07/12 19:06:31  kramer
+ * Added methods to get the min and max regime number.  Improved the main method
+ * (to be used for testing purposes).
+ *
  * Revision 1.13  2004/07/02 18:43:47  kramer
+ *
  * Fixed method LeaveOpen() to use 'filename' as the name of the file to
  * open.  Commented out the field rawfileName because it was never used.
  * Now when the rawfile is opened it is opened as read only.
@@ -92,8 +97,7 @@
  
 package ISIS.Rawfile;
 
-import java.io.IOException;
-import java.io.RandomAccessFile;
+import java.io.*;
 import java.util.Vector;
 
 import IPNS.Runfile.InstrumentType;
@@ -165,7 +169,7 @@ public class Rawfile {
       instSect   = new InstrumentSection( rawfile, header );
       seSect = new SESection(rawfile,header);
       daeSect    = new DaeSection( rawfile, header, instSect.getNumberOfDetectors() );
-      timeSect   = new TimeSection( rawfile, header );
+      timeSect   = new TimeSection( rawfile, header, daeSect );
       dataSect   = new DataSection( rawfile, header, timeSect );
     } catch( IOException ex ) { ex.printStackTrace(); }
   }
@@ -364,6 +368,24 @@ public class Rawfile {
      }
      else
        return -1;
+  }
+  
+  /**
+   * Get the smallest regime number.
+   * @return The smallest regime number.
+   */
+  public int MinRegimeNumber()
+  {
+     return timeSect.getMinimumRegimeNumber();
+  }
+  
+  /**
+   * Get the largest regime number.
+   * @return The largest regime number.
+   */
+  public int MaxRegimeNumber()
+  {
+     return timeSect.getMaximumRegimeNumber();
   }
   
   /**
@@ -756,55 +778,136 @@ public class Rawfile {
   /**
    * Testbed
    *
-   * @param args unused.
+   * @param args If args[0]="1" This method will automatically make 
+   * a printout of the ISIS rawfile(s) supplied as parameters.<br><br>
+   * If args[0]="2" This method will test the ability of this class to 
+   * get information for each time regime.<br><br>
+   * If neither one of these conditions is satisfied, a message will 
+   * be printed to standard output specifying the above options.  Then, 
+   * the user will be prompted for what he/she wants to do.<br><br>
+   * All other values in args should be the pathname to an ISIS raw file.
    */
   public static void main(String[] args)
   {
-  	for (int fileNum=0; fileNum<args.length; fileNum++)
-  	{
-      Rawfile rawfile = new Rawfile(args[fileNum]);
-      String[] fileArr = new String[1];
-         fileArr[0] = args[fileNum];
-      System.out.println("Processing ISIS RAW file:  "+rawfile.filename);
+    System.out.println("What would you like to do?");
+    System.out.println("1:  Make a printout of the ISIS rawfile(s)");
+    System.out.println("    supplied as arguments.");
+    System.out.println("2:  Test the ability of this class to get ");
+    System.out.println("    information for each time regime.");
+    
+    int answer = -1;
+    if (args[0].trim().equals("1"))
+    {
+       answer = 1;
+       if (args.length>=2)
+       {
+          String[] temp = new String[args.length-1];
+          System.arraycopy(args,1,temp,0,temp.length);
+          args = temp;
+       }
+    }
+    else if (args[0].trim().equals("2"))
+    {
+       answer = 2;
+       if (args.length>=2)
+       {
+          String[] temp = new String[args.length-1];
+          System.arraycopy(args,1,temp,0,temp.length);
+          args = temp;
+       }
+    }
+    else
+    {
+       try { answer = (new Integer((new BufferedReader(new InputStreamReader(System.in))).readLine())).intValue(); }
+       catch (IOException e) { e.printStackTrace(); }
+    }
+    
+    System.out.println("Processing request "+answer);
+    
+    if (answer==1)
+    {
+       for (int fileNum=0; fileNum<args.length; fileNum++)
+       {
+          Rawfile rawfile = new Rawfile(args[fileNum]);
+          String[] fileArr = new String[1];
+          fileArr[0] = args[fileNum];
+          System.out.println("Processing ISIS RAW file:  "+rawfile.filename);
       
-      System.out.println("*******************************************************");
-      System.out.println("HEADER Section");
-      System.out.println("*******************************************************");
-      Header.main(fileArr);
+          System.out.println("*******************************************************");
+          System.out.println("HEADER Section");
+          System.out.println("*******************************************************");
+          //Header.main(fileArr);
 
-      System.out.println("*******************************************************");
-      System.out.println("RUN Section");
-      System.out.println("*******************************************************");
-      RunSection.main(fileArr);
+          System.out.println("*******************************************************");
+          System.out.println("RUN Section");
+          System.out.println("*******************************************************");
+          //RunSection.main(fileArr);
 
-      System.out.println("*******************************************************");
-      System.out.println("INSTRUMENT Section");
-      System.out.println("*******************************************************");
-      InstrumentSection.main(fileArr);
+          System.out.println("*******************************************************");
+          System.out.println("INSTRUMENT Section");
+          System.out.println("*******************************************************");
+          //InstrumentSection.main(fileArr);
 
-      System.out.println("*******************************************************");
-      System.out.println("SE Section");
-      System.out.println("*******************************************************");
-      SESection.main(fileArr);
+          System.out.println("*******************************************************");
+          System.out.println("SE Section");
+          System.out.println("*******************************************************");
+          //SESection.main(fileArr);
 
-      System.out.println("*******************************************************");
-      System.out.println("DAE Section");
-      System.out.println("*******************************************************");
-      DaeSection.main(fileArr);
+          System.out.println("*******************************************************");
+          System.out.println("DAE Section");
+          System.out.println("*******************************************************");
+          DaeSection.main(fileArr);
       
-      System.out.println("*******************************************************");
-      System.out.println("TCB Section");
-      System.out.println("*******************************************************");
-      TimeSection.main(fileArr);
+          System.out.println("*******************************************************");
+          System.out.println("TCB Section");
+          System.out.println("*******************************************************");
+          TimeSection.main(fileArr);
      
-      System.out.println("*******************************************************");
-      System.out.println("DATA Section");
-      System.out.println("*******************************************************");
-      DataSection.main(fileArr);
+          System.out.println("*******************************************************");
+          System.out.println("DATA Section");
+          System.out.println("*******************************************************");
+          //DataSection.main(fileArr);
       
-      System.out.println("##########################################");
+          System.out.println("##########################################");
+       }
   	}
+    else if (answer==2)
+    {
+       for (int fileNum=0; fileNum<args.length; fileNum++)
+       {
+          try
+          {
+             System.out.println("Analyzing file "+args[fileNum]);
+             Rawfile rawfile = new Rawfile(args[fileNum]);
+             int min = rawfile.MinRegimeNumber();
+             int max = rawfile.MaxRegimeNumber();
+             
+             System.out.println("  Minimum Regime Number="+min);
+             System.out.println("  Maximum Regime Number="+max);
+             System.out.println();
+             
+             for (int i=min; i<=max; i++)
+             {
+                System.out.println("  Printing information for time regime "+i);
+                System.out.println("  ======================================");
+                System.out.println("    Time Channel Boundaries:  ");
+                System.out.println("  ------------------------");
+                System.out.print("    ");
+                float[] tcbArr = rawfile.TimeChannelBoundariesForRegime(i);
+                for (int j=0; j<tcbArr.length; j++)
+                   System.out.print(tcbArr[j]+" ");
+                System.out.println();
+                System.out.println("    The number of spectra in this regime equals "+rawfile.getNumSpectraForRegime(i));
+             }
+          }
+          catch (Throwable t) { t.printStackTrace(); }
+          System.out.println("-->Done with "+args[fileNum]);
+       }
+    }
+    else
+       System.out.println("Invalid request:  "+answer);
    
+    System.out.println("Done");
   }
   
   //these are all of the old methods from this file
