@@ -1,3 +1,35 @@
+/*
+ * File:  Rawfile.java
+ *
+ * Copyright (C) 2004 J.P. Hammonds
+ *
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU General Public License
+ * as published by the Free Software Foundation; either version 2
+ * of the License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this library; if not, write to the Free Software
+ * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307, USA.
+ *
+ * Contact : Dennis Mikkelson <mikkelsond@uwstout.edu>
+ *           Dominic Kramer <kramerd@uwstout.edu>
+ *           Department of Mathematics, Statistics and Computer Science
+ *           University of Wisconsin-Stout
+ *           Menomonie, WI 54751, USA
+ *
+ * This work was supported by the National Science Foundation under grant
+ * number DMR-0218882, and by the Intense Pulsed Neutron Source Division
+ * of Argonne National Laboratory, Argonne, IL 60439-4845, USA.
+ *
+ * For further information, see <http://www.pns.anl.gov/ISAW/>
+ */
+
 package ISIS.Rawfile;
 
 import java.io.*;
@@ -15,7 +47,14 @@ import java.io.*;
 
 /*
  * $Log$
+ * Revision 1.5  2004/06/16 15:20:46  kramer
+ * Added:
+ *        The GNU license header
+ *        an SESection field
+ * The main method was also improved.
+ *
  * Revision 1.4  2004/06/15 20:08:28  kramer
+ *
  * Fixed indents (the code was indented too far into the page).
  *
  * Revision 1.2  2004/04/30 00:16:51  bouzekc
@@ -30,6 +69,7 @@ public class Rawfile {
   protected Header            header    = new Header(  );
   protected RunSection        runSect   = new RunSection(  );
   protected InstrumentSection instSect  = new InstrumentSection(  );
+  protected SESection seSect = new SESection();
   protected DaeSection        daeSect   = new DaeSection(  );
   protected TimeSection       timeSect  = new TimeSection(  );
   protected DataSection       dataSect  = new DataSection(  );
@@ -55,6 +95,7 @@ public class Rawfile {
       header     = new Header( rawfile );
       runSect    = new RunSection( rawfile, header );
       instSect   = new InstrumentSection( rawfile, header );
+      seSect = new SESection(rawfile,header);
       daeSect    = new DaeSection( rawfile, header, instSect.nDet );
       timeSect   = new TimeSection( rawfile, header );
       dataSect   = new DataSection( rawfile, header, timeSect );
@@ -354,6 +395,51 @@ public class Rawfile {
    *
    * @param args unused.
    */
+  public static void main(String[] args)
+  {
+  	for (int fileNum=0; fileNum<args.length; fileNum++)
+  	{
+      Rawfile rawfile = new Rawfile(args[fileNum]);
+      String[] fileArr = new String[1];
+         fileArr[0] = args[fileNum];
+      System.out.println("Processing ISIS RAW file:  "+rawfile.filename);
+      System.out.println("    RAW File name = "+rawfile.rawfileName);
+
+      System.out.println("*******************************************************");
+      System.out.println("RUN Section");
+	  System.out.println("*******************************************************");
+	  RunSection.main(fileArr);
+
+	  System.out.println("*******************************************************");
+      System.out.println("INSTRUMENT Section");
+      System.out.println("*******************************************************");
+      InstrumentSection.main(fileArr);
+
+	  System.out.println("*******************************************************");
+	  System.out.println("SE Section");
+	  System.out.println("*******************************************************");
+	  SESection.main(fileArr);
+	  
+	  System.out.println("*******************************************************");
+      System.out.println("DAE Section");
+      System.out.println("*******************************************************");
+      DaeSection.main(fileArr);
+      
+	  System.out.println("*******************************************************");
+     System.out.println("TCB Section");
+     System.out.println("*******************************************************");
+     TimeSection.main(fileArr);
+     
+	  System.out.println("*******************************************************");
+      System.out.println("DATA Section");
+      System.out.println("*******************************************************");
+      DataSection.main(fileArr);
+      
+      System.out.println("##########################################");
+  	}
+  }
+  
+  /*
   public static void main( String[] args ) {
     Rawfile file = new Rawfile( args[0] );
 
@@ -412,6 +498,7 @@ public class Rawfile {
     System.out.println( file.UserName(  ) );
     file.Close(  );
   }
+*/
 
   /**
    * @return A clone of the integer array holding the number of spectra.
