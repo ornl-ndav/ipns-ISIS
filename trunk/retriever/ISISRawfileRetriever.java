@@ -30,6 +30,10 @@
  * For further information, see <http://www.pns.anl.gov/ISAW/>
  *
  * $Log$
+ * Revision 1.2  2004/04/30 00:21:26  bouzekc
+ * Commented out the adding of the total count attribute, as it is likely
+ * incorrect.
+ *
  * Revision 1.1  2004/04/30 00:16:09  bouzekc
  * Added to CVS.
  *
@@ -203,8 +207,8 @@ public class ISISRawfileRetriever extends Retriever {
         Attribute.NUMBER_OF_PULSES, rawfile.GoodProtonCharge(  ) ) );
 
     //total count = total proton charge?
-    db.setAttribute( 
-      new FloatAttribute( Attribute.TOTAL_COUNT, rawfile.TotalProtonCharge(  ) ) );
+    //    db.setAttribute( 
+    //      new FloatAttribute( Attribute.TOTAL_COUNT, rawfile.TotalProtonCharge(  ) ) );
   }
 
   /**
