@@ -30,7 +30,15 @@
  *
  * For further information, see <http://www.pns.anl.gov/ISAW/>
  * $Log$
+ * Revision 1.12  2004/07/12 19:10:53  kramer
+ * Added a field of type IRegimeInfo which is used to get the mimimum regime
+ * number.  Added a method to get a copy of the time regime table.  Modified the
+ * getMinimumRegimeNumber() method to use the IRegimeInfo object to get the
+ * minimum regime number.  Removed the methods getMaximumRegimeNumber() and
+ * isAValidRegimeNumber().  The TimeSection class contains these methods.
+ *
  * Revision 1.11  2004/07/07 18:54:11  kramer
+ *
  * Added methods to get the minimum and maximum regime numbers as recorded in
  * the rawfile.  Also added a method to determine if a given integer is a valid
  * regime number.
@@ -186,10 +194,10 @@ public class DaeSection {
   /** Word length in bulk store memory. */
   private int   wordLength;
   
-  /** The smallest regime number. */
-  private int minRegimeNumber;
-  /** The largest regime number. */
-  private int maxRegimeNumber;
+  /**
+   * Used to determine regime information.
+   */
+  private IRegimeInfo regimeInfoInformant;
 
   //~ Constructors -------------------------------------------------------------
 
@@ -234,8 +242,7 @@ public class DaeSection {
       version = -1;
       wordLength = -1;
       
-      minRegimeNumber = -1;
-      maxRegimeNumber = -1;
+      regimeInfoInformant = new UnknownRegimeInfoInformant(this);
   }
 
   /**
@@ -319,6 +326,19 @@ public class DaeSection {
     } catch( IOException ex ) { ex.printStackTrace(); }
 
     //looks complete based on libget.txt
+    String type = header.getInstrumentType();
+    if (type.trim().equalsIgnoreCase("SXD"))
+       regimeInfoInformant = new SXDRegimeInfoInformant();
+    else if (type.trim().equalsIgnoreCase("LOQ"))
+       regimeInfoInformant = new LOQRegimeInfoInformant();
+    else if (type.trim().equalsIgnoreCase("HRP"))
+       regimeInfoInformant = new HRPRegimeInfoInformant();
+    else
+    {
+       System.out.println("<DaeSection.java>  Warning:  Unknown instrument type:  "+type);
+       System.out.println("  Using an UnknownRegimeInfoInformant to determine time regime information.");
+       regimeInfoInformant = new UnknownRegimeInfoInformant(this);
+    }
   }
 
   //~ Methods ------------------------------------------------------------------
@@ -339,7 +359,7 @@ public class DaeSection {
           Header            header = new Header( rawFile );
           InstrumentSection is     = new InstrumentSection( rawFile, header );
           DaeSection        ds     = new DaeSection( rawFile, header, is.getNumberOfDetectors() );
-
+          
           System.out.println( "versionNumber:        " + ds.version );
           System.out.println( "wordLength:           " + ds.wordLength );
           System.out.println( "lengthOfBulkStore:    " + ds.lengthOfBulkStore );
@@ -375,6 +395,8 @@ public class DaeSection {
           System.out.println( "externalVeto1:           " + ds.externalVeto1 );
           System.out.println( "externalVeto2:           " + ds.externalVeto2 );
           System.out.println( "externalVeto3:           " + ds.externalVeto3 );
+          System.out.println( "minimum valid\n" +
+                              "  regime number:         " + ds.getMinimumRegimeNumber() );
           System.out.println( 
             "Detector   Crate   Module  Input   timeRegime  userDetectorNum" );
 
@@ -733,6 +755,17 @@ public class DaeSection {
       else
          return -1;
    }
+   
+   /**
+    * Get a copy of the time regime table.
+    * @return A copy of the time regime table.
+    */
+   public int[] getTimeRegimeTable()
+   {
+      int[] newArr = new int[timeRegimeTable.length-1];
+      System.arraycopy(timeRegimeTable,1,newArr,0,newArr.length);
+      return newArr;
+   }
 
    /**
     * Get the total good events (high 32 bits).
@@ -790,69 +823,10 @@ public class DaeSection {
    }
    
    /**
-    * Get the smallest regime number.
-    * @return The smallest regime number or 
-    * -1 if it cannot be determined.
+    * Returns the minimum valid regime number.
     */
    public int getMinimumRegimeNumber()
    {
-      if (minRegimeNumber != -1)
-         return minRegimeNumber;
-      else
-      {
-         if (timeRegimeTable.length==2)
-         {
-            int min = timeRegimeTable[1];
-            for (int i=2; i<timeRegimeTable.length; i++)
-               min = Math.min(min,timeRegimeTable[i]);
-            minRegimeNumber = min;
-            return min;
-         }
-         else
-            return -1;
-      }
-   }
-   
-   /**
-    * Get the largest regime number.
-    * @return The largest regime number or 
-    * -1 if it cannot be determined.
-    */
-   public int getMaximumRegimeNumber()
-   {
-      if (maxRegimeNumber != -1)
-         return maxRegimeNumber;
-      else
-      {
-         if (timeRegimeTable.length==2)
-         {
-            int max = timeRegimeTable[1];
-            for (int i=2; i<timeRegimeTable.length; i++)
-               max = Math.max(max,timeRegimeTable[i]);
-            maxRegimeNumber = max;
-            return max;
-         }
-         else
-            return -1;
-      }
-   }
-   
-   /**
-    * Determine if the given integer is a 
-    * valid regime number.
-    * @return True if the integer is a valid 
-    * regime number and false otherwise.  This 
-    * method looks at the minimum and maximum 
-    * regime number as written in the rawfile to 
-    * determine if the specified integer is valid.
-    */
-   public boolean isAValidRegimeNumber(int num)
-   {
-      int min = getMinimumRegimeNumber();
-      int max = getMaximumRegimeNumber();
-      if (min==-1 && max==-1) //then the min and max 
-         return false;        //could not be determined
-      else
-         return (num>=min && num<=max);
+      return regimeInfoInformant.getMinRegimeNumber();
    }
 }
