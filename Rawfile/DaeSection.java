@@ -18,6 +18,7 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307, USA.
  *
  * Contact : Dennis Mikkelson <mikkelsond@uwstout.edu>
+ *           J.P. Hammonds <jphammonds@anl.gov>
  *           Dominic Kramer <kramerd@uwstout.edu>
  *           Department of Mathematics, Statistics and Computer Science
  *           University of Wisconsin-Stout
@@ -234,57 +235,70 @@ public class DaeSection {
   /**
    * Testbed.
    */
-  public static void main( String[] args ) {
-    try {
-      RandomAccessFile  rawFile = new RandomAccessFile( args[0], "r" );
-      Header            header = new Header( rawFile );
-      InstrumentSection is     = new InstrumentSection( rawFile, header );
-      DaeSection        ds     = new DaeSection( rawFile, header, is.nDet );
+  public static void main( String[] args )
+  {
+    try
+    {
+		for (int fileNum=0; fileNum<args.length; fileNum++)
+		{
+		  System.out.println("--------------------------------------------------------------------------------");
+		  System.out.println("Testing file "+args[fileNum]);
+		  System.out.println("--------------------------------------------------------------------------------");
+          RandomAccessFile  rawFile = new RandomAccessFile( args[fileNum], "r" );
+          Header            header = new Header( rawFile );
+          InstrumentSection is     = new InstrumentSection( rawFile, header );
+          DaeSection        ds     = new DaeSection( rawFile, header, is.nDet );
 
-      System.out.println( "versionNumber:        " + ds.version );
-      System.out.println( "wordLength:           " + ds.wordLength );
-      System.out.println( "lengthOfBulkStore:    " + ds.lengthOfBulkStore );
-      System.out.println( "pppMinValue:          " + ds.pppMinValue );
-      System.out.println( "goodPppTotalHigh32:   " + ds.goodPppTotalHigh32 );
-      System.out.println( "goodPppTotalLow32:   " + ds.goodPppTotalLow32 );
-      System.out.println( "rawPppTotalHigh32:   " + ds.rawPppTotalHigh32 );
-      System.out.println( "rawPppTotalLow32:   " + ds.rawPppTotalLow32 );
-      System.out.println( "goodExtNeutTotalHigh32:   " +
-        ds.goodExtNeutTotalHigh32 );
-      System.out.println( "goodExtNeutTotalLow32:   " +
-        ds.goodExtNeutTotalLow32 );
-      System.out.println( "rawExtNeutTotalHigh32:   " +
-        ds.rawExtNeutTotalHigh32 );
-      System.out.println( "rawExtNeutTotalLow32:   " + ds.rawExtNeutTotalLow32 );
-      System.out.println( "extNeutGateT1:          " + ds.extNeutGateT1 );
-      System.out.println( "extNeutGateT2:          " + ds.extNeutGateT2 );
-      System.out.println( "detectorMon1:           " + ds.detectorMon1 );
-      System.out.println( "moduleMon1:             " + ds.moduleMon1 );
-      System.out.println( "crateMon1:              " + ds.crateMon1 );
-      System.out.println( "maskMon1:               " + ds.maskMon1 );
-      System.out.println( "detectorMon2:           " + ds.detectorMon2 );
-      System.out.println( "moduleMon2:             " + ds.moduleMon2 );
-      System.out.println( "crateMon2:              " + ds.crateMon2 );
-      System.out.println( "maskMon2:               " + ds.maskMon2 );
-      System.out.println( "totalGoodEventsHigh32:  " +
-        ds.totalGoodEventsHigh32 );
-      System.out.println( "totalGoodEventsLow32:   " + ds.totalGoodEventsLow32 );
-      System.out.println( "frameSyncDelay:         " + ds.frameSyncDelay );
-      System.out.println( "frameSyncOrigin:         " + ds.frameSyncOrigin );
-      System.out.println( "secondaryMasterPulse:    " +
-        ds.secondaryMasterPulse );
-      System.out.println( "externalVeto1:           " + ds.externalVeto1 );
-      System.out.println( "externalVeto2:           " + ds.externalVeto2 );
-      System.out.println( "externalVeto3:           " + ds.externalVeto3 );
-      System.out.println( 
-        "Detector   Crate   Module  Input   timeRegime  userDetectorNum" );
+          System.out.println( "versionNumber:        " + ds.version );
+          System.out.println( "wordLength:           " + ds.wordLength );
+          System.out.println( "lengthOfBulkStore:    " + ds.lengthOfBulkStore );
+          System.out.println( "pppMinValue:          " + ds.pppMinValue );
+          System.out.println( "goodPppTotalHigh32:   " + ds.goodPppTotalHigh32 );
+          System.out.println( "goodPppTotalLow32:   " + ds.goodPppTotalLow32 );
+          System.out.println( "rawPppTotalHigh32:   " + ds.rawPppTotalHigh32 );
+          System.out.println( "rawPppTotalLow32:   " + ds.rawPppTotalLow32 );
+          System.out.println( "goodExtNeutTotalHigh32:   " +
+            ds.goodExtNeutTotalHigh32 );
+          System.out.println( "goodExtNeutTotalLow32:   " +
+            ds.goodExtNeutTotalLow32 );
+          System.out.println( "rawExtNeutTotalHigh32:   " +
+            ds.rawExtNeutTotalHigh32 );
+          System.out.println( "rawExtNeutTotalLow32:   " + ds.rawExtNeutTotalLow32 );
+          System.out.println( "extNeutGateT1:          " + ds.extNeutGateT1 );
+          System.out.println( "extNeutGateT2:          " + ds.extNeutGateT2 );
+          System.out.println( "detectorMon1:           " + ds.detectorMon1 );
+          System.out.println( "moduleMon1:             " + ds.moduleMon1 );
+          System.out.println( "crateMon1:              " + ds.crateMon1 );
+          System.out.println( "maskMon1:               " + ds.maskMon1 );
+          System.out.println( "detectorMon2:           " + ds.detectorMon2 );
+          System.out.println( "moduleMon2:             " + ds.moduleMon2 );
+          System.out.println( "crateMon2:              " + ds.crateMon2 );
+          System.out.println( "maskMon2:               " + ds.maskMon2 );
+          System.out.println( "totalGoodEventsHigh32:  " +
+            ds.totalGoodEventsHigh32 );
+          System.out.println( "totalGoodEventsLow32:   " + ds.totalGoodEventsLow32 );
+          System.out.println( "frameSyncDelay:         " + ds.frameSyncDelay );
+          System.out.println( "frameSyncOrigin:         " + ds.frameSyncOrigin );
+          System.out.println( "secondaryMasterPulse:    " +
+            ds.secondaryMasterPulse );
+          System.out.println( "externalVeto1:           " + ds.externalVeto1 );
+          System.out.println( "externalVeto2:           " + ds.externalVeto2 );
+          System.out.println( "externalVeto3:           " + ds.externalVeto3 );
+          System.out.println( 
+            "Detector   Crate   Module  Input   timeRegime  userDetectorNum" );
 
-      for( int ii = 1; ii <= is.nDet; ii++ ) {
-        System.out.println( "  " + ii + "          " + ds.crateNum[ii] +
-          "       " + ds.moduleNum[ii] + "      " + ds.inputNum[ii] +
-          "          " + ds.timeRegimeTable[ii] + "           " +
-          ds.userDetectorNumber[ii] );
-      }
-    } catch( IOException ex ) {}
+          for( int ii = 1; ii <= is.nDet; ii++ )
+          {
+            System.out.println( "  " + ii + "          " + ds.crateNum[ii] +
+              "       " + ds.moduleNum[ii] + "      " + ds.inputNum[ii] +
+              "          " + ds.timeRegimeTable[ii] + "           " +
+              ds.userDetectorNumber[ii] );
+          }
+		}
+    }
+    catch( IOException ex )
+    {
+    	ex.printStackTrace();
+    }
   }
 }

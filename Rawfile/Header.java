@@ -18,6 +18,7 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307, USA.
  *
  * Contact : Dennis Mikkelson <mikkelsond@uwstout.edu>
+ *           J.P. Hammonds <jphammonds@anl.gov>
  *           Dominic Kramer <kramerd@uwstout.edu>
  *           Department of Mathematics, Statistics and Computer Science
  *           University of Wisconsin-Stout
@@ -168,30 +169,40 @@ public class Header {
    * the rawfile to use.
    */
   public static void main( String[] args ) {
-    try {
-      RandomAccessFile rawFile = new RandomAccessFile( args[0], "r" );
-      Header           header = new Header( rawFile );
+    try
+    {
+	  for (int fileNum=0; fileNum<args.length; fileNum++)
+	  {
+	     System.out.println("--------------------------------------------------------------------------------");
+	     System.out.println("Testing file "+args[fileNum]);
+	     System.out.println("--------------------------------------------------------------------------------");
+         RandomAccessFile rawFile = new RandomAccessFile( args[fileNum], "r" );
+         Header           header = new Header( rawFile );
 
-      rawFile.close(  );
-      System.out.println( "RunID                 " + header.runID );
-      System.out.println( "UserName              " + header.userName );
-      System.out.println( "RunTitle              " + header.runTitleShort );
-      System.out.println( "StartDate             " + header.startDate );
-      System.out.println( "StartTime             " + header.startTime );
-      System.out.println( "RunDuration           " + header.runDuration );
-      System.out.println( "formatVersion   " + header.formatVersion );
-      System.out.println( "startAddressRun       " + header.startAddressRun );
-      System.out.println( "startAddressInst       " + header.startAddressInst );
-      System.out.println( "startAddressSe       " + header.startAddressSe );
-      System.out.println( "startAddressDae       " + header.startAddressDae );
-      System.out.println( "startAddressTcb       " + header.startAddressTcb );
-      System.out.println( "startAddressUser       " + header.startAddressUser );
-      System.out.println( "startAddressData       " + header.startAddressData );
-      System.out.println( "startAddressLog       " + header.startAddressLog );
-      System.out.println( "startAddressSpare       " +
-        header.startAddressSpare );
-      System.out.println( "dataFormatFlag       " + header.dataFormatFlag );
-    } catch( IOException ex ) {}
+         rawFile.close(  );
+         System.out.println( "RunID                 " + header.runID );
+         System.out.println( "UserName              " + header.userName );
+         System.out.println( "RunTitle              " + header.runTitleShort );
+         System.out.println( "StartDate             " + header.startDate );
+         System.out.println( "StartTime             " + header.startTime );
+         System.out.println( "RunDuration           " + header.runDuration );
+         System.out.println( "formatVersion   " + header.formatVersion );
+         System.out.println( "startAddressRun       " + header.startAddressRun );
+         System.out.println( "startAddressInst       " + header.startAddressInst );
+         System.out.println( "startAddressSe       " + header.startAddressSe );
+         System.out.println( "startAddressDae       " + header.startAddressDae );
+         System.out.println( "startAddressTcb       " + header.startAddressTcb );
+         System.out.println( "startAddressUser       " + header.startAddressUser );
+         System.out.println( "startAddressData       " + header.startAddressData );
+         System.out.println( "startAddressLog       " + header.startAddressLog );
+         System.out.println( "startAddressSpare       " + header.startAddressSpare );
+         System.out.println( "dataFormatFlag       " + header.dataFormatFlag );
+	  }
+    }
+    catch( IOException ex )
+    {
+    	ex.printStackTrace();
+    }
   }
 
   // ---------------------------- ReadVAXReal4 ----------------------

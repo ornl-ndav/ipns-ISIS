@@ -18,6 +18,7 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307, USA.
  *
  * Contact : Dennis Mikkelson <mikkelsond@uwstout.edu>
+ *           J.P. Hammonds <jphammonds@anl.gov>
  *           Dominic Kramer <kramerd@uwstout.edu>
  *           Department of Mathematics, Statistics and Computer Science
  *           University of Wisconsin-Stout
@@ -181,6 +182,23 @@ public class TimeSection {
     } catch( IOException ex ) {}
 
     //looks complete based on libget.txt
+
+    /*
+    System.out.println("Printing data for timeChannelParameters (a 3D array)");
+    for (int k=0; k<5;k++)
+    {
+    	System.out.println("k="+k);
+    	System.out.println();
+    	for (int j=0; j<4; j++)
+    	{
+    		System.out.println("j="+j);
+    		for (int i=0; i<numOfRegimes; i++)
+		    {
+		    	System.out.print(timeChannelParameters[i][j][k]+">>\n");
+		    }
+    	}
+    }
+    */
   }
 
   //~ Methods ------------------------------------------------------------------
@@ -203,44 +221,55 @@ public class TimeSection {
   /**
    * Testbed.
    */
-  public static void main( String[] args ) {
-    try {
-      RandomAccessFile rawFile = new RandomAccessFile( args[0], "r" );
-      Header           header = new Header( rawFile );
-      TimeSection      ts     = new TimeSection( rawFile, header );
+  public static void main( String[] args )
+  {
+    try
+    {
+      for (int fileNum=0; fileNum<args.length; fileNum++)
+      {
+      	  System.out.println("--------------------------------------------------------------------------------");
+      	  System.out.println("Testing file "+args[fileNum]);
+		  System.out.println("--------------------------------------------------------------------------------");
+	      RandomAccessFile rawFile = new RandomAccessFile( args[fileNum], "r" );
+	      Header           header = new Header( rawFile );
+	      TimeSection      ts     = new TimeSection( rawFile, header );
 
-      /*System.out.println( "version: " + ts.version );
-         System.out.println( "numOfRegimes:  " + ts.numOfRegimes );
-         System.out.println( "numOfFramesPerPeriod:  " + ts.numOfFramesPerPeriod );
-         System.out.println( "numOfPeriods: " + ts.numOfPeriods );
-         System.out.println( "periodMap: " );
-         for( int ii = 0; ii < 256; ii++ ) {
-           System.out.print( ts.periodMap[ii] + "  " );
-         }
-         System.out.println(  );
-         for( int ii = 0; ii < ts.numOfRegimes; ii++ ) {
-           System.out.println( "-Regime " + ii );
-           System.out.println( "---numSpectra:       " + ts.numSpectra[ii] );
-           System.out.println( "---numTimeChannels:  " + ts.numTimeChannels[ii] );
-           System.out.println( "---timeChannelMode:  " );
-           for( int jj = 0; jj < 5; jj++ ) {
-             System.out.print( ts.timeChannelMode[ii][jj] + "   " );
-           }
-           System.out.println(  );
-           System.out.println( "---timeChannelParameters:" );
-           for( int jj = 0; jj < 4; jj++ ) {
-             System.out.print( jj + "-- " );
-             for( int kk = 0; kk < 5; kk++ ) {
-               System.out.print( ts.timeChannelParameters[ii][jj][kk] + "  " );
-             }
+   	      System.out.println( "version: " + ts.version );
+          System.out.println( "numOfRegimes:  " + ts.numOfRegimes );
+          System.out.println( "numOfFramesPerPeriod:  " + ts.numOfFramesPerPeriod );
+          System.out.println( "numOfPeriods: " + ts.numOfPeriods );
+          System.out.println( "periodMap: " );
+          for( int ii = 0; ii < 256; ii++ )
+            System.out.print( ts.periodMap[ii] + "  " );
+          System.out.println(  );
+          for( int ii = 0; ii < ts.numOfRegimes; ii++ )
+          {
+             System.out.println( "-Regime " + ii );
+             System.out.println( "---numSpectra:       " + ts.numSpectra[ii] );
+             System.out.println( "---numTimeChannels:  " + ts.numTimeChannels[ii] );
+             System.out.println( "---timeChannelMode:  " );
+             for( int jj = 0; jj < 5; jj++ )
+               System.out.print( ts.timeChannelMode[ii][jj] + "   " );
              System.out.println(  );
-           }
-           System.out.println( "---clockPrescale:    " + ts.clockPrescale[ii] );
-           System.out.println( "---timeChannelBoundaries:" );
-           for( int jj = 0; jj < ( ts.numTimeChannels[ii] + 1 ); jj++ ) {
-             System.out.print( ts.timeChannelBoundaries[ii][jj] + "   " );
-           }
-         }*/
-    } catch( IOException ex ) {}
+             System.out.println( "---timeChannelParameters:" );
+             for( int jj = 0; jj < 4; jj++ )
+             {
+                System.out.print("jj=" + jj + "-- " );
+                for( int kk = 0; kk < 5; kk++ )
+                   System.out.print( ts.timeChannelParameters[ii][jj][kk] + "  " );
+                System.out.println(  );
+              }
+              System.out.println( "---clockPrescale:    " + ts.clockPrescale[ii] );
+              System.out.println( "---timeChannelBoundaries:" );
+              for( int jj = 0; jj < ( ts.numTimeChannels[ii] + 1 ); jj++ )
+                System.out.print( ts.timeChannelBoundaries[ii][jj] + "   " );
+          }
+          System.out.println();
+      }
+    }
+    catch( IOException ex )
+    {
+    	ex.printStackTrace();
+    }
   }
 }
