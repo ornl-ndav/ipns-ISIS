@@ -30,7 +30,13 @@
  *
  * For further information, see <http://www.pns.anl.gov/ISAW/>
  * $Log$
+ * Revision 1.8  2004/06/21 19:11:16  kramer
+ * Added getter methods (with documentation).  Now the class imports 2 classes
+ * instead of the entire java.io package.  Also, if the class thinks it may
+ * read data from the file wrong, it warns the user.
+ *
  * Revision 1.7  2004/06/16 20:40:50  kramer
+ *
  * Now the source will contain the cvs logs.  Replaced tabs with 3 spaces,
  * created a default contstructor where fields will be initialized (instead
  * of when they are first declared), and when exceptions are caught a stack
@@ -40,8 +46,8 @@
 
 package ISIS.Rawfile;
 
-import java.io.*;
-
+import java.io.RandomAccessFile;
+import java.io.IOException;
 
 /**
  * This package processes header information from an ISIS Raw data file.
@@ -52,6 +58,9 @@ import java.io.*;
 public class Header {
   //~ Instance fields ----------------------------------------------------------
 
+/**
+ * The run duration (in {mu}A.Hr).
+ */
   protected String runDuration;
   /**
    * Run identifier.  Three characters for the instrument followed by 
@@ -90,7 +99,7 @@ public class Header {
   protected int    startAddressSpare;
   /**  The start address of the TIME CHANNEL BOUNDARIES section. */
   protected int    startAddressTcb;
-  /**  THe start address of the USER DEFINED section. */
+  /**  The start address of the USER DEFINED section. */
   protected int    startAddressUser;
 
   //~ Constructors -------------------------------------------------------------
@@ -172,6 +181,11 @@ public class Header {
 
       runDuration         = temp.toString(  );
       formatVersion       = readUnsignedInteger( rawFile, 4 );
+      if (formatVersion != 2)
+         System.out.println("WARNING:  Unrecognized Format version number."
+         +"\n          Version found = "+formatVersion
+         +"\n          Version numbers corresponding to data that can be processed  = 2"
+         +"\n          Data may be incorrectly read and/or interpreted from the file.");
       startAddressRun     = readUnsignedInteger( rawFile, 4 );
       startAddressInst    = readUnsignedInteger( rawFile, 4 );
       startAddressSe      = readUnsignedInteger( rawFile, 4 );
@@ -331,4 +345,180 @@ public class Header {
 
     return num;
   }
+
+  /**
+   * Reads <code>length</code> characters from the file specified by <code>inFile</code> 
+   * (from its file pointer's current location) and creates a String.  If a null character is reached, 
+   * it is not added to the String.
+   * @param inFile The file to read the data from.
+   * @param length The number of bytes to read.
+   * @return The String created from the next <code>length</code> bytes read from the file.
+   * @throws An IOException is thrown to allow the calling method to decide if it should 
+   * continue reading the file or not.
+   */
+  protected static String readString(RandomAccessFile inFile, int length) throws IOException
+  {
+     StringBuffer buffer = new StringBuffer(length);
+     byte by = 0;
+     for (int i=0; i<length; i++)
+     {
+        by = inFile.readByte();
+        if (by != 0)
+           buffer.append((char)by);
+     }
+     return buffer.toString();
+  }
+
+   /**
+    * Get the data format flag.
+    * @return The data format flag (either 0 or 1).
+    */
+   public int getDataFormatFlag()
+   {
+      return dataFormatFlag;
+   }
+
+   /**
+    * Get the format version.
+    * @return The format version.
+    */
+   public int getFormatVersion()
+   {
+      return formatVersion;
+   }
+
+   /**
+    * Get the run duration.
+    * @return The run duration ({mu}A.Hr).
+    */
+   public String getRunDuration()
+   {
+      return runDuration;
+   }
+
+   /**
+    * Get the run identifier (eg LAD12345).
+    * @return The run identifier.  It is composed of 3 characters for the 
+    * instrument and 5 characters for the run number.
+    */
+   public String getRunID()
+   {
+      return runID;
+   }
+
+   /**
+    * Get the experiment short title.
+    * @return The experiment short title.
+    */
+   public String getRunTitleShort()
+   {
+      return runTitleShort;
+   }
+
+   /**
+    * Get the start address of the Data Acquisition Electronics Section.
+    * @return The offset in the file where the Data Acquisition Electronics 
+    * section starts.
+    */
+   public int getStartAddressDAESection()
+   {
+      return startAddressDae;
+   }
+
+   /**
+    * Get the start address of the Data Section.
+    * @return The offset in the file where the Data section 
+    * starts.
+    */
+   public int getStartAddressDATASection()
+   {
+      return startAddressData;
+   }
+
+   /**
+    * Get the start address of the Instrument Section.
+    * @return The offset in the file where the 
+    * Instrument Section starts.
+    */
+   public int getStartAddressINSTSection()
+   {
+      return startAddressInst;
+   }
+
+   /**
+    * Get the start address of the Log Section.
+    * @return The offset in the file where the 
+    * Log Section starts.
+    */
+   public int getStartAddressLOGSection()
+   {
+      return startAddressLog;
+   }
+
+   /**
+    * Get the start address of the Run Section.
+    * @return The offset in the file where the Run 
+    * section starts.
+    */
+   public int getStartAddressRUNSection()
+   {
+      return startAddressRun;
+   }
+
+   /**
+    * Get the start address of the Sample Environment Section.
+    * @return The offset in the file where the Sample 
+    * Environment Section starts.
+    */
+   public int getStartAddressSESection()
+   {
+      return startAddressSe;
+   }
+
+   /**
+    * Get the start address of the Time Channel Boundary Section.
+    * @return The offset in the file where the Time Channel Boundary 
+    * Section starts.
+    */
+   public int getStartAddressTCBSection()
+   {
+      return startAddressTcb;
+   }
+
+   /**
+    * Get the start address of the User Section.
+    * @return The offset in the file where the User Section starts.
+    */
+   public int getStartAddressUSERSection()
+   {
+      return startAddressUser;
+   }
+
+   /**
+    * Get the start date.
+    * @return The start date.
+    */
+   public String getStartDate()
+   {
+      return startDate;
+   }
+
+   /**
+    * Get the start time.
+    * @return The start time.
+    */
+   public String getStartTime()
+   {
+      return startTime;
+   }
+
+   /**
+    * Get the user name.
+    * @return The user name.
+    */
+   public String getUserName()
+   {
+      return userName;
+   }
+
 }
