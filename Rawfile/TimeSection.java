@@ -30,7 +30,15 @@
  *
  * For further information, see <http://www.pns.anl.gov/ISAW/>
  * $Log$
+ * Revision 1.9  2004/07/12 19:15:54  kramer
+ * Added a DaeSection field which this class uses to verify time regime
+ * information.  Added the methods getMinimumRegimeNumber(),
+ * getMaximumRegimeNumber(), isAValidRegimeNumber(), and getArrayIndexForRegime().
+ * These methods are now used to verify if a specified regime number is valid
+ * and are used to determine the correct information for the regime number.
+ *
  * Revision 1.8  2004/06/24 21:35:32  kramer
+ *
  * Changed all of the fields' visiblity from protected to private.  Fields
  * are now accessed from other classes in this package through getter methods
  * instead of using <object>.<field name>.  Also, this class should now be
@@ -144,6 +152,12 @@ public class TimeSection {
    * values range from 0 to one more than the number of time channels.
    */
   private int[][]     timeChannelBoundaries;
+  
+  /**
+   * Represents the DAE (Data Acquisition Electronics) object used to get 
+   * time regime information.
+   */
+  private DaeSection daeSection;  
 
   //~ Constructors -------------------------------------------------------------
 
@@ -163,6 +177,8 @@ public class TimeSection {
       timeChannelParameters = new float[0][0][0];
       clockPrescale = new int[0];
       timeChannelBoundaries = new int[0][0];
+      
+      daeSection = new DaeSection();
    }
 
   /**
@@ -171,8 +187,9 @@ public class TimeSection {
    * @param rawFile The RAW file.
    * @param header The header for the RAW file.
    */
-  public TimeSection( RandomAccessFile rawFile, Header header ) {
+  public TimeSection( RandomAccessFile rawFile, Header header, DaeSection DAESection ) {
      this();
+    daeSection = DAESection;
     int startAddress = ( header.getStartAddressTCBSection() - 1 ) * 4;
 
     try {
@@ -270,13 +287,17 @@ public class TimeSection {
       	  System.out.println("Testing file "+args[fileNum]);
 		  System.out.println("--------------------------------------------------------------------------------");
 	      RandomAccessFile rawFile = new RandomAccessFile( args[fileNum], "r" );
-	      Header           header = new Header( rawFile );
-	      TimeSection      ts     = new TimeSection( rawFile, header );
+	      Header            header = new Header( rawFile );
+          InstrumentSection iSect  = new InstrumentSection( rawFile, header);
+          DaeSection        dSect  = new DaeSection( rawFile, header, iSect.getNumberOfDetectors() );
+	      TimeSection       ts     = new TimeSection( rawFile, header, dSect );
 
    	      System.out.println( "version: " + ts.version );
           System.out.println( "numOfRegimes:  " + ts.numOfRegimes );
           System.out.println( "numOfFramesPerPeriod:  " + ts.numOfFramesPerPeriod );
           System.out.println( "numOfPeriods: " + ts.numOfPeriods );
+          System.out.println( "Min Regime Number:  " + ts.getMinimumRegimeNumber());
+          System.out.println( "Max Regime Number:  " + ts.getMaximumRegimeNumber());
           System.out.println( "periodMap: " );
           for( int ii = 0; ii < 256; ii++ )
             System.out.print( ts.periodMap[ii] + "  " );
@@ -330,8 +351,8 @@ public class TimeSection {
    */
   public int getClockPrescaleForRegime(int num)
    {
-      if (num>=1 && num<=getNumOfTimeRegimes())
-         return clockPrescale[num-1];
+      if (isAValidRegimeNumber(num))
+         return clockPrescale[getArrayIndexForRegime(num)];
       else
          return -1;
    }
@@ -380,8 +401,12 @@ public class TimeSection {
     */
    public int getNumSpectraForRegime(int num)
    {
-      if (num>=1 && num<=getNumOfTimeRegimes())
-         return numSpectra[num-1];
+      if (isAValidRegimeNumber(num))
+      {
+         int index = getArrayIndexForRegime(num);
+         System.out.println("Requesting the number of spectra for regime at index "+index);
+         return numSpectra[index];
+      }
       else
          return -1;
    }
@@ -401,8 +426,8 @@ public class TimeSection {
     */
    public int getNumTimeChannelsForRegime(int num)
    {
-      if (num>=1 && num<=getNumOfTimeRegimes())
-         return numTimeChannels[num-1];
+      if (isAValidRegimeNumber(num))
+         return numTimeChannels[getArrayIndexForRegime(num)];
       else
          return -1;
    }
@@ -432,10 +457,11 @@ public class TimeSection {
     */
    public int[] getTimeChannelModeForRegime(int num)
    {
-      if (num>=1 && num<=getNumOfTimeRegimes())
+      if (isAValidRegimeNumber(num))
       {
-         int[] copy = new int[timeChannelMode[num-1].length];
-         System.arraycopy(timeChannelMode[num-1],0,copy,0,timeChannelMode[num-1].length);
+         int index = getArrayIndexForRegime(num);
+         int[] copy = new int[timeChannelMode[index].length];
+         System.arraycopy(timeChannelMode[index],0,copy,0,timeChannelMode[index].length);
          return copy;
       }
       else
@@ -454,14 +480,15 @@ public class TimeSection {
     */
    public float[][] getTimeChannelParametersForRegime(int num)
    {
-      if (num>=1 && num<=getNumOfTimeRegimes())
+      if (isAValidRegimeNumber(num))
       {
-         float[][] copy = new float[timeChannelParameters[num-1].length][];
+         int index = getArrayIndexForRegime(num);
+         float[][] copy = new float[timeChannelParameters[index].length][];
          float[] subCopy = null;
-         for (int i=0; i<timeChannelParameters[num-1].length; i++)
+         for (int i=0; i<timeChannelParameters[index].length; i++)
          {
-            subCopy = new float[timeChannelParameters[num-1][i].length];
-            System.arraycopy(timeChannelParameters[num-1][i],0,subCopy,0,timeChannelParameters[num-1][i].length);
+            subCopy = new float[timeChannelParameters[index][i].length];
+            System.arraycopy(timeChannelParameters[index][i],0,subCopy,0,timeChannelParameters[index][i].length);
             copy[i] = subCopy;
          }
          return copy;
@@ -492,14 +519,84 @@ public class TimeSection {
     */
    public int[] getTimeChannelBoundariesForRegime(int num)
    {
-      if (num>=1 && num<=getNumOfTimeRegimes())
+      if (isAValidRegimeNumber(num))
       {
-         int[] copy = new int[timeChannelBoundaries[num-1].length];
-         System.arraycopy(timeChannelBoundaries[num-1],0,copy,0,timeChannelBoundaries[num-1].length);
+         int index = getArrayIndexForRegime(num);
+         int[] copy = new int[timeChannelBoundaries[index].length];
+         System.arraycopy(timeChannelBoundaries[index],0,copy,0,timeChannelBoundaries[index].length);
          return copy;
       }
       else
          return null;
    }
-
+   
+   /**
+    * Get the smallest regime number.
+    * @return The smallest regime number or 
+    * -1 if it cannot be determined.
+    */
+   public int getMinimumRegimeNumber()
+   {
+      return daeSection.getMinimumRegimeNumber();
+   }
+   
+   /**
+    * Get the largest regime number.
+    * @return The largest regime number or 
+    * -1 if it cannot be determined.
+    */
+   public int getMaximumRegimeNumber()
+   {
+      int min = getMinimumRegimeNumber();
+      if (min==-1) //then the min could not be determined
+         return -1;
+      else
+      {
+         return (min+numOfRegimes-1);
+      }
+   }
+   
+   /**
+    * Determine if the given integer is a 
+    * valid regime number.
+    * @return True if the integer is a valid 
+    * regime number and false otherwise.  This 
+    * method looks at the minimum and maximum 
+    * regime number as written in the rawfile to 
+    * determine if the specified integer is valid.
+    */
+   public boolean isAValidRegimeNumber(int num)
+   {
+      int min = getMinimumRegimeNumber();
+      int max = getMaximumRegimeNumber();
+      if (min==-1 && max==-1) //then the min and max 
+         return false;        //could not be determined
+      else
+         return (num>=min && num<=max);
+   }
+   
+   //-------------------------=[ Private Methods ]=---------------------------------------------------
+   /**
+    * This class uses arrays to hold information about 
+    * time regimes.  The 0th element in one of these arrays, 
+    * for instance, contains the number of spectra in the 
+    * first time regime.  This method uses <code>num</code>, 
+    * the actual time regime number as seen in the ISIS 
+    * rawfile, and determines the index in the arrays that 
+    * holds the data for this regime.  This method assumes 
+    * that index 0 contains the first meaningful data in 
+    * the array.  It also assumes that invoking 
+    * <code>DaeSection.isAValidRegimeNumber(num)</code> would 
+    * return true.  Because, this method is private and is 
+    * only used by the methods in this class, these 
+    * assumptions are not unreasonable.
+    * @param num The regime number.
+    * @return The index in an array (starting with data at 
+    * index 0) that would hold the data corresponding to 
+    * time regime <code>num</code>.
+    */
+   private int getArrayIndexForRegime(int num)
+   {
+      return (num-getMinimumRegimeNumber());
+   }
 }
