@@ -28,7 +28,14 @@
  *
  * For further information, see <http://www.pns.anl.gov/ISAW/>
  * $Log$
+ * Revision 1.6  2004/06/24 21:41:41  kramer
+ * Changed all of the fields' visiblity from protected to private.  Fields
+ * are now accessed from other classes in this package through getter methods
+ * instead of using <object>.<field name>.  Also, this class should now be
+ * immutable.
+ *
  * Revision 1.5  2004/06/22 14:13:49  kramer
+ *
  * Added getter methods (with documentation).  Now this class imports 2 classes
  * instead of the entire java.io package.  Also, if it thinks it may not
  * correctly read the file it warns the user.
@@ -55,10 +62,10 @@ import java.io.RandomAccessFile;
 public class SESection
 {
    /** The SE section version number. */
-   protected int version;
+   private int version;
    //Variables in the SAMPLE PARAMETER BLOCK
    /** Position of sample changer. */
-   protected int posSampleChanger;
+   private int posSampleChanger;
    /**
     * Sample type.<br>
     * 1 = sample+can<br>
@@ -68,61 +75,61 @@ public class SESection
     * 5 = nothing<br>
     * 6 = sample, no can
     */
-   protected int sampleType;
+   private int sampleType;
    /**
     * Sample geometry.<br>
     * 1 = cylinder<br>
     * 2 = flat plate<br>
     * 3 = HRPD slab<br>
     */
-   protected int sampleGeometry;
+   private int sampleGeometry;
    /** Sample thickness normal to sample (in mm). */
-   protected float sampleThickness;
+   private float sampleThickness;
    /** Sample height (in mm). */
-   protected float sampleHeight;
+   private float sampleHeight;
    /** Sample width (in mm). */
-   protected float sampleWidth;
+   private float sampleWidth;
    /** omega sample angle (in degrees). */
-   protected float omega;
+   private float omega;
    /** psi sample angle (in degrees). */
-   protected float psi;
+   private float psi;
    /** phi sample angle (in degrees). */
-   protected float phi;
+   private float phi;
    /**
     * Scat. geom.<br>
     * 1 = trans.<br>
     * 2 = reflect.
     */
-   protected float scatGeom;
+   private float scatGeom;
    /** Sample sCOH (in barns). */
-   protected float sample_sCOH;
+   private float sample_sCOH;
    /** Sample sINC (in barns). */
-   protected float sample_sINC;
+   private float sample_sINC;
    /** Sample sABS (in barns). */
-   protected float sample_sABS;
+   private float sample_sABS;
    /** Sample number density (atoms.A-3). */
-   protected float sampleNumDensity;
+   private float sampleNumDensity;
    /** Can wall thickness (in mm). */
-   protected float canWallThickness;
+   private float canWallThickness;
    /** Can sCOH (in barns). */
-   protected float can_sCOH;
+   private float can_sCOH;
    /** Can sINC (in barns). */
-   protected float can_sINC;
+   private float can_sINC;
    /** Can sABS (in barns). */
-   protected float can_sABS;
+   private float can_sABS;
    /** Can number density (atoms.A-3). */
-   protected float canNumDensity;
+   private float canNumDensity;
    /** Sample name or chemical formula. */
-   protected String sampleName;
+   private String sampleName;
    /** Number of SE parameters. */
-   protected int numParams;
+   private int numParams;
    /**
     * An array of the SE parameter blocks in the section.  The length of this 
     * array is equal to the number of SE parameters.
     */
-   protected SEParameterBlock[] paramBlockArray;
+   private SEParameterBlock[] paramBlockArray;
    /** The offset in the file where this data starts. */
-   protected int startAddress;
+   private int startAddress;
    
    /** Default constructor. */
    public SESection()
@@ -163,16 +170,17 @@ public class SESection
    public SESection(RandomAccessFile rawFile, Header header)
    {
       this();
-   	  startAddress = ( header.startAddressSe - 1 ) * 4;
+   	  startAddress = ( header.getStartAddressSESection() - 1 ) * 4;
    	  
    	  try
    	  {
    	  	rawFile.seek(startAddress);
    	  	version = Header.readUnsignedInteger(rawFile,4);
-         System.out.println("WARNING:  Unrecognized Sample Environment Section version number."
-         +"\n          Version found = "+version
-         +"\n          Version numbers corresponding to data that can be processed  = 2"
-         +"\n          Data may be incorrectly read and/or interpreted from the file.");
+         if (version != 2)
+            System.out.println("WARNING:  Unrecognized Sample Environment Section version number."
+            +"\n          Version found = "+version
+            +"\n          Version numbers corresponding to data that can be processed  = 2"
+            +"\n          Data may be incorrectly read and/or interpreted from the file.");
          
    	  	//now to read the sample parameter block
    	  	posSampleChanger = Header.readUnsignedInteger(rawFile,4);
@@ -269,43 +277,43 @@ public class SESection
    private static class SEParameterBlock
    {
       /** Name. */
-      protected String[] nameArr;
+      private String[] nameArr;
       /** Value. */
-      protected int value;
+      private int value;
       /** Value exponent. */
-      protected int valExponent;
+      private int valExponent;
       /** Units of value. */
-      protected String[] unitsOfValueArr;
+      private String[] unitsOfValueArr;
       /** Low trip. */
-      protected int lowTrip;
+      private int lowTrip;
       /** High trip. */
-      protected int highTrip;
+      private int highTrip;
       /** Current value. */
-      protected int currentVal;
+      private int currentVal;
       /** Status (in bounds ?). */
-      protected int status;
+      private int status;
       /** Controlled parameter (true/false). */
-      protected int controlledParam;
+      private int controlledParam;
       /** Run control parameter (true/false). */
-      protected int runControlParam;
+      private int runControlParam;
       /** Log parameter changes (true/false). */
-      protected int logParamChanges;
+      private int logParamChanges;
       /** Stability value (units per sec). */
-      protected float stabilityVal;
+      private float stabilityVal;
       /** Monitor repeat period. */
-      protected float monRepeatPeriod;
+      private float monRepeatPeriod;
       /** CAMAC location N. */
-      protected int camacLocationN;
+      private int camacLocationN;
       /** CAMAC location A. */
-      protected int camacLocationA;
+      private int camacLocationA;
       /** CAMAC offset (added to value). */
-      protected int camacOffset;
+      private int camacOffset;
       /** CAMAC register group (1 or 2). */
-      protected int camacRegisterGroup;
+      private int camacRegisterGroup;
       /** Pre process routine number. */
-      protected int routineNumber;
+      private int routineNumber;
       /** CAMAC values.  This array has 12 elements. */
-      protected int[] camacValuesArr;
+      private int[] camacValuesArr;
       
       /** Default constructor. */
       public SEParameterBlock()
