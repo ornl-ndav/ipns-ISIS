@@ -28,6 +28,10 @@
  * the National Science Foundation under grant number DMR-0218882.
  *
  * For further information, see <http://www.pns.anl.gov/ISAW/>
+ * $Log$
+ * Revision 1.4  2004/06/16 21:01:54  kramer
+ * Now the source displays the cvs logs for the file.
+ *
  */
 
 /*
