@@ -30,7 +30,13 @@
  *
  * For further information, see <http://www.pns.anl.gov/ISAW/>
  * $Log$
+ * Revision 1.7  2004/06/22 16:32:55  kramer
+ * Added getter methods (with documentation).  Made the constructors public.
+ * Now this class imports 2 classes instead of the entire java.io package.
+ * Commented out the old method for getting the time channel boundaries.
+ *
  * Revision 1.6  2004/06/16 20:40:51  kramer
+ *
  * Now the source will contain the cvs logs.  Replaced tabs with 3 spaces,
  * created a default contstructor where fields will be initialized (instead
  * of when they are first declared), and when exceptions are caught a stack
@@ -40,8 +46,8 @@
 
 package ISIS.Rawfile;
 
-import java.io.*;
-
+import java.io.RandomAccessFile;
+import java.io.IOException;
 
 /**
  * Class to read from the time channel boundaries (TCB) section of an ISIS RAW
@@ -52,7 +58,10 @@ import java.io.*;
  */
 public class TimeSection {
   //~ Static fields/initializers -----------------------------------------------
-
+  /**
+   * The number of entries in the table that gives 
+   * the period number for each basic period.
+   */
   protected static final int PMAP_SIZE = 256;
 
   //~ Instance fields ----------------------------------------------------------
@@ -133,7 +142,7 @@ public class TimeSection {
   /**
    * Creates a new TimeSection object.
    */
-   TimeSection(  )
+   public TimeSection(  )
    {
       version = -1;
       numOfRegimes = -1;
@@ -154,7 +163,7 @@ public class TimeSection {
    * @param rawFile The RAW file.
    * @param header The header for the RAW file.
    */
-  TimeSection( RandomAccessFile rawFile, Header header ) {
+  public TimeSection( RandomAccessFile rawFile, Header header ) {
      this();
     int startAddress = ( header.startAddressTcb - 1 ) * 4;
 
@@ -165,9 +174,8 @@ public class TimeSection {
       numOfFramesPerPeriod   = Header.readUnsignedInteger( rawFile, 4 );
       numOfPeriods           = Header.readUnsignedInteger( rawFile, 4 );
 
-      for( int ii = 0; ii < PMAP_SIZE; ii++ ) {
+      for( int ii = 0; ii < PMAP_SIZE; ii++ )
         periodMap[ii] = Header.readUnsignedInteger( rawFile, 4 );
-      }
 
       numSpectra              = new int[numOfRegimes];
       numTimeChannels         = new int[numOfRegimes];
@@ -224,13 +232,14 @@ public class TimeSection {
 
   //~ Methods ------------------------------------------------------------------
 
-  /**
+  /*
    * Accessor method for the time channel boundary (TCB) array.  This assumes
    * that  the number of time regimes is 1.  If there are no TCBs, this
    * returns null.
    *
    * @return The time channel boundary array (second dimension).
    */
+  /*
   public int[] getTimeChannelBoundaries(  ) {
     if( timeChannelBoundaries == null ) {
       return null;
@@ -238,6 +247,7 @@ public class TimeSection {
 
     return timeChannelBoundaries[0];
   }
+  */
 
   /**
    * Testbed.
@@ -293,4 +303,190 @@ public class TimeSection {
     	ex.printStackTrace();
     }
   }
+
+  /**
+   * Get the prescale value for a 32 MHz clock for the 
+   * given time regime.
+   * @param num The regime in question.  Note:  The 
+   * first time regime is at num=1 not num=0.  For num 
+   * to be valid 1<=<code>num</code><=
+   * {@link #getNumOfTimeRegimes() 
+   * getNumOfTimeRegimes()}.
+   * @return The prescale value for the 32MHz clock for 
+   * time regime <code>num</code> or -1 if <code>num
+   * </code> is invalid.
+   */
+  public int getClockPrescaleForRegime(int num)
+   {
+      if (num>=1 && num<=getNumOfTimeRegimes())
+         return clockPrescale[num-1];
+      else
+         return -1;
+   }
+
+   /**
+    * Get the number of frames per period.
+    * @return The number of frames per 
+    * period.
+    */
+   public int getNumOfFramesPerPeriod()
+   {
+      return numOfFramesPerPeriod;
+   }
+
+   /**
+    * Get the number of periods.
+    * @return The number of periods.
+    */
+   public int getNumOfPeriods()
+   {
+      return numOfPeriods;
+   }
+
+   /**
+    * Get the number of time regimes.
+    * @return The number of time regimes 
+    * (normally this is equal to 1).
+    */
+   public int getNumOfTimeRegimes()
+   {
+      return numOfRegimes;
+   }
+
+   /**
+    * Get one more than the number of spectra for the 
+    * given time regime (an extra spectra is added for 
+    * the zeroth spectra).
+    * @param num The regime in question.  Note:  The 
+    * first time regime is at num=1 not num=0.  For num 
+    * to be valid 1<=<code>num</code><=
+    * {@link #getNumOfTimeRegimes() 
+    * getNumOfTimeRegimes()}.
+    * @return One more than the number of spectra for 
+    * time regime <code>num</code> or -1 if <code>num
+    * </code> is invalid.
+    */
+   public int getNumSpectraForRegime(int num)
+   {
+      if (num>=1 && num<=getNumOfTimeRegimes())
+         return numSpectra[num-1];
+      else
+         return -1;
+   }
+
+   /**
+    * Get one more than the number of time channels for the 
+    * given time regime (an extra time channel is added for 
+    * the zeroth time channel).
+    * @param num The regime in question.  Note:  The 
+    * first time regime is at num=1 not num=0.  For num 
+    * to be valid 1<=<code>num</code><=
+    * {@link #getNumOfTimeRegimes() 
+    * getNumOfTimeRegimes()}.
+    * @return One more than the number of time channels for 
+    * time regime <code>num</code> or -1 if <code>num
+    * </code> is invalid.
+    */
+   public int getNumTimeChannelsForRegime(int num)
+   {
+      if (num>=1 && num<=getNumOfTimeRegimes())
+         return numTimeChannels[num-1];
+      else
+         return -1;
+   }
+
+   /**
+    * Get the map that gives the period number for 
+    * each basic period.
+    * @return The map that gives the period number 
+    * for each basic period.
+    */
+   public int[] getPeriodMap()
+   {
+      int[] copy = new int[periodMap.length];
+      System.arraycopy(periodMap,0,copy,0,periodMap.length);
+      return copy;
+   }
+
+   /**
+    * Get the time channel modes for the given time regime.
+    * @param num The regime in question.  Note:  The 
+    * first time regime is at num=1 not num=0.  For num 
+    * to be valid 1<=<code>num</code><=
+    * {@link #getNumOfTimeRegimes() 
+    * getNumOfTimeRegimes()}.
+    * @return The time channel modes for the given time 
+    * regime or null if <code>num</code> is invalid.
+    */
+   public int[] getTimeChannelModeForRegime(int num)
+   {
+      if (num>=1 && num<=getNumOfTimeRegimes())
+      {
+         int[] copy = new int[timeChannelMode[num-1].length];
+         System.arraycopy(timeChannelMode[num-1],0,copy,0,timeChannelMode[num-1].length);
+         return copy;
+      }
+      else
+         return null;
+   }
+
+   /**
+    * Get the time channel parameters for the given time regime.
+    * @param num The regime in question.  Note:  The 
+    * first time regime is at num=1 not num=0.  For num 
+    * to be valid 1<=<code>num</code><=
+    * {@link #getNumOfTimeRegimes() 
+    * getNumOfTimeRegimes()}.
+    * @return The time channel parameters (in microseconds) for 
+    * the givne regime or null if <code>num</code> is invalid.
+    */
+   public float[][] getTimeChannelParametersForRegime(int num)
+   {
+      if (num>=1 && num<=getNumOfTimeRegimes())
+      {
+         float[][] copy = new float[timeChannelParameters[num-1].length][];
+         float[] subCopy = null;
+         for (int i=0; i<timeChannelParameters[num-1].length; i++)
+         {
+            subCopy = new float[timeChannelParameters[num-1][i].length];
+            System.arraycopy(timeChannelParameters[num-1][i],0,subCopy,0,timeChannelParameters[num-1][i].length);
+            copy[i] = subCopy;
+         }
+         return copy;
+      }
+      else
+         return null;
+   }
+
+   /**
+    * Get the Time Channel Boundary Section version number.
+    * @return The Time Channel Boundary Section version number.
+    */
+   public int getVersion()
+   {
+      return version;
+   }
+
+   /**
+    * Get the time channel boundaries for the given time regime.
+    * @param num The regime in question.  Note:  The 
+    * first time regime is at num=1 not num=0.  For num 
+    * to be valid 1<=<code>num</code><=
+    * {@link #getNumOfTimeRegimes() 
+    * getNumOfTimeRegimes()}.
+    * @return The time channel boundaries for the given time 
+    * regime or null if <code>num</code> is invalid.
+    */
+   public int[] getTimeChannelBoundariesForRegime(int num)
+   {
+      if (num>=1 && num<=getNumOfTimeRegimes())
+      {
+         int[] copy = new int[timeChannelBoundaries[num-1].length];
+         System.arraycopy(timeChannelBoundaries[num-1],0,copy,0,timeChannelBoundaries[num-1].length);
+         return copy;
+      }
+      else
+         return null;
+   }
+
 }
