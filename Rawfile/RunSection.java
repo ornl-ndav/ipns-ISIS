@@ -30,7 +30,14 @@
  *
  * For further information, see <http://www.pns.anl.gov/ISAW/>
  * $Log$
+ * Revision 1.9  2004/06/24 21:33:43  kramer
+ * Changed all of the fields' visiblity from protected to private.  Fields
+ * are now accessed from other classes in this package through getter methods
+ * instead of using <object>.<field name>.  Also, this class should now be
+ * immutable.
+ *
  * Revision 1.8  2004/06/22 16:49:03  kramer
+ *
  * Made the constructors public.
  *
  * Revision 1.7  2004/06/22 14:51:09  kramer
@@ -62,68 +69,68 @@ public class RunSection {
   //~ Instance fields ----------------------------------------------------------
   
   /** Finish date (dd-mmm-yyyy_). */
-  protected String finishDate;
+  private String finishDate;
   /** Finish time (hh-mm-ss). */
-  protected String finishTime;
+  private String finishTime;
   /** Run title. */
-  protected String runTitle;
+  private String runTitle;
   /** User institution. */
-  protected String userInstitution;
+  private String userInstitution;
   /** User name. */
-  protected String userName;
+  private String userName;
   /** User telephone number 1 (day). */
-  protected String userPhone1;
+  private String userPhone1;
   /** User telephone number 2 (day). */
-  protected String userPhone2;
+  private String userPhone2;
   /** User telephone number (night). */
-  protected String userPhone3;
+  private String userPhone3;
   /** Good proton charge (uA.hr). */
-  protected float  goodProtonCharge;
+  private float  goodProtonCharge;
   /** Total proton charge (uA.hr). */
-  protected float  totalProtonCharge;
+  private float  totalProtonCharge;
   /** Actual run duration. */
-  protected int    actualRunDuration;
+  private int    actualRunDuration;
   /** Actual run duration (seconds). */
-  protected int    actualRunDurationSec;
+  private int    actualRunDurationSec;
   /** Dump interval. */
-  protected int    dumpInterval;
+  private int    dumpInterval;
   /** Monitor sum 1. */
-  protected int    monitorSum1;
+  private int    monitorSum1;
   /** Monitor sum 2. */
-  protected int    monitorSum2;
+  private int    monitorSum2;
   /** Monitor sum 3. */
-  protected int    monitorSum3;
+  private int    monitorSum3;
   /** Number of 'good' frames. */
-  protected int    numberOfGoodFrames;
+  private int    numberOfGoodFrames;
   /** RAL proposal number. */
-  protected int    ralProposalNum;
+  private int    ralProposalNum;
   /**
    * Required run duration.  The units are the same as 
    * those for the actual run duration.
    */
-  protected int    requiredRunDuration;
+  private int    requiredRunDuration;
   /** Run number (starting from 1). */
-  protected int    runNumber;
+  private int    runNumber;
   /** Scaler for the actual run duration. */
-  protected int    scalerForRPB1;
+  private int    scalerForRPB1;
   /** Scaler for the dump interval. */
-  protected int    scalerForRPB4;
+  private int    scalerForRPB4;
   /***
    * The test interval of the scaler for the actual run duration.  
    * The units are in seconds.
    */
-  protected int    testInterval2;
+  private int    testInterval2;
   /**
    * The test interval of the scaler for the dump interval.  
    * The units are in seconds.
    */
-  protected int    testInterval5;
+  private int    testInterval5;
   /** The total number of frames. */
-  protected int    totalNumberOfFrames;
+  private int    totalNumberOfFrames;
   /** 2**k (SNS frequency(Hz)=50/2**k). */
-  protected int    twobyk;
+  private int    twobyk;
   /** RUN section version number. */
-  protected int    version;
+  private int    version;
 
   //~ Constructors -------------------------------------------------------------
 
@@ -171,7 +178,7 @@ public class RunSection {
    */
   public RunSection( RandomAccessFile rawFile, Header header ) {
   	this();
-    int startAddress = ( header.startAddressRun - 1 ) * 4;
+    int startAddress = ( header.getStartAddressRUNSection() - 1 ) * 4;
 
     try {
       rawFile.seek( startAddress );
