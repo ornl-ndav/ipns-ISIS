@@ -30,7 +30,14 @@
  *
  * For further information, see <http://www.pns.anl.gov/ISAW/>
  * $Log$
+ * Revision 1.10  2004/06/24 21:40:43  kramer
+ * Changed all of the fields' visiblity from protected to private.  Fields
+ * are now accessed from other classes in this package through getter methods
+ * instead of using <object>.<field name>.  Also, this class should now be
+ * immutable.  Added the method isAMonitor.
+ *
  * Revision 1.9  2004/06/22 16:49:03  kramer
+ *
  * Made the constructors public.
  *
  * Revision 1.8  2004/06/18 18:29:18  kramer
@@ -61,9 +68,8 @@ import java.io.IOException;
  */
 public class InstrumentSection {
   //~ Instance fields ----------------------------------------------------------
-
   /** Instrument name. */
-  protected String iName;
+  private String iName;
 
   //CODE in libget.txt spec
   /** 
@@ -72,7 +78,7 @@ public class InstrumentSection {
    * The first meaningful value in this array is at index 
    * 1.  The value at index 0 is a garbage value.
    */
-  protected int[] codeForUserTableValues;
+  private int[] codeForUserTableValues;
 
   //TTHE in libget.txt spec
   /**
@@ -81,16 +87,17 @@ public class InstrumentSection {
    * The first meaningful value in this array is at index 
    * 1.  The value at index 0 is a garbage value.
    */
-  protected float[] detectorAngle;
+  private float[] detectorAngle;
 
   //LEN2 in libget.txt spec
   /**
-   * The L2 table (m).  The length of this 
+   * The L2 table (m).  L2 for a detector is the length from 
+   * the sample to that detector.  The length of this 
    * array is one more than the number of detectors.  
    * The first meaningful value in this array is at index 
    * 1.  The value at index 0 is a garbage value.
    */
-  protected float[] flightPath;
+  private float[] flightPath;
 
   //DELT in libget.txt spec
   /**
@@ -99,26 +106,26 @@ public class InstrumentSection {
    * The first meaningful value in this array is at index 
    * 1.  The value at index 0 is a garbage value.
    */
-  protected float[] holdOff;
+  private float[] holdOff;
 
   //monitor numbers
   /**
    * The detector numbers of the monitors.  The length of this 
    * array is one more than the number of detectors.
    */
-  protected int[] monDetNums;
+  private int[] monDetNums;
   /**
    * Prescale values for the monitors.  The length of this array 
    * equals the number of monitors.
    */
-  protected int[] monPrescale;
+  private int[] monPrescale;
   /**
    * The spectrum number table.  The length of this 
    * array is one more than the number of detectors.  
    * The first meaningful value in this array is at index 
    * 1.  The value at index 0 is a garbage value.
    */
-  protected int[] spectrumNumbers;
+  private int[] spectrumNumbers;
 
   //UT1/UTn in libget.txt spec
   /**
@@ -128,90 +135,90 @@ public class InstrumentSection {
    * userTable is (number of tables)x(number of detectors + 1) sized 
    * 2-dimensional array.
    */
-  protected float[][] userTable;
-  /** L1. */
-  protected float     L1;
+  private float[][] userTable;
+  /** L1 (The distance from th source to the sample). */
+  private float     L1;
   /** Angle of incidence. */
-  protected float     angleOfIncidence;
+  private float     angleOfIncidence;
   /** Beam apperture horizontal (in mm). */
-  protected float     beamapertureHoriz;
+  private float     beamapertureHoriz;
   /** Beam apperture vertical (in mm). */
-  protected float     beamapertureVert;
+  private float     beamapertureVert;
   /** Frequency chopper 1 (in Hz). */
-  protected float     chopFreq1;
+  private float     chopFreq1;
   /** Frequency chopper 2 (in Hz). */
-  protected float     chopFreq2;
+  private float     chopFreq2;
   /** Frequency chopper 3 (in Hz). */
-  protected float     chopFreq3;
+  private float     chopFreq3;
   /** FOE angle. */
-  protected float     foeAngle;
+  private float     foeAngle;
   /** LOQ X center. */
-  protected float     loqXCenter;
+  private float     loqXCenter;
   /** LOQ Y center. */
-  protected float     loqYCenter;
+  private float     loqYCenter;
   /** Radius beam stop. */
-  protected float     radiusBeamStop;
+  private float     radiusBeamStop;
   /** Rotor energy. */
-  protected float     rotorEnergy;
+  private float     rotorEnergy;
   /** Rotor frequency. */
-  protected float     rotorFrequency;
+  private float     rotorFrequency;
   /** Rotor phase. */
-  protected float     rotorPhase;
+  private float     rotorPhase;
   /** Source to detector distance. */
-  protected float     sourceToDetectorDist;
+  private float     sourceToDetectorDist;
   /** Apperture c1. */
-  protected int       apertureC1;
+  private int       apertureC1;
   /** Apperture c2. */
-  protected int       apertureC2;
+  private int       apertureC2;
   /** Apperture c3. */
-  protected int       apertureC3;
+  private int       apertureC3;
   /** Beam stop. */
-  protected int       beamStop;
+  private int       beamStop;
   /** Delay c1 (in microseconds). */
-  protected int       delayC1;
+  private int       delayC1;
   /** Delay c2 (in microseconds). */
-  protected int       delayC2;
+  private int       delayC2;
   /** Delay c3 (in microseconds). */
-  protected int       delayC3;
+  private int       delayC3;
   /** Detector tank vacuum (1=vacuum). */
-  protected int       detectorTankVacuum;
+  private int       detectorTankVacuum;
   /** Main shutter (open = 1). */
-  protected int       mainShutter;
+  private int       mainShutter;
   /** Max error on delay c1 (in microseconds). */
-  protected int       maxErrorDelayC1;
+  private int       maxErrorDelayC1;
   /** Max error on delay c2 (in microseconds). */
-  protected int       maxErrorDelayC2;
+  private int       maxErrorDelayC2;
   /** Max error on delay c3 (in microseconds). */
-  protected int       maxErrorDelayC3;
+  private int       maxErrorDelayC3;
   /** Moderator type number. */
-  protected int       moderatorTypeNum;
+  private int       moderatorTypeNum;
   /** Number of detectors. */
-  protected int       nDet;
+  private int       nDet;
 
   //number of detectors
   /** Number of monitors. */
-  protected int nMon;
+  private int nMon;
   /**
    * Number of UTn tables.  The length of this 
    * array equals the number of monitors.
    */
-  protected int nUserTables;
+  private int nUserTables;
   /** Rotor slit package. */
-  protected int rotorSlitPackage;
+  private int rotorSlitPackage;
   /** Scattering position (eg 1 or 2 HRPD). */
-  protected int scatteringPosition;
+  private int scatteringPosition;
   /** Slow chopper. */
-  protected int slowChopper;
+  private int slowChopper;
   /** Status c1 (run, stopped, stop open). */
-  protected int statusC1;
+  private int statusC1;
   /** Status c2 (run, stopped, stop open). */
-  protected int statusC2;
+  private int statusC2;
   /** Status c3 (run, stopped, stop open). */
-  protected int statusC3;
+  private int statusC3;
   /** Thermal shutter (open = 1). */
-  protected int thermalShutter;
+  private int thermalShutter;
   /** INSTRUMENT section version number. */
-  protected int version;
+  private int version;
 
   //~ Constructors -------------------------------------------------------------
 
@@ -280,7 +287,7 @@ public class InstrumentSection {
    */
    public InstrumentSection( RandomAccessFile rawFile, Header header ) {
     this();
-    int startAddress = ( header.startAddressInst - 1 ) * 4;
+    int startAddress = ( header.getStartAddressINSTSection() - 1 ) * 4;
 
     try {
       rawFile.seek( startAddress );
@@ -1034,5 +1041,20 @@ public class InstrumentSection {
    public int getVersion()
    {
       return version;
+   }
+   
+   //-------------Extra Methods----------------------------------------------------
+   /**
+    * Is the detector numbered <code>detNum</code> a monitor?
+    * @param detNum The number of the detector in question.
+    * @return True if the detector is a monitor and false otherwise.
+    */
+   public boolean isAMonitor(int detNum)
+   {
+      boolean found = false;
+      int i=1;
+      while (i<=getNumberOfMonitors() && !found)
+         found = (getMonDetNumForMonitor(i)==detNum);
+      return found;
    }
 }
