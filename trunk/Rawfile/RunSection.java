@@ -29,6 +29,13 @@
  * of Argonne National Laboratory, Argonne, IL 60439-4845, USA.
  *
  * For further information, see <http://www.pns.anl.gov/ISAW/>
+ * $Log$
+ * Revision 1.6  2004/06/16 20:40:50  kramer
+ * Now the source will contain the cvs logs.  Replaced tabs with 3 spaces,
+ * created a default contstructor where fields will be initialized (instead
+ * of when they are first declared), and when exceptions are caught a stack
+ * trace is now printed to standard output.
+ *
  */
 
 package ISIS.Rawfile;
@@ -46,11 +53,11 @@ public class RunSection {
   //~ Instance fields ----------------------------------------------------------
   
   /** Finish date (dd-mmm-yyyy_). */
-  protected String finishDate           = new String( "" );
+  protected String finishDate;
   /** Finish time (hh-mm-ss). */
-  protected String finishTime           = new String( "" );
+  protected String finishTime;
   /** Run title. */
-  protected String runTitle             = new String( "" );
+  protected String runTitle;
   /** User institution. */
   protected String userInstitution;
   /** User name. */
@@ -114,7 +121,36 @@ public class RunSection {
   /**
    * Creates a new RunSection object.
    */
-  RunSection(  ) {}
+   public RunSection(  )
+   {
+      finishDate = new String();
+      finishTime = new String();
+      runTitle = new String();
+      userInstitution = new String();
+      userName = new String();
+      userPhone1 = new String();
+      userPhone2 = new String();
+      userPhone3 = new String();
+      goodProtonCharge = Float.NaN;
+      totalProtonCharge = Float.NaN;
+      actualRunDuration = -1;
+      actualRunDurationSec = -1;
+      dumpInterval = -1;
+      monitorSum1 = -1;
+      monitorSum2 = -1;
+      monitorSum3 = -1;
+      numberOfGoodFrames = -1;
+      ralProposalNum = -1;
+      requiredRunDuration = -1;
+      runNumber = -1;
+      scalerForRPB1 = -1;
+      scalerForRPB4 = -1;
+      testInterval2 = -1;
+      testInterval5 = -1;
+      totalNumberOfFrames = -1;
+      twobyk = -1;
+      version = -1;
+   }
 
   /**
    * Creates a new RunSection object.
@@ -125,6 +161,7 @@ public class RunSection {
    * section in the rawfile.
    */
   RunSection( RandomAccessFile rawFile, Header header ) {
+  	this();
     int startAddress = ( header.startAddressRun - 1 ) * 4;
 
     try {
@@ -218,7 +255,7 @@ public class RunSection {
       ralProposalNum   = Header.readUnsignedInteger( rawFile, 4 );
 
       //complete except for missing spare section (RPB(-32)) ?
-    } catch( IOException ex ) {}
+    } catch( IOException ex ) { ex.printStackTrace(); }
   }
 
   //~ Methods ------------------------------------------------------------------

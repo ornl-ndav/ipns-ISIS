@@ -29,6 +29,13 @@
  * of Argonne National Laboratory, Argonne, IL 60439-4845, USA.
  *
  * For further information, see <http://www.pns.anl.gov/ISAW/>
+ * $Log$
+ * Revision 1.7  2004/06/16 20:40:49  kramer
+ * Now the source will contain the cvs logs.  Replaced tabs with 3 spaces,
+ * created a default contstructor where fields will be initialized (instead
+ * of when they are first declared), and when exceptions are caught a stack
+ * trace is now printed to standard output.
+ *
  */
 
 package ISIS.Rawfile;
@@ -85,20 +92,33 @@ public class DataSection {
    * . . . . <br>
    * The length of this array is 2*nspec+1.
    */
-  protected int[] spectrumDescArray = new int[0];
+  protected int[] spectrumDescArray;
   /** The offset in the file where the data for this section starts. */
-  protected int   startAddress      = 0;
+  protected int   startAddress;
   /**
    * The data format flag from the Header section.
    */
-  protected int   dataFormat        = -1;
+  protected int   dataFormat;
 
   //~ Constructors -------------------------------------------------------------
 
   /**
    * Creates a new DataSection object.
    */
-  DataSection(  ) {}
+  DataSection(  )
+  {
+    version = -1;
+     compressionType = -1;
+     reserved = -1;
+     offsetToSpectrumDescArray = -1;
+     equivV1FileSize = -1;
+     compRatioDataSect = Float.NaN;
+     compRatioWholeFile = Float.NaN;
+     nspec = -1;
+     spectrumDescArray = new int[0];
+     startAddress = -1;
+     dataFormat = -1;
+  }
 
   /**
    * Creates a new DataSection object.
@@ -108,6 +128,7 @@ public class DataSection {
    * @param ts The time section for the RAW file.
    */
   DataSection( RandomAccessFile rawFile, Header header, TimeSection ts ) {
+  	this();
     startAddress = ( header.startAddressData - 1 ) * 4;
 
     try {
@@ -140,7 +161,7 @@ public class DataSection {
               4 );
         }
       }
-    } catch( IOException ex ) {}
+    } catch( IOException ex ) { ex.printStackTrace(); }
   }
 
   //~ Methods ------------------------------------------------------------------
@@ -276,64 +297,60 @@ public class DataSection {
    *
    * @return The spectrum in a float array.
    */
-  public float[] get1DSpectrum(RandomAccessFile rawFile, int spect, TimeSection ts)
-  {
-  	float[] result = null;
-	try
-	{
-		if (version == 1)
-		  result = getDataForDataVersion1(rawFile,spect,ts);
-		else if (version == 2)
-		  result = getDataForDataVersion2(rawFile,spect,ts);
-	}
-	catch(IOException e)
-	{
-		System.out.print(e);
-		System.out.println(" has ocurred in get1DSpectrum(RandomAccessFile rawFile, int spect, TimeSection ts)");
-	}
-	
-	return result;
-  }
+   public float[] get1DSpectrum(RandomAccessFile rawFile, int spect, TimeSection ts)
+   {
+      float[] result = null;
+      try
+      {
+         if (version == 1)
+            result = getDataForDataVersion1(rawFile,spect,ts);
+         else if (version == 2)
+            result = getDataForDataVersion2(rawFile,spect,ts);
+      }
+      catch(IOException e)
+      {
+         e.printStackTrace();
+      }
+      return result;
+   }
   
-  private float[] getDataForDataVersion1(RandomAccessFile rawFile, int spect, TimeSection ts) throws IOException
-  {
-	if (dataFormat == 0)
-	  return getDataForDataFormatFlag0(rawFile,spect,ts);
-	else if (dataFormat == 1)
-	  return getDataForDataFormatFlag1(rawFile,spect,ts);
-	else
-	  return null;
-  }
+   private float[] getDataForDataVersion1(RandomAccessFile rawFile, int spect, TimeSection ts) throws IOException
+   {
+      if (dataFormat == 0)
+         return getDataForDataFormatFlag0(rawFile,spect,ts);
+      else if (dataFormat == 1)
+         return getDataForDataFormatFlag1(rawFile,spect,ts);
+      else
+         return null;
+   }
     
-	private float[] getDataForDataFormatFlag0(RandomAccessFile rawFile, int spect, TimeSection ts) throws IOException
-	{
-		//note: at some point, this should deal directly with float[] rather than converting
-		//from int[] to float[]
-		int     size;
-		int[]   rawData;
-		float[] data;
-    	
-		rawFile.seek( startAddress +
-		  ( spect * ( ts.numTimeChannels[0] + 1 ) * 4 ) );
-		size      = ts.numTimeChannels[0] + 1;
-		rawData   = new int[size];
-		data      = new float[rawData.length];
+   private float[] getDataForDataFormatFlag0(RandomAccessFile rawFile, int spect, TimeSection ts) throws IOException
+   {
+      //note: at some point, this should deal directly with float[] rather than converting
+      //from int[] to float[]
+      int     size;
+      int[]   rawData;
+      float[] data;
 
-		byte[] num = new byte[4];
+      rawFile.seek( startAddress +
+        ( spect * ( ts.numTimeChannels[0] + 1 ) * 4 ) );
+      size      = ts.numTimeChannels[0] + 1;
+      rawData   = new int[size];
+      data      = new float[rawData.length];
 
-		for( int mm = 0; mm < size; mm++ )
-		{
-		  rawFile.read( num );
-		  rawData[mm] = convertLSBIntToMSBInt( num );
-		}
+      byte[] num = new byte[4];
 
-		for( int jj = 0; jj < size; jj++ )
-		{
-		  data[jj] = rawData[jj];
-		}
+      for( int mm = 0; mm < size; mm++ )
+      {
+         rawFile.read( num );
+         rawData[mm] = convertLSBIntToMSBInt( num );
+      }
 
-		return data;
-	}
+      for( int jj = 0; jj < size; jj++ )
+        data[jj] = rawData[jj];
+
+      return data;
+   }
     
     /**
      * Get the spectrum specified from the ISIS RAW file assuming that the data was 
@@ -346,58 +363,58 @@ public class DataSection {
      * @return The spectrum.
      * @throws IOException
      */
-	private float[] getDataForDataFormatFlag1(RandomAccessFile rawFile, int spect, TimeSection ts) throws IOException
-	{
-	    boolean sectionFound = false;
-	    int actualSpectraNumber = spect+1;
-	    int regimeNumber = 0;
-	    int total = 0;
-	    int previousTotal = total;
-	    int spectraNumberInRegime = 0;
-	    while (!sectionFound && regimeNumber<ts.numSpectra.length)
-	    {
-	    	previousTotal = total;
-	    	total += ts.numSpectra[regimeNumber]+1;
-	    	if (total>=actualSpectraNumber)
-	    	{
-	    		sectionFound = true;
-	    		spectraNumberInRegime = actualSpectraNumber-previousTotal-1;
-	    	}
-	    	else
-	    		regimeNumber++;
-	    }
-	    if (sectionFound)	    	
-		{
-			//the spectra that is to be found is "spectraNumberInRegime" in regime "regimeNumber"
-			int offset = 0;
-			for (int i=0; i<regimeNumber; i++)
-			   offset += (ts.numSpectra[i]+1)*(ts.numTimeChannels[i]+1)*4;
-			
-			//skip ahead to the regime
-			rawFile.seek(startAddress+offset);
-			int skipAhead = (ts.numSpectra[regimeNumber]+1-spectraNumberInRegime-1)*4;
-			float[] data = new float[ts.numTimeChannels[regimeNumber]+1];
-			for (int i=0; i<data.length; i++)
-			{
-			   rawFile.seek(rawFile.getFilePointer()+spectraNumberInRegime*4);
-			   data[i] = Header.readUnsignedInteger(rawFile,4);
-			   rawFile.seek(rawFile.getFilePointer()+skipAhead);
-			}
-			return data;
-		}
-		else
-		   return null;
-	}
+      private float[] getDataForDataFormatFlag1(RandomAccessFile rawFile, int spect, TimeSection ts) throws IOException
+      {
+         boolean sectionFound = false;
+         int actualSpectraNumber = spect+1;
+         int regimeNumber = 0;
+         int total = 0;
+         int previousTotal = total;
+         int spectraNumberInRegime = 0;
+         while (!sectionFound && regimeNumber<ts.numSpectra.length)
+         {
+            previousTotal = total;
+            total += ts.numSpectra[regimeNumber]+1;
+            if (total>=actualSpectraNumber)
+            {
+               sectionFound = true;
+               spectraNumberInRegime = actualSpectraNumber-previousTotal-1;
+            }
+            else
+               regimeNumber++;
+         }
+         if (sectionFound)	    	
+         {
+            //the spectra that is to be found is "spectraNumberInRegime" in regime "regimeNumber"
+            int offset = 0;
+            for (int i=0; i<regimeNumber; i++)
+               offset += (ts.numSpectra[i]+1)*(ts.numTimeChannels[i]+1)*4;
+
+            //skip ahead to the regime
+            rawFile.seek(startAddress+offset);
+            int skipAhead = (ts.numSpectra[regimeNumber]+1-spectraNumberInRegime-1)*4;
+            float[] data = new float[ts.numTimeChannels[regimeNumber]+1];
+            for (int i=0; i<data.length; i++)
+            {
+               rawFile.seek(rawFile.getFilePointer()+spectraNumberInRegime*4);
+               data[i] = Header.readUnsignedInteger(rawFile,4);
+               rawFile.seek(rawFile.getFilePointer()+skipAhead);
+            }
+            return data;
+         }
+         else
+            return null;
+      }
   
-  private float[] getDataForDataVersion2(RandomAccessFile rawFile, int spect, TimeSection ts) throws IOException
-  {
-	if (compressionType == 0)
-	  return getDataForCompressionType0(rawFile,spect,ts);
-	else if (compressionType == 1)
-	  return getDataForCompressionType1(rawFile,spect,ts);
-	else
-	  return null;
-  }
+   private float[] getDataForDataVersion2(RandomAccessFile rawFile, int spect, TimeSection ts) throws IOException
+   {
+      if (compressionType == 0)
+         return getDataForCompressionType0(rawFile,spect,ts);
+      else if (compressionType == 1)
+         return getDataForCompressionType1(rawFile,spect,ts);
+      else
+         return null;
+   }
     
    private float[] getDataForCompressionType0(RandomAccessFile rawFile, int spect, TimeSection ts) throws IOException
    {

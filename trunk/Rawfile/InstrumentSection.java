@@ -29,6 +29,13 @@
  * of Argonne National Laboratory, Argonne, IL 60439-4845, USA.
  *
  * For further information, see <http://www.pns.anl.gov/ISAW/>
+ * $Log$
+ * Revision 1.7  2004/06/16 20:40:50  kramer
+ * Now the source will contain the cvs logs.  Replaced tabs with 3 spaces,
+ * created a default contstructor where fields will be initialized (instead
+ * of when they are first declared), and when exceptions are caught a stack
+ * trace is now printed to standard output.
+ *
  */
 
 package ISIS.Rawfile;
@@ -46,7 +53,7 @@ public class InstrumentSection {
   //~ Instance fields ----------------------------------------------------------
 
   /** Instrument name. */
-  protected String iName = new String(  );
+  protected String iName;
 
   //CODE in libget.txt spec
   /** 
@@ -55,7 +62,7 @@ public class InstrumentSection {
    * The first meaningful value in this array is at index 
    * 1.  The value at index 0 is a garbage value.
    */
-  protected int[] codeForUserTableValues = new int[0];
+  protected int[] codeForUserTableValues;
 
   //TTHE in libget.txt spec
   /**
@@ -64,7 +71,7 @@ public class InstrumentSection {
    * The first meaningful value in this array is at index 
    * 1.  The value at index 0 is a garbage value.
    */
-  protected float[] detectorAngle = new float[0];
+  protected float[] detectorAngle;
 
   //LEN2 in libget.txt spec
   /**
@@ -73,7 +80,7 @@ public class InstrumentSection {
    * The first meaningful value in this array is at index 
    * 1.  The value at index 0 is a garbage value.
    */
-  protected float[] flightPath = new float[0];
+  protected float[] flightPath;
 
   //DELT in libget.txt spec
   /**
@@ -82,26 +89,26 @@ public class InstrumentSection {
    * The first meaningful value in this array is at index 
    * 1.  The value at index 0 is a garbage value.
    */
-  protected float[] holdOff = new float[0];
+  protected float[] holdOff;
 
   //monitor numbers
   /**
    * The detector numbers of the monitors.  The length of this 
    * array is one more than the number of detectors.
    */
-  protected int[] monDetNums      = new int[0];
+  protected int[] monDetNums;
   /**
    * Prescale values for the monitors.  The length of this array 
    * equals the number of monitors.
    */
-  protected int[] monPrescale     = new int[0];
+  protected int[] monPrescale;
   /**
    * The spectrum number table.  The length of this 
    * array is one more than the number of detectors.  
    * The first meaningful value in this array is at index 
    * 1.  The value at index 0 is a garbage value.
    */
-  protected int[] spectrumNumbers = new int[0];
+  protected int[] spectrumNumbers;
 
   //UT1/UTn in libget.txt spec
   /**
@@ -111,7 +118,7 @@ public class InstrumentSection {
    * userTable is (number of tables)x(number of detectors + 1) sized 
    * 2-dimensional array.
    */
-  protected float[][] userTable            = new float[0][0];
+  protected float[][] userTable;
   /** L1. */
   protected float     L1;
   /** Angle of incidence. */
@@ -201,7 +208,57 @@ public class InstrumentSection {
   /**
    * Creates a new InstrumentSection object.
    */
-  InstrumentSection(  ) {}
+  InstrumentSection(  )
+  {
+     iName = new String();
+     codeForUserTableValues = new int[0];
+     detectorAngle = new float[0];
+     flightPath = new float[0];
+     holdOff = new float[0];
+     monDetNums = new int[0];
+     monPrescale = new int[0];
+     spectrumNumbers = new int[0];
+     userTable = new float[0][0];
+     L1 = Float.NaN;
+     angleOfIncidence = Float.NaN;
+     beamapertureHoriz = Float.NaN;
+     beamapertureVert = Float.NaN;
+     chopFreq1 = Float.NaN;
+     chopFreq2 = Float.NaN;
+     chopFreq3 = Float.NaN;
+     foeAngle = Float.NaN;
+     loqXCenter = Float.NaN;
+     loqYCenter = Float.NaN;
+     radiusBeamStop = Float.NaN;
+     rotorEnergy = Float.NaN;
+     rotorFrequency = Float.NaN;
+     rotorPhase = Float.NaN;
+     sourceToDetectorDist = Float.NaN;
+     apertureC1 = -1;
+     apertureC2 = -1;
+     apertureC3 = -1;
+     beamStop = -1;
+     delayC1 = -1;
+     delayC2 = -1;
+     delayC3 = -1;
+     detectorTankVacuum = -1;
+     mainShutter = -1;
+     maxErrorDelayC1 = -1;
+     maxErrorDelayC2 = -1;
+     maxErrorDelayC3 = -1;
+     moderatorTypeNum = -1;
+     nDet = -1;
+     nMon = -1;
+     nUserTables = -1;
+     rotorSlitPackage = -1;
+     scatteringPosition = -1;
+     slowChopper = -1;
+     statusC1 = -1;
+     statusC2 = -1;
+     statusC3 = -1;
+     thermalShutter = -1;
+     version = -1;
+  }
 
   /**
    * Creates a new InstrumentSection object.
@@ -212,6 +269,7 @@ public class InstrumentSection {
    * section in the RAW file.
    */
   InstrumentSection( RandomAccessFile rawFile, Header header ) {
+    this();
     int startAddress = ( header.startAddressInst - 1 ) * 4;
 
     try {
@@ -333,11 +391,11 @@ public class InstrumentSection {
   {
     try
     {
-		for (int fileNum=0; fileNum<args.length; fileNum++)
-		{
-		  System.out.println("--------------------------------------------------------------------------------");
-		  System.out.println("Testing file "+args[fileNum]);
-		  System.out.println("--------------------------------------------------------------------------------");
+       for (int fileNum=0; fileNum<args.length; fileNum++)
+       {
+          System.out.println("--------------------------------------------------------------------------------");
+          System.out.println("Testing file "+args[fileNum]);
+          System.out.println("--------------------------------------------------------------------------------");
           RandomAccessFile  rawFile = new RandomAccessFile( args[fileNum], "r" );
           Header            header = new Header( rawFile );
           InstrumentSection is     = new InstrumentSection( rawFile, header );
@@ -433,7 +491,7 @@ public class InstrumentSection {
               System.out.println(  );
             }
             System.out.println(  );
-		}
+	    }
     }
     catch( IOException ex )
     {
