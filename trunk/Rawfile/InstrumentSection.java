@@ -211,119 +211,119 @@ public class InstrumentSection {
    * section in the RAW file.
    */
   InstrumentSection( RandomAccessFile rawFile, Header header ) {
-	int startAddress = ( header.startAddressInst - 1 ) * 4;
+    int startAddress = ( header.startAddressInst - 1 ) * 4;
 
-	try {
-	  rawFile.seek( startAddress );
-	  version = Header.readUnsignedInteger( rawFile, 4 );
+    try {
+      rawFile.seek( startAddress );
+      version = Header.readUnsignedInteger( rawFile, 4 );
 
-	  StringBuffer temp;
+      StringBuffer temp;
 
-	  temp = new StringBuffer( 8 );
+      temp = new StringBuffer( 8 );
 
-	  for( int ii = 0; ii < 8; ii++ ) {
-		temp.append( ( char )rawFile.readByte(  ) );
-	  }
+      for( int ii = 0; ii < 8; ii++ ) {
+        temp.append( ( char )rawFile.readByte(  ) );
+      }
 
-	  iName                  = temp.toString(  );
-	  chopFreq1              = ( float )Header.ReadVAXReal4( rawFile );
-	  chopFreq2              = ( float )Header.ReadVAXReal4( rawFile );
-	  chopFreq3              = ( float )Header.ReadVAXReal4( rawFile );
-	  delayC1                = Header.readUnsignedInteger( rawFile, 4 );
-	  delayC2                = Header.readUnsignedInteger( rawFile, 4 );
-	  delayC3                = Header.readUnsignedInteger( rawFile, 4 );
-	  maxErrorDelayC1        = Header.readUnsignedInteger( rawFile, 4 );
-	  maxErrorDelayC2        = Header.readUnsignedInteger( rawFile, 4 );
-	  maxErrorDelayC3        = Header.readUnsignedInteger( rawFile, 4 );
-	  apertureC1             = Header.readUnsignedInteger( rawFile, 4 );
-	  apertureC2             = Header.readUnsignedInteger( rawFile, 4 );
-	  apertureC3             = Header.readUnsignedInteger( rawFile, 4 );
-	  statusC1               = Header.readUnsignedInteger( rawFile, 4 );
-	  statusC2               = Header.readUnsignedInteger( rawFile, 4 );
-	  statusC3               = Header.readUnsignedInteger( rawFile, 4 );
-	  mainShutter            = Header.readUnsignedInteger( rawFile, 4 );
-	  thermalShutter         = Header.readUnsignedInteger( rawFile, 4 );
-	  beamapertureHoriz      = ( float )Header.ReadVAXReal4( rawFile );
-	  beamapertureVert       = ( float )Header.ReadVAXReal4( rawFile );
-	  scatteringPosition     = Header.readUnsignedInteger( rawFile, 4 );
-	  moderatorTypeNum       = Header.readUnsignedInteger( rawFile, 4 );
-	  detectorTankVacuum     = Header.readUnsignedInteger( rawFile, 4 );
-	  L1                     = ( float )Header.ReadVAXReal4( rawFile );
-	  rotorFrequency         = ( float )Header.ReadVAXReal4( rawFile );
-	  rotorEnergy            = ( float )Header.ReadVAXReal4( rawFile );
-	  rotorPhase             = ( float )Header.ReadVAXReal4( rawFile );
-	  rotorSlitPackage       = Header.readUnsignedInteger( rawFile, 4 );
-	  slowChopper            = Header.readUnsignedInteger( rawFile, 4 );
-	  loqXCenter             = ( float )Header.ReadVAXReal4( rawFile );
-	  loqYCenter             = ( float )Header.ReadVAXReal4( rawFile );
-	  beamStop               = Header.readUnsignedInteger( rawFile, 4 );
-	  radiusBeamStop         = ( float )Header.ReadVAXReal4( rawFile );
-	  sourceToDetectorDist   = ( float )Header.ReadVAXReal4( rawFile );
-	  foeAngle               = ( float )Header.ReadVAXReal4( rawFile );
-	  angleOfIncidence       = ( float )Header.ReadVAXReal4( rawFile );
+      iName                  = temp.toString(  );
+      chopFreq1              = ( float )Header.ReadVAXReal4( rawFile );
+      chopFreq2              = ( float )Header.ReadVAXReal4( rawFile );
+      chopFreq3              = ( float )Header.ReadVAXReal4( rawFile );
+      delayC1                = Header.readUnsignedInteger( rawFile, 4 );
+      delayC2                = Header.readUnsignedInteger( rawFile, 4 );
+      delayC3                = Header.readUnsignedInteger( rawFile, 4 );
+      maxErrorDelayC1        = Header.readUnsignedInteger( rawFile, 4 );
+      maxErrorDelayC2        = Header.readUnsignedInteger( rawFile, 4 );
+      maxErrorDelayC3        = Header.readUnsignedInteger( rawFile, 4 );
+      apertureC1             = Header.readUnsignedInteger( rawFile, 4 );
+      apertureC2             = Header.readUnsignedInteger( rawFile, 4 );
+      apertureC3             = Header.readUnsignedInteger( rawFile, 4 );
+      statusC1               = Header.readUnsignedInteger( rawFile, 4 );
+      statusC2               = Header.readUnsignedInteger( rawFile, 4 );
+      statusC3               = Header.readUnsignedInteger( rawFile, 4 );
+      mainShutter            = Header.readUnsignedInteger( rawFile, 4 );
+      thermalShutter         = Header.readUnsignedInteger( rawFile, 4 );
+      beamapertureHoriz      = ( float )Header.ReadVAXReal4( rawFile );
+      beamapertureVert       = ( float )Header.ReadVAXReal4( rawFile );
+      scatteringPosition     = Header.readUnsignedInteger( rawFile, 4 );
+      moderatorTypeNum       = Header.readUnsignedInteger( rawFile, 4 );
+      detectorTankVacuum     = Header.readUnsignedInteger( rawFile, 4 );
+      L1                     = ( float )Header.ReadVAXReal4( rawFile );
+      rotorFrequency         = ( float )Header.ReadVAXReal4( rawFile );
+      rotorEnergy            = ( float )Header.ReadVAXReal4( rawFile );
+      rotorPhase             = ( float )Header.ReadVAXReal4( rawFile );
+      rotorSlitPackage       = Header.readUnsignedInteger( rawFile, 4 );
+      slowChopper            = Header.readUnsignedInteger( rawFile, 4 );
+      loqXCenter             = ( float )Header.ReadVAXReal4( rawFile );
+      loqYCenter             = ( float )Header.ReadVAXReal4( rawFile );
+      beamStop               = Header.readUnsignedInteger( rawFile, 4 );
+      radiusBeamStop         = ( float )Header.ReadVAXReal4( rawFile );
+      sourceToDetectorDist   = ( float )Header.ReadVAXReal4( rawFile );
+      foeAngle               = ( float )Header.ReadVAXReal4( rawFile );
+      angleOfIncidence       = ( float )Header.ReadVAXReal4( rawFile );
 
-	  //skip around the spare section
-	  rawFile.seek( startAddress + ( 67 * 4 ) );
+      //skip around the spare section
+      rawFile.seek( startAddress + ( 67 * 4 ) );
 
-	  //keep reading
-	  nDet          = Header.readUnsignedInteger( rawFile, 4 );
-	  nMon          = Header.readUnsignedInteger( rawFile, 4 );
-	  nUserTables   = Header.readUnsignedInteger( rawFile, 4 );
-	  monDetNums    = new int[nMon];
+      //keep reading
+      nDet          = Header.readUnsignedInteger( rawFile, 4 );
+      nMon          = Header.readUnsignedInteger( rawFile, 4 );
+      nUserTables   = Header.readUnsignedInteger( rawFile, 4 );
+      monDetNums    = new int[nMon];
 
-	  for( int ii = 0; ii < nMon; ii++ ) {
-		monDetNums[ii] = Header.readUnsignedInteger( rawFile, 4 );
-	  }
+      for( int ii = 0; ii < nMon; ii++ ) {
+        monDetNums[ii] = Header.readUnsignedInteger( rawFile, 4 );
+      }
 
-	  monPrescale = new int[nMon];
+      monPrescale = new int[nMon];
 
-	  for( int ii = 0; ii < nMon; ii++ ) {
-		monPrescale[ii] = Header.readUnsignedInteger( rawFile, 4 );
-	  }
+      for( int ii = 0; ii < nMon; ii++ ) {
+        monPrescale[ii] = Header.readUnsignedInteger( rawFile, 4 );
+      }
 
-	  spectrumNumbers = new int[nDet + 1];
+      spectrumNumbers = new int[nDet + 1];
 
-	  for( int ii = 1; ii <= nDet; ii++ ) {
-		spectrumNumbers[ii] = Header.readUnsignedInteger( rawFile, 4 );
-	  }
+      for( int ii = 1; ii <= nDet; ii++ ) {
+        spectrumNumbers[ii] = Header.readUnsignedInteger( rawFile, 4 );
+      }
 
-	  holdOff = new float[nDet + 1];
+      holdOff = new float[nDet + 1];
 
-	  for( int ii = 1; ii <= nDet; ii++ ) {
-		holdOff[ii] = ( float )Header.ReadVAXReal4( rawFile );
-	  }
+      for( int ii = 1; ii <= nDet; ii++ ) {
+        holdOff[ii] = ( float )Header.ReadVAXReal4( rawFile );
+      }
 
-	  flightPath = new float[nDet + 1];
+      flightPath = new float[nDet + 1];
 
-	  for( int ii = 1; ii <= nDet; ii++ ) {
-		flightPath[ii] = ( float )Header.ReadVAXReal4( rawFile );
-	  }
+      for( int ii = 1; ii <= nDet; ii++ ) {
+        flightPath[ii] = ( float )Header.ReadVAXReal4( rawFile );
+      }
 
-	  codeForUserTableValues = new int[nDet + 1];
+      codeForUserTableValues = new int[nDet + 1];
 
-	  for( int ii = 1; ii <= nDet; ii++ ) {
-		codeForUserTableValues[ii] = Header.readUnsignedInteger( rawFile, 4 );
-	  }
+      for( int ii = 1; ii <= nDet; ii++ ) {
+        codeForUserTableValues[ii] = Header.readUnsignedInteger( rawFile, 4 );
+      }
 
-	  detectorAngle = new float[nDet + 1];
+      detectorAngle = new float[nDet + 1];
 
-	  for( int ii = 1; ii <= nDet; ii++ ) {
-		detectorAngle[ii] = ( float )Header.ReadVAXReal4( rawFile );
-	  }
+      for( int ii = 1; ii <= nDet; ii++ ) {
+        detectorAngle[ii] = ( float )Header.ReadVAXReal4( rawFile );
+      }
 
-	  userTable = new float[nUserTables][nDet + 1];
+      userTable = new float[nUserTables][nDet + 1];
 
-	  for( int jj = 0; jj < nUserTables; jj++ ) {
-		for( int ii = 1; ii <= nDet; ii++ ) {
-		  userTable[jj][ii] = ( float )Header.ReadVAXReal4( rawFile );
-		}
-	  }
-	} catch( IOException ex ) {}
+      for( int jj = 0; jj < nUserTables; jj++ ) {
+        for( int ii = 1; ii <= nDet; ii++ ) {
+          userTable[jj][ii] = ( float )Header.ReadVAXReal4( rawFile );
+        }
+      }
+    } catch( IOException ex ) {}
 
-	//looks complete based on libget.txt
+    //looks complete based on libget.txt
     
-	for (int i=0; i<monDetNums.length; i++)
-		System.out.println("monDetNums["+i+"]="+monDetNums[i]);
+    for (int i=0; i<monDetNums.length; i++)
+    	System.out.println("monDetNums["+i+"]="+monDetNums[i]);
   }
 
   //~ Methods ------------------------------------------------------------------
@@ -332,103 +332,103 @@ public class InstrumentSection {
    * Testbed.
    */
   public static void main( String[] args ) {
-	try {
-	  RandomAccessFile  rawFile = new RandomAccessFile( args[0], "r" );
-	  Header            header = new Header( rawFile );
-	  InstrumentSection is     = new InstrumentSection( rawFile, header );
+    try {
+      RandomAccessFile  rawFile = new RandomAccessFile( args[0], "r" );
+      Header            header = new Header( rawFile );
+      InstrumentSection is     = new InstrumentSection( rawFile, header );
 
-	  /*System.out.println( "version: " + is.version );
-		 System.out.println( "iName: " + is.iName );
-		 System.out.println( "chopFreq1: " + is.chopFreq1 );
-		 System.out.println( "chopFreq2: " + is.chopFreq2 );
-		 System.out.println( "chopFreq3: " + is.chopFreq3 );
-		 System.out.println( "delayC1: " + is.delayC1 );
-		 System.out.println( "delayC2: " + is.delayC2 );
-		 System.out.println( "delayC3: " + is.delayC3 );
-		 System.out.println( "maxErrorDelayC1: " + is.maxErrorDelayC1 );
-		 System.out.println( "maxErrorDelayC2: " + is.maxErrorDelayC2 );
-		 System.out.println( "maxErrorDelayC3: " + is.maxErrorDelayC3 );
-		 System.out.println( "apertureC1: " + is.apertureC1 );
-		 System.out.println( "apertureC2: " + is.apertureC2 );
-		 System.out.println( "apertureC3: " + is.apertureC3 );
-		 System.out.println( "statusC1: " + is.statusC1 );
-		 System.out.println( "statusC2: " + is.statusC2 );
-		 System.out.println( "statusC3: " + is.statusC3 );
-		 System.out.println( "mainShutter: " + is.mainShutter );
-		 System.out.println( "thermalShutter: " + is.thermalShutter );
-		 System.out.println( "beamapertureHoriz: " + is.beamapertureHoriz );
-		 System.out.println( "beamapertureVert: " + is.beamapertureVert );
-		 System.out.println( "scatteringPosition: " + is.scatteringPosition );
-		 System.out.println( "moderatorTypeNum: " + is.moderatorTypeNum );
-		 System.out.println( "detectorTankVacuum: " + is.detectorTankVacuum );
-		 System.out.println( "L1: " + is.L1 );
-			System.out.println( "rotorFrequency: " + is.rotorFrequency );
-			System.out.println( "rotorEnergy: " + is.rotorEnergy );
-			System.out.println( "rotorPhase: " + is.rotorPhase );
-			System.out.println( "rotorSlitPackage: " + is.rotorSlitPackage );
-			System.out.println( "slowChopper: " + is.slowChopper );
-		 System.out.println( "loqXCenter: " + is.loqXCenter );
-		 System.out.println( "loqYCenter: " + is.loqYCenter );
-			System.out.println( "beamStop: " + is.beamStop );
-			System.out.println( "radiusBeamStop: " + is.radiusBeamStop );
-		 System.out.println( "sourceToDetectorDist: " + is.sourceToDetectorDist );
-		 System.out.println( "foeAngle: " + is.foeAngle );
-		 System.out.println( "angleOfIncidence: " + is.angleOfIncidence );
-		 System.out.println( "nDet: " + is.nDet );
-		 System.out.println( "nMon: " + is.nMon );
-			System.out.println( "nUserTables: " + is.nUserTables );
-			System.out.println( "monDetNums: " );
-			for( int ii = 0; ii < is.nMon; ii++ ) {
-			  System.out.print( is.monDetNums[ii] + "  " );
-			}
-			System.out.println(  );
-			System.out.println( "monPrescale: " );
-			for( int ii = 0; ii < is.nMon; ii++ ) {
-			  System.out.print( is.monPrescale[ii] + "  " );
-			}
-			System.out.println(  );*/
-	  System.out.println( "spectrumNumbers: " );
+      /*System.out.println( "version: " + is.version );
+         System.out.println( "iName: " + is.iName );
+         System.out.println( "chopFreq1: " + is.chopFreq1 );
+         System.out.println( "chopFreq2: " + is.chopFreq2 );
+         System.out.println( "chopFreq3: " + is.chopFreq3 );
+         System.out.println( "delayC1: " + is.delayC1 );
+         System.out.println( "delayC2: " + is.delayC2 );
+         System.out.println( "delayC3: " + is.delayC3 );
+         System.out.println( "maxErrorDelayC1: " + is.maxErrorDelayC1 );
+         System.out.println( "maxErrorDelayC2: " + is.maxErrorDelayC2 );
+         System.out.println( "maxErrorDelayC3: " + is.maxErrorDelayC3 );
+         System.out.println( "apertureC1: " + is.apertureC1 );
+         System.out.println( "apertureC2: " + is.apertureC2 );
+         System.out.println( "apertureC3: " + is.apertureC3 );
+         System.out.println( "statusC1: " + is.statusC1 );
+         System.out.println( "statusC2: " + is.statusC2 );
+         System.out.println( "statusC3: " + is.statusC3 );
+         System.out.println( "mainShutter: " + is.mainShutter );
+         System.out.println( "thermalShutter: " + is.thermalShutter );
+         System.out.println( "beamapertureHoriz: " + is.beamapertureHoriz );
+         System.out.println( "beamapertureVert: " + is.beamapertureVert );
+         System.out.println( "scatteringPosition: " + is.scatteringPosition );
+         System.out.println( "moderatorTypeNum: " + is.moderatorTypeNum );
+         System.out.println( "detectorTankVacuum: " + is.detectorTankVacuum );
+         System.out.println( "L1: " + is.L1 );
+            System.out.println( "rotorFrequency: " + is.rotorFrequency );
+            System.out.println( "rotorEnergy: " + is.rotorEnergy );
+            System.out.println( "rotorPhase: " + is.rotorPhase );
+            System.out.println( "rotorSlitPackage: " + is.rotorSlitPackage );
+            System.out.println( "slowChopper: " + is.slowChopper );
+         System.out.println( "loqXCenter: " + is.loqXCenter );
+         System.out.println( "loqYCenter: " + is.loqYCenter );
+            System.out.println( "beamStop: " + is.beamStop );
+            System.out.println( "radiusBeamStop: " + is.radiusBeamStop );
+         System.out.println( "sourceToDetectorDist: " + is.sourceToDetectorDist );
+         System.out.println( "foeAngle: " + is.foeAngle );
+         System.out.println( "angleOfIncidence: " + is.angleOfIncidence );
+         System.out.println( "nDet: " + is.nDet );
+         System.out.println( "nMon: " + is.nMon );
+            System.out.println( "nUserTables: " + is.nUserTables );
+            System.out.println( "monDetNums: " );
+            for( int ii = 0; ii < is.nMon; ii++ ) {
+              System.out.print( is.monDetNums[ii] + "  " );
+            }
+            System.out.println(  );
+            System.out.println( "monPrescale: " );
+            for( int ii = 0; ii < is.nMon; ii++ ) {
+              System.out.print( is.monPrescale[ii] + "  " );
+            }
+            System.out.println(  );*/
+      System.out.println( "spectrumNumbers: " );
 
-	  for( int ii = 1; ii <= is.nDet; ii++ ) {
-		System.out.println( is.spectrumNumbers[ii] + "  " );
-	  }
+      for( int ii = 1; ii <= is.nDet; ii++ ) {
+        System.out.println( is.spectrumNumbers[ii] + "  " );
+      }
 
-	  /*
-		 System.out.println(  );
-		 System.out.println( "holdOff: " );
-		 for( int ii = 1; ii <= is.nDet; ii++ ) {
-		   System.out.print( is.holdOff[ii] + "  " );
-		 }
+      /*
+         System.out.println(  );
+         System.out.println( "holdOff: " );
+         for( int ii = 1; ii <= is.nDet; ii++ ) {
+           System.out.print( is.holdOff[ii] + "  " );
+         }
       
-		 System.out.println(  );
-		 System.out.println( "flightPath: " );
-		 for( int ii = 1; ii <= 30; ii++ ) {
-		   System.out.println( is.flightPath[ii] + "  " );
-		 }
+         System.out.println(  );
+         System.out.println( "flightPath: " );
+         for( int ii = 1; ii <= 30; ii++ ) {
+           System.out.println( is.flightPath[ii] + "  " );
+         }
       
-			System.out.println(  );
-			System.out.println( "codeforUserTableValues: " );
-			for( int ii = 1; ii <= is.nDet; ii++ ) {
-			  System.out.print( is.codeForUserTableValues[ii] + "  " );
-			}
+            System.out.println(  );
+            System.out.println( "codeforUserTableValues: " );
+            for( int ii = 1; ii <= is.nDet; ii++ ) {
+              System.out.print( is.codeForUserTableValues[ii] + "  " );
+            }
       
-		 System.out.println(  );
-		 System.out.println( "detectorAngle: " );
-		 for( int ii = 1; ii <= 30; ii++ ) {
-		   System.out.println( is.detectorAngle[ii] + "  " );
-		 }
-		 /*
-			System.out.println(  );
-			System.out.println( "userTable: " );
-			for( int jj = 0; jj < is.nUserTables; jj++ ) {
-			  System.out.println( "---Table " + jj );
-			  for( int ii = 1; ii <= is.nDet; ii++ ) {
-				System.out.print( is.userTable[jj][ii] + "  " );
-			  }
-			  System.out.println(  );
-			}
-			System.out.println(  );*/
-	} catch( IOException ex ) {}
+         System.out.println(  );
+         System.out.println( "detectorAngle: " );
+         for( int ii = 1; ii <= 30; ii++ ) {
+           System.out.println( is.detectorAngle[ii] + "  " );
+         }
+         /*
+            System.out.println(  );
+            System.out.println( "userTable: " );
+            for( int jj = 0; jj < is.nUserTables; jj++ ) {
+              System.out.println( "---Table " + jj );
+              for( int ii = 1; ii <= is.nDet; ii++ ) {
+                System.out.print( is.userTable[jj][ii] + "  " );
+              }
+              System.out.println(  );
+            }
+            System.out.println(  );*/
+    } catch( IOException ex ) {}
   }
 
   /**
@@ -438,7 +438,7 @@ public class InstrumentSection {
    * @return The detector angle for the specified detector.
    */
   public float getDetectorAngle( int index ) {
-	return detectorAngle[index];
+    return detectorAngle[index];
   }
 
   /**
@@ -448,6 +448,6 @@ public class InstrumentSection {
    * @return The flight path at the given index.
    */
   public float getFlightPath( int index ) {
-	return flightPath[index];
+    return flightPath[index];
   }
 }
