@@ -30,7 +30,11 @@
  *
  * For further information, see <http://www.pns.anl.gov/ISAW/>
  * $Log$
+ * Revision 1.15  2005/01/20 21:48:34  dennis
+ * Fixed dead @link in javadoc comment.
+ *
  * Revision 1.14  2004/07/12 19:06:31  kramer
+ *
  * Added methods to get the min and max regime number.  Improved the main method
  * (to be used for testing purposes).
  *
@@ -635,7 +639,7 @@ public class Rawfile {
    * @param num The regime in question.  Note:  The 
    * first time regime is at num=1 not num=0.  For num 
    * to be valid 1<=<code>num</code><=
-   * {@link InstrumentSection#getNumOfTimeRegimes() 
+   * {@link TimeSection#getNumOfTimeRegimes() 
    * getNumOfTimeRegimes()}.
    * @return One more than the number of spectra for 
    * time regime <code>num</code> or -1 if <code>num
@@ -696,7 +700,7 @@ public class Rawfile {
   /**
    * Get the crate number at detector <code>detectorNum</code>.  
    * Note:  The first detector is at <code>detectorNum</code>=1 not 0.
-   * @param detectorNum The number of the detector you are 
+   * @param detID The number of the detector you are 
    * refering you.  Note:  for <code>detectorNum</code> to be 
    * valid, 1 <= <code>detectorNum</code> <= 
    * {@link InstrumentSection#getNumberOfDetectors() 
@@ -712,7 +716,7 @@ public class Rawfile {
   /**
    * Get the slot number at detector <code>detectorNum</code>.  
    * Note:  The first detector is at <code>detectorNum</code>=1 not 0.
-   * @param detectorNum The number of the detector you are 
+   * @param detID The number of the detector you are 
    * refering you.  Note:  for <code>detectorNum</code> to be 
    * valid, 1 <= <code>detectorNum</code> <= 
    * {@link InstrumentSection#getNumberOfDetectors() 
@@ -728,7 +732,7 @@ public class Rawfile {
   /**
    * Get the position in the slot for detector <code>detectorNum</code>.  
    * Note:  The first detector is at <code>detectorNum</code>=1 not 0.
-   * @param detectorNum The number of the detector you are 
+   * @param detID The number of the detector you are 
    * refering you.  Note:  for <code>detectorNum</code> to be 
    * valid, 1 <= <code>detectorNum</code> <= 
    * {@link InstrumentSection#getNumberOfDetectors() 
@@ -751,7 +755,7 @@ public class Rawfile {
    * as the crate number corresponding to 
    * the detector with detector id <code>
    * detID</code>.
-  * @param detectorNum The number of the detector you are 
+  * @param detID The number of the detector you are 
    * refering you.  Note:  for <code>detectorNum</code> to be 
    * valid, 1 <= <code>detectorNum</code> <= 
    * {@link InstrumentSection#getNumberOfDetectors() 
