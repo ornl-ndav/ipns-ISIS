@@ -31,6 +31,10 @@
  * Modified:
  *
  *  $Log$
+ *  Revision 1.3  2004/07/02 16:43:07  dennis
+ *  Added different list of the first detector IDs in the grids,
+ *  that should match the IDs used in the SXDII raw file.
+ *
  *  Revision 1.2  2004/06/29 16:20:42  dennis
  *  Now implements IInstrument_Grid_Info.
  *  Made all data members private static.
@@ -46,6 +50,11 @@ package ISIS.Rawfile;
 import gov.anl.ipns.MathTools.Geometry.*;
 import DataSetTools.dataset.*;
 
+/**
+ *  This class contains methods to get information about the number 
+ *  of detector (grids) and the spectrum IDs associated with the grids
+ *  for the SXDII instrument at ISIS.
+ */
 public class SXD_Grids  implements IInstrument_Grid_Info
 {
   static String units = "meter";
@@ -166,10 +175,22 @@ public class SXD_Grids  implements IInstrument_Grid_Info
          { SXD_Det1, SXD_Det2, SXD_Det3, SXD_Det4,   SXD_Det5, SXD_Det6,
            SXD_Det7, SXD_Det8, SXD_Det9, SXD_Det10,  SXD_Det11         };
 
+//
+// The following list of first spectrum ID's is consistent with the values
+// listed in the raw file.
+//
+  private static final int first_spec_id[] =
+         {        2,     4098,     8194,     12290,     16386,    20482,
+              24578,    28674,    32770,     36866,     40962          };
+
+/*  
+    The following list of first spectrum ID's is consistent with the values
+    listed in the sxdII.config file, but not what is listed in the raw file
+
   private static final int first_spec_id[] =
          {        1,     4101,     8201,     12301,     16401,    20501,
               24601,    28701,    32801,     36901,     41001          };
-
+*/
 
   /* --------------------------- numGrids ------------------------------- */
   /**
