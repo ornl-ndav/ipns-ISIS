@@ -30,7 +30,12 @@
  * For further information, see <http://www.pns.anl.gov/ISAW/>
  * 
  * $Log$
+ * Revision 1.4  2004/09/23 17:29:03  dennis
+ * Changed to catch RuntimeException instead of generic Exception in
+ * two catch statements.
+ *
  * Revision 1.3  2004/06/16 16:03:51  kramer
+ *
  * Added the GNU license header.
  *
  * Revision 1.2  2004/04/30 00:18:18  bouzekc
@@ -92,7 +97,7 @@ public class LibGetTest {
     //CHANGED-THIS DID NOT ORIGINALLY RETURN A VALUE OR THROW AN EXCEPTION
     try {
       //TCB =ISISio.getParr(runID,"TCB1", maxTCB, NTCB, errCode);
-    } catch( Exception e ) {
+    } catch( RuntimeException e ) {
       System.out.println( "Error in io.getParr: " );
       e.printStackTrace(  );
 
@@ -107,7 +112,7 @@ public class LibGetTest {
     //    CHANGED-THIS DID NOT ORIGINALLY RETURN A VALUE OR THROW AN EXCEPTION
     try {
       //counts = ISISio.getDat(runID,iSpec,1,MAXTCB);
-    } catch( Exception e ) {
+    } catch( RuntimeException e ) {
       System.out.println( "Error in io.getDat: " );
       e.printStackTrace(  );
 
