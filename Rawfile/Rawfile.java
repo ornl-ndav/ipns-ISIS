@@ -30,7 +30,13 @@
  *
  * For further information, see <http://www.pns.anl.gov/ISAW/>
  * $Log$
+ * Revision 1.11  2004/07/01 22:12:32  kramer
+ * Added methods to get the min and max detector IDs corresponding to monitors.
+ * Also, fixed MinSubgroupID() to return a non-zero result.  Fixed,
+ * MinSubgroupID() and MaxSubgroupID() to use 1 as the first histogram (not 0).
+ *
  * Revision 1.10  2004/06/24 21:57:17  kramer
+ *
  * Changed all of the fields' visiblity from protected to private.  Fields
  * are now accessed from other classes in this package through getter methods
  * instead of using <object>.<field name>.  Also, this class should now be
@@ -104,6 +110,9 @@ public class Rawfile {
   private DataSection       dataSect;
   private boolean           leaveOpen;
   private String            filename;
+  
+  private int minMonitorID;
+  private int maxMonitorID;
 
   //~ Constructors -------------------------------------------------------------
 
@@ -124,6 +133,9 @@ public class Rawfile {
       dataSect = new DataSection();
       leaveOpen = false;
       filename = new String();
+      
+      minMonitorID = -1;
+      maxMonitorID = -1;
    }
 
   /**
@@ -226,18 +238,72 @@ public class Rawfile {
 
     return answer;
   }
-
+  
+  /**
+   * Get the smallest detector ID corresponding 
+   * to a monitor.
+   * @return The smallest detector ID 
+   * corresponding to a monitor or -1 if 
+   * there aren't any monitors.
+   */
+  public int MinMonitorID()
+  {
+     if (minMonitorID != -1)
+        return minMonitorID;
+     else
+     {
+        int numMon = instSect.getNumberOfMonitors();
+        if (numMon >= 1)
+        {
+           int min = instSect.getMonDetNumForMonitor(1);
+           for (int i=2; i<=numMon; i++)
+              min = Math.min(min,instSect.getMonDetNumForMonitor(i)); 
+           minMonitorID = min;
+           return min;
+        }
+        else
+           return -1;
+     }
+  }
+  
+  /**
+   * Get the largest detector ID corresponding 
+   * to a monitor.
+   * @return The largest detector ID 
+   * corresponding to a monitor or -1 if 
+   * there aren't any monitors.
+   */
+  public int MaxMonitorID()
+  {
+     if (maxMonitorID != -1)
+        return maxMonitorID;
+     else
+     {
+        int numMon = instSect.getNumberOfMonitors();
+        if (numMon >= 1)
+        {
+           int max = instSect.getMonDetNumForMonitor(1);
+           for (int i=2; i<=numMon; i++)
+              max = Math.max(max,instSect.getMonDetNumForMonitor(i));
+           maxMonitorID = max;
+           return max;
+        }
+        else
+           return -1;
+     }
+  }
+  
   /**
    * Get the maximum subgroup ID (aka the pectrum number as it is 
    * recorded in the ISIS RAW file).
    * @param hist The histogram of spectra to search through.  Note:  
-   * The first histogram is at hist=0.
+   * The first histogram is at hist=1.
    * @return The maximum group of detector data or -1 if the value of 
    * <code>hist</code> is invalid.
    */
   public int MaxSubgroupID(int hist)
   {
-     if (hist == 0)
+     if (hist == 1)
      {
        int maxVal = 0;
 
@@ -258,29 +324,36 @@ public class Rawfile {
    * Get the minimum subgroup ID (aka the pectrum number as it is 
    * recorded in the ISIS RAW file).
    * @param hist The histogram of spectra to search through.  Note:  
-   * The first histogram is at hist=0.
-   * @return The minimum group of detector data or -1 if the value of 
-   * <code>hist</code> is invalid.
+   * The first histogram is at hist=1.
+   * @return Possible values:<br>
+   * The minimum group of detector data or<br>
+   * -1 if the value of <code>hist</code> is invalid or<br>
+   * -2 if the histogram does not contain any detectors
    */
   public int MinSubgroupID(int hist)
   {
-     if (hist == 0)
+     if (hist == 1)
      {
-       int minVal = 0;
-
        //these instSec were originally instDesc.  I changed them so it would 
       //compile
-       for( int ii = 1; ii <= instSect.getNumberOfDetectors(); ii++ )
+       int numDet = instSect.getNumberOfDetectors();
+       if (numDet >= 1)
        {
-          if (!IsSubgroupBeamMonitor(ii))
-            minVal = Math.min( instSect.getSpectrumNumberForDetector(ii), minVal );
+          int minVal = instSect.getSpectrumNumberForDetector(1);
+          for( int ii = 1; ii <= numDet; ii++ )
+          {
+             if (!IsSubgroupBeamMonitor(ii))
+                minVal = Math.min( instSect.getSpectrumNumberForDetector(ii), minVal );
+          }
+          return minVal;
        }
-       return minVal;
+       else
+          return -2;
      }
      else
        return -1;
   }
-
+  
   /**
    * Get the Time Channel Boundary array (where the time is in 
    * microseconds) for the given time regime.
@@ -639,6 +712,7 @@ public class Rawfile {
       
       System.out.println("##########################################");
   	}
+   
   }
   
   //these are all of the old methods from this file
