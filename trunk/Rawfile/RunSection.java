@@ -30,7 +30,12 @@
  *
  * For further information, see <http://www.pns.anl.gov/ISAW/>
  * $Log$
+ * Revision 1.7  2004/06/22 14:51:09  kramer
+ * Added getter methos (with documentation).  Now this class imports 2 classes
+ * instead of the entire java.io package.
+ *
  * Revision 1.6  2004/06/16 20:40:50  kramer
+ *
  * Now the source will contain the cvs logs.  Replaced tabs with 3 spaces,
  * created a default contstructor where fields will be initialized (instead
  * of when they are first declared), and when exceptions are caught a stack
@@ -40,8 +45,8 @@
 
 package ISIS.Rawfile;
 
-import java.io.*;
-
+import java.io.RandomAccessFile;
+import java.io.IOException;
 
 /**
  * Class to retrieve run section information from a RAW file.
@@ -312,4 +317,261 @@ public class RunSection {
     	ex.printStackTrace();
     }
   }
+  
+   /**
+    * Get the actual run duration.
+    * @return The actual run duration.
+    */
+   public int getActualRunDuration()
+   {
+      return actualRunDuration;
+   }
+
+   /**
+    * Get the actual run duration in seconds.
+    * @return The actual run duration in seconds.
+    */
+   public int getActualRunDurationInSec()
+   {
+      return actualRunDurationSec;
+   }
+
+   /**
+    * Get the dump interval.
+    * @return The dump interval.
+    */
+   public int getDumpInterval()
+   {
+      return dumpInterval;
+   }
+
+   /**
+    * Get the finish date.
+    * @return The finish date (in the format dd-mm-yyyy_).
+    */
+   public String getFinishDate()
+   {
+      return finishDate;
+   }
+
+   /**
+    * Get the finish time.
+    * @return The finish time (in the format 
+    * hh-mm-ss).
+    */
+   public String getFinishTime()
+   {
+      return finishTime;
+   }
+
+   /**
+    * Get the good proton charge.
+    * @return The good proton charge (in {mu}A.hr).
+    */
+   public float getGoodProtonCharge()
+   {
+      return goodProtonCharge;
+   }
+
+   /**
+    * Get monitor sum 1.
+    * @return Monitor sum 1.
+    */
+   public int getMonitorSum1()
+   {
+      return monitorSum1;
+   }
+
+   /**
+    * Get monitor sum 2.
+    * @return Monitor sum 2.
+    */
+   public int getMonitorSum2()
+   {
+      return monitorSum2;
+   }
+
+   /**
+    * Get monitor sum 3.
+    * @return Monitor sum 3.
+    */
+   public int getMonitorSum3()
+   {
+      return monitorSum3;
+   }
+
+   /**
+    * Get the number of 'good' frames.
+    * @return The number of 'good' frames.
+    */
+   public int getNumberOfGoodFrames()
+   {
+      return numberOfGoodFrames;
+   }
+
+   /**
+    * Get the RAL proposal number.
+    * @return The RAL proposal number.
+    */
+   public int getRALProposalNum()
+   {
+      return ralProposalNum;
+   }
+
+   /**
+    * Get the actual run duration.
+    * @return The actual run duration (the 
+    * units are the same as the units from 
+    * {@link #getActualRunDuration() 
+    * the actual run duration}.
+    */
+   public int getRequiredRunDuration()
+   {
+      return requiredRunDuration;
+   }
+
+   /**
+    * Get the run number.
+    * @return The run number (starting at 1).
+    */
+   public int getRunNumber()
+   {
+      return runNumber;
+   }
+
+   /**
+    * Get the run title.
+    * @return The run title.
+    */
+   public String getRunTitle()
+   {
+      return runTitle;
+   }
+
+   /**
+    * Get the scaler for the actual run 
+    * duration.
+    * @return The scaler for {@link 
+    * #getActualRunDuration() the actual 
+    * run duration} (1=sec, . . . . ).
+    */
+   public int getScalerForActualRunDuration()
+   {
+      return scalerForRPB1;
+   }
+
+   /**
+    * Get the scaler for the dump interval.
+    * @return The scaler for the dump interval.
+    */
+   public int getScalerForRPB4()
+   {
+      return scalerForRPB4;
+   }
+
+   /**
+    * Get the test interval of the scaler for {@link 
+    * #getActualRunDuration() the actual run duration}
+    * @return The test interval of the scaler for {@link 
+    * #getActualRunDuration() the actual run duration} 
+    * (in seconds).
+    */
+   public int getTestIntervalOfTheScalerForTheActualRunDuration()
+   {
+      return testInterval2;
+   }
+
+   /**
+    * Get the test interval of the scaler for the dump interval.
+    * @return The test interval of the scaler for the dump 
+    * interval (in seconds).
+    */
+   public int getTestIntervalOfTheScalerForTheDumpInterval()
+   {
+      return testInterval5;
+   }
+
+   /**
+    * Get the total number of frames.
+    * @return The total number of frames.
+    */
+   public int getTotalNumberOfFrames()
+   {
+      return totalNumberOfFrames;
+   }
+
+   /**
+    * Get the total proton charge.
+    * @return The total proton carge (in {mu}A.hr).
+    */
+   public float getTotalProtonCharge()
+   {
+      return totalProtonCharge;
+   }
+
+   /**
+    * Get 2**k.
+    * @return 2**k (SNS frequency(Hz)=50/2**k).
+    */
+   public int get2byK()
+   {
+      return twobyk;
+   }
+
+   /**
+    * Get the user institution.
+    * @return The user institution.
+    */
+   public String getUserInstitution()
+   {
+      return userInstitution;
+   }
+
+   /**
+    * Get the user name.
+    * @return The user name.
+    */
+   public String getUserName()
+   {
+      return userName;
+   }
+
+   /**
+    * Get the user's first telephone number.
+    * @return The user's first telephone 
+    * number (it is a daytime number).
+    */
+   public String getUserPhone1()
+   {
+      return userPhone1;
+   }
+
+   /**
+    * Get the user's second telephone number.
+    * @return The user's second telephone 
+    * number (it is a daytime number).
+    */
+   public String getUserPhone2()
+   {
+      return userPhone2;
+   }
+
+   /**
+    * Get the user's third telephone number.
+    * @return The user's third telephone 
+    * number (it is a nighttime number).
+    */
+   public String getUserPhone3()
+   {
+      return userPhone3;
+   }
+
+   /**
+    * Get the Run section version number.
+    * @return The Run section version number.
+    */
+   public int getVersion()
+   {
+      return version;
+   }
 }
