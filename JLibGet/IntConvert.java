@@ -11,7 +11,6 @@ package ISIS.JLibGet;
  * Routines to convert from VAX to local integer representations
  */
 public class IntConvert {
-
   //~ Methods ******************************************************************
 
   /**
@@ -103,14 +102,14 @@ public class IntConvert {
   }
 
   /**
-   * Swaps the bytes around in the int, e.g.<br><br>
-   * 
-   * 0100 1100 0100 1111 0101 0001 0011 1000<br><br>
-   * 
-   * goes to<br><br>
-   * 
-   * 0011 1000 0101 0001 0100 1111 0100 1100 
-   * 
+   * Swaps the bytes around in the int, e.g.<br>
+   * <br>
+   * 0100 1100 0100 1111 0101 0001 0011 1000<br>
+   * <br>
+   * goes to<br>
+   * <br>
+   * 0011 1000 0101 0001 0100 1111 0100 1100
+   *
    * @param a The int to swap around.
    */
   private int swapInt( int a ) {

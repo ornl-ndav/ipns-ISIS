@@ -22,13 +22,13 @@ public class GetSect {
 
   //~ Instance fields **********************************************************
 
-  private boolean readWholeFile    = true;
-  private String file_name;  // Name of the file to buffer (passed from fortran)
-  private byte[] file_buffer       = new byte[50];
-  private long file_size           = 0;  // How big "file_name" is  
-  private long buffer_iunit        = 0;  // Fortran unit associated with "file_buffer" 
-  private RandomAccessFile file_fd = null;
-  private int FOPEN_BUFFER_SIZE    = 0;
+  private boolean          readWholeFile     = true;
+  private String           file_name;  // Name of the file to buffer (passed from fortran)
+  private byte[]           file_buffer       = new byte[50];
+  private long             file_size         = 0;  // How big "file_name" is  
+  private long             buffer_iunit      = 0;  // Fortran unit associated with "file_buffer" 
+  private RandomAccessFile file_fd           = null;
+  private int              FOPEN_BUFFER_SIZE = 0;
 
   //~ Methods ******************************************************************
 
@@ -57,7 +57,7 @@ public class GetSect {
     }
 
     String error_message;
-    int first_call = 1;
+    int    first_call = 1;
 
     if( first_call == 1 ) {
       first_call          = 0;
@@ -157,9 +157,9 @@ public class GetSect {
    * @return Error code information.
    */
   private int getsectFile( int istart, int ilong, int[] ivalue ) {
-    int ierr             = 0;
-    String error_message = null;
-    final int sz         = 4;  //sizeof (int);
+    int       ierr          = 0;
+    String    error_message = null;
+    final int sz            = 4;  //sizeof (int);
 
     try {
       if( readWholeFile ) {
