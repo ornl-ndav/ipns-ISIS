@@ -30,7 +30,12 @@
  *
  * For further information, see <http://www.pns.anl.gov/ISAW/>
  * $Log$
+ * Revision 1.12  2004/07/01 22:01:22  kramer
+ * Corrected the documentation for the method getNumberOfDetectors() to
+ * emphasize that the number includes the monitors.
+ *
  * Revision 1.11  2004/07/01 20:41:58  kramer
+ *
  * Fixed the isAMonitor method.  Now it does not cause an infinite loop.
  *
  * Revision 1.10  2004/06/24 21:40:43  kramer
@@ -196,7 +201,7 @@ public class InstrumentSection {
   private int       maxErrorDelayC3;
   /** Moderator type number. */
   private int       moderatorTypeNum;
-  /** Number of detectors. */
+  /** Number of detectors (including the monitors). */
   private int       nDet;
 
   //number of detectors
@@ -848,8 +853,8 @@ public class InstrumentSection {
    }
 
    /**
-    * Get the number of detectors.
-    * @return The number of detectors.
+    * Get the number of detectors (including the monitors).
+    * @return The number of detectors (including the monitors).
     */
    public int getNumberOfDetectors()
    {
