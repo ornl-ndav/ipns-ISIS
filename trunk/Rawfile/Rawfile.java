@@ -30,7 +30,12 @@
  *
  * For further information, see <http://www.pns.anl.gov/ISAW/>
  * $Log$
+ * Revision 1.9  2004/06/22 16:38:34  kramer
+ * Added a method to get the run ID.  Now the main method also reads Header
+ * information from a file.
+ *
  * Revision 1.8  2004/06/16 20:38:19  kramer
+ *
  * Replaced tabs with 3 spaces and created a default constructor where fields
  * are now initialized (instead of when they were first declared).
  *
@@ -416,6 +421,16 @@ public class Rawfile {
   public String UserName(  ) {
     return runSect.userName;
   }
+  
+  /**
+   * Get the run ID.
+   * @return The run ID.
+      *
+   */
+  public String getRunID()
+  {
+     return header.runID;
+  }
 
   /**
    * Testbed
@@ -431,6 +446,11 @@ public class Rawfile {
          fileArr[0] = args[fileNum];
       System.out.println("Processing ISIS RAW file:  "+rawfile.filename);
       System.out.println("    RAW File name = "+rawfile.rawfileName);
+      
+      System.out.println("*******************************************************");
+      System.out.println("HEADER Section");
+      System.out.println("*******************************************************");
+      Header.main(fileArr);
 
       System.out.println("*******************************************************");
       System.out.println("RUN Section");
