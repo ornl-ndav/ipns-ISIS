@@ -30,7 +30,13 @@
  *
  * For further information, see <http://www.pns.anl.gov/ISAW/>
  * $Log$
+ * Revision 1.8  2004/06/18 18:29:18  kramer
+ * Added getter methods (with documentation) for all of the fields.  Now the
+ * class imports two classes instead of the entire java.io package.  It also
+ * warns the user if it thinks it cannot accurately read data from the file.
+ *
  * Revision 1.7  2004/06/16 20:40:50  kramer
+ *
  * Now the source will contain the cvs logs.  Replaced tabs with 3 spaces,
  * created a default contstructor where fields will be initialized (instead
  * of when they are first declared), and when exceptions are caught a stack
@@ -40,8 +46,8 @@
 
 package ISIS.Rawfile;
 
-import java.io.*;
-
+import java.io.RandomAccessFile;
+import java.io.IOException;
 
 /**
  * Class to get instrument information from an ISIS RAW file.
@@ -275,6 +281,11 @@ public class InstrumentSection {
     try {
       rawFile.seek( startAddress );
       version = Header.readUnsignedInteger( rawFile, 4 );
+      if (version != 2)
+         System.out.println("WARNING:  Unrecognized Instrument Section version number."
+         +"\n          Version found = "+version
+         +"\n          Version numbers corresponding to data that can be processed  = 2"
+         +"\n          Data may be incorrectly read and/or interpreted from the file.");
 
       StringBuffer temp;
 
@@ -425,37 +436,33 @@ public class InstrumentSection {
          System.out.println( "moderatorTypeNum: " + is.moderatorTypeNum );
          System.out.println( "detectorTankVacuum: " + is.detectorTankVacuum );
          System.out.println( "L1: " + is.L1 );
-            System.out.println( "rotorFrequency: " + is.rotorFrequency );
-            System.out.println( "rotorEnergy: " + is.rotorEnergy );
-            System.out.println( "rotorPhase: " + is.rotorPhase );
-            System.out.println( "rotorSlitPackage: " + is.rotorSlitPackage );
-            System.out.println( "slowChopper: " + is.slowChopper );
+         System.out.println( "rotorFrequency: " + is.rotorFrequency );
+         System.out.println( "rotorEnergy: " + is.rotorEnergy );
+         System.out.println( "rotorPhase: " + is.rotorPhase );
+         System.out.println( "rotorSlitPackage: " + is.rotorSlitPackage );
+         System.out.println( "slowChopper: " + is.slowChopper );
          System.out.println( "loqXCenter: " + is.loqXCenter );
          System.out.println( "loqYCenter: " + is.loqYCenter );
-            System.out.println( "beamStop: " + is.beamStop );
-            System.out.println( "radiusBeamStop: " + is.radiusBeamStop );
+         System.out.println( "beamStop: " + is.beamStop );
+         System.out.println( "radiusBeamStop: " + is.radiusBeamStop );
          System.out.println( "sourceToDetectorDist: " + is.sourceToDetectorDist );
          System.out.println( "foeAngle: " + is.foeAngle );
          System.out.println( "angleOfIncidence: " + is.angleOfIncidence );
          System.out.println( "nDet: " + is.nDet );
          System.out.println( "nMon: " + is.nMon );
-            System.out.println( "nUserTables: " + is.nUserTables );
-            System.out.println( "monDetNums: " );
-            for( int ii = 0; ii < is.nMon; ii++ ) {
-              System.out.print( is.monDetNums[ii] + "  " );
-            }
-            System.out.println(  );
-            System.out.println( "monPrescale: " );
-            for( int ii = 0; ii < is.nMon; ii++ ) {
-              System.out.print( is.monPrescale[ii] + "  " );
-            }
-            System.out.println(  );
-      System.out.println( "spectrumNumbers: " );
+         System.out.println( "nUserTables: " + is.nUserTables );
+         System.out.println( "monDetNums: " );
+         for( int ii = 0; ii < is.nMon; ii++ )
+           System.out.print( is.monDetNums[ii] + "  " );
+         System.out.println(  );
+         System.out.println( "monPrescale: " );
+         for( int ii = 0; ii < is.nMon; ii++ )
+           System.out.print( is.monPrescale[ii] + "  " );
+         System.out.println(  );
+         System.out.println( "spectrumNumbers: " );
 
-      for( int ii = 1; ii <= is.nDet; ii++ ) {
-        System.out.println( is.spectrumNumbers[ii] + "  " );
-      }
-
+         for( int ii = 1; ii <= is.nDet; ii++ )
+           System.out.println( is.spectrumNumbers[ii] + "  " );
       
          System.out.println(  );
          System.out.println( "holdOff: " );
@@ -500,22 +507,528 @@ public class InstrumentSection {
   }
 
   /**
-   * Get the detector angle for the specified detector.
-   * @param index detector number
-   *
-   * @return The detector angle for the specified detector.
+   * Get the detector angle for detector <code>detectorNum</code>.  Note:  
+   * the first detector is at <code>detectorNum</code>=1 not 0.
+   * @param detectorNum The number of the detector you are referring to.  
+   * Note:  For <code>detectorNum</code> to be valid, 1 <= 
+   * <code>detectorNum</code> <= {@link #getNumberOfDetectors() 
+   * getNumberOfDetectors()}.
+   * @return The detector angle for the detector or Float.NaN if 
+   * <code>detectorNum</code> is invallid.
    */
-  public float getDetectorAngle( int index ) {
-    return detectorAngle[index];
+  public float getDetectorAngleForDetector( int detectorNum )
+  {
+     if (detectorNum>=1 && detectorNum<=getNumberOfDetectors())
+         return detectorAngle[detectorNum];
+     else
+         return Float.NaN;
   }
 
   /**
-   * Get the flight path at the given index.
-   * @param index The index for the flight path.
-   *
-   * @return The flight path at the given index.
+   * Get the fight path for detector <code>detectorNum</code>.  Note:  
+   * the first detector is at <code>detectorNum</code>=1 not 0.
+   * @param detectorNum The number of the detector you are referring to.  
+   * Note:  For <code>detectorNum</code> to be valid, 1 <= 
+   * <code>detectorNum</code> <= {@link #getNumberOfDetectors() 
+   * getNumberOfDetectors()}.
+   * @return The flight path for the detector or Float.NaN if 
+   * <code>detectorNum</code> is invallid.
    */
-  public float getFlightPath( int index ) {
-    return flightPath[index];
+  public float getFlightPathForDetector( int detectorNum )
+  {
+     if (detectorNum>=1 && detectorNum<=getNumberOfDetectors())
+         return flightPath[detectorNum];
+     else
+         return Float.NaN;
   }
+  
+   /**
+    * Get the angle of incidence.
+    * @return The angle of incidence.
+    */
+   public float getAngleOfIncidence()
+   {
+      return angleOfIncidence;
+   }
+
+   /**
+    * Get apperture c1.
+    * @return Apperture c1.
+    */
+   public int getApertureC1()
+   {
+     return apertureC1;
+   }
+
+   /**
+    * Get apperture c2.
+    * @return Apperture c2.
+    */
+   public int getApertureC2()
+   {
+      return apertureC2;
+   }
+
+   /**
+    * Get apperture c3.
+    * @return Apperture c3.
+    */
+   public int getApertureC3()
+   {
+      return apertureC3;
+   }
+
+   /**
+    * Get the beam apperture horizontal.
+    * @return The beam apperture horizontal (in mm).
+    */
+   public float getBeamAppertureHoriz()
+   {
+      return beamapertureHoriz;
+   }
+
+   /**
+    * Get the beam apperture vertical.
+    * @return The beam apperture vertical (in mm).
+    */
+   public float getBeamAppertureVert()
+   {
+      return beamapertureVert;
+   }
+
+   /**
+    * Get the beam stop.
+    * @return The beam stop.
+    */
+   public int getBeamStop()
+   {
+      return beamStop;
+   }
+
+   /**
+    * Get the frequency of chopper 1.
+    * @return The frequency of chopper 1 (in Hz).
+    */
+   public float getChopperFreq1()
+   {
+      return chopFreq1;
+   }
+
+   /**
+    * Get the frequency of chopper 2.
+    * @return The frequency of chopper 2 (in Hz).
+    */
+   public float getChopperFreq2()
+   {
+      return chopFreq2;
+   }
+
+   /**
+    * Get the frequency of chopper 3.
+    * @return The frequency of chopper 3 (in Hz).
+    */
+   public float getChopperFreq3()
+   {
+      return chopFreq3;
+   }
+
+  /**
+   * Get the code for the user table for detector <code>detectorNum</code>.  Note:  
+   * the first detector is at <code>detectorNum</code>=1 not 0.
+   * @param detectorNum The number of the detector you are referring to.  
+   * Note:  For <code>detectorNum</code> to be valid, 1 <= 
+   * <code>detectorNum</code> <= {@link #getNumberOfDetectors() 
+   * getNumberOfDetectors()}.
+   * @return The code for the user table for the detector or -1 if 
+   * <code>detectorNum</code> is invallid.
+   */
+   public int getCodeForUserTableValuesForDetector(int detectorNum)
+   {
+      if (detectorNum>=1 && detectorNum<=getNumberOfDetectors())
+         return codeForUserTableValues[detectorNum];
+      else
+         return -1;
+   }
+
+   /**
+    * Get the delay c1.
+    * @return The delay c1 (in microseconds).
+    */
+   public int getDelayC1()
+   {
+      return delayC1;
+   }
+
+   /**
+    * Get the delay c2.
+    * @return The delay c2 (in microseconds).
+    */
+   public int getDelayC2()
+   {
+      return delayC2;
+   }
+
+   /**
+    * Get the delay c3.
+    * @return The delay c3 (in microseconds).
+    */
+   public int getDelayC3()
+   {
+      return delayC3;
+   }
+
+   /**
+    * Get the detector tank vacuum.
+    * @return The detector tank vaccum.<br>
+    * 1=vacuum
+    */
+   public int getDetectorTankVacuum()
+   {
+      return detectorTankVacuum;
+   }
+
+   /**
+    * Get the FOE angle.
+    * @return The FOE angle.
+    */
+   public float getFOEAngle()
+   {
+      return foeAngle;
+   }
+
+  /**
+   * Get the hold off for detector <code>detectorNum</code>.  Note:  
+   * the first detector is at <code>detectorNum</code>=1 not 0.
+   * @param detectorNum The number of the detector you are referring to.  
+   * Note:  For <code>detectorNum</code> to be valid, 1 <= 
+   * <code>detectorNum</code> <= {@link #getNumberOfDetectors() 
+   * getNumberOfDetectors()}.
+   * @return The hold off for the detector or Float.NaN if 
+   * <code>detectorNum</code> is invallid.
+   */
+   public float getHoldOffForDetector(int detectorNum)
+   {
+      if (detectorNum>=1 && detectorNum<=getNumberOfDetectors())
+         return holdOff[detectorNum];
+      else
+         return Float.NaN;
+   }
+
+   /**
+    * Get the instrument's name.
+    * @return The instrument's name.
+    */
+   public String getInstrumentName()
+   {
+      return iName;
+   }
+
+   /**
+    * Get L1.
+    * @return L1.
+    */
+   public float getL1()
+   {
+      return L1;
+   }
+
+   /**
+    * Get LOQ X center.
+    * @return LOQ X center.
+    */
+   public float getLOQXCenter()
+   {
+      return loqXCenter;
+   }
+
+   /**
+    * Get LOQ Y center.
+    * @return LOQ Y center.
+    */
+   public float getLoqYCenter()
+   {
+      return loqYCenter;
+   }
+
+   /**
+    * Get the main shutter value.
+    * @return The main shutter value.<br>
+    * 1=open
+    */
+   public int getMainShutter()
+   {
+      return mainShutter;
+   }
+
+   /**
+    * Get the max error on delay c1.
+    * @return The max error on delay c1 (in microseconds).
+    */
+   public int getMaxErrorDelayC1()
+   {
+      return maxErrorDelayC1;
+   }
+
+   /**
+    * Get the max error on delay c2.
+    * @return The max error on delay c2 (in microseconds).
+    */
+   public int getMaxErrorDelayC2()
+   {
+      return maxErrorDelayC2;
+   }
+
+   /**
+    * Get the max error on delay c3.
+    * @return The max error on delay c3 (in microseconds).
+    */
+   public int getMaxErrorDelayC3()
+   {
+      return maxErrorDelayC3;
+   }
+
+   /**
+    * Get the moderator type number.
+    * @return The moderator type number.
+    */
+   public int getModeratorTypeNum()
+   {
+      return moderatorTypeNum;
+   }
+
+  /**
+   * Get the detector number for monitor <code>monitorNum</code>.  Note:  
+   * the first monitor is at <code>monitorNum</code>=1 not 0.
+   * @param monitorNum The number of the monitor you are referring to.  
+   * Note:  For <code>monitorNum</code> to be valid, 1 <= 
+   * <code>monitorNum</code> <= {@link #getNumberOfMonitors() 
+   * getNumberOfMonitors()}.
+   * @return The detector number for the monitor or -1 if 
+   * <code>monitorNum</code> is invallid.
+   */
+   public int getMonDetNumForMonitor(int monitorNum)
+   {
+      if (monitorNum>=1 && monitorNum<=getNumberOfMonitors())
+         return monDetNums[monitorNum-1];
+      else
+         return -1;
+   }
+
+  /**
+   * Get the prescale value for monitor <code>monitorNum</code>.  Note:  
+   * the first monitor is at <code>monitorNum</code>=1 not 0.
+   * @param monitorNum The number of the monitor you are referring to.  
+   * Note:  For <code>monitorNum</code> to be valid, 1 <= 
+   * <code>monitorNum</code> <= {@link #getNumberOfMonitors() 
+   * getNumberOfMonitors()}.
+   * @return The prescale value for the monitor or -1 if 
+   * <code>monitorNum</code> is invallid.
+   */
+   public int getMonPrescaleForMonitor(int monitorNum)
+   {
+      if (monitorNum>=1 && monitorNum<=getNumberOfMonitors())
+         return monPrescale[monitorNum-1];
+      else
+         return -1;
+   }
+
+   /**
+    * Get the number of detectors.
+    * @return The number of detectors.
+    */
+   public int getNumberOfDetectors()
+   {
+      return nDet;
+   }
+
+   /**
+    * Get the number of monitors.
+    * @return The number of monitors.
+    */
+   public int getNumberOfMonitors()
+   {
+      return nMon;
+   }
+
+   /**
+    * Get the number of user defined tables.
+    * @return The number of user defined tables.
+    */
+   public int getNumberOfUserTables()
+   {
+      return nUserTables;
+   }
+
+   /**
+    * Get the radius beam stop.
+    * @return The radius beam stop.
+    */
+   public float getRadiusBeamStop()
+   {
+      return radiusBeamStop;
+   }
+
+   /**
+    * Get the rotor energy.
+    * @return The rotor energy.
+    */
+   public float getRotorEnergy()
+   {
+      return rotorEnergy;
+   }
+
+   /**
+    * Get the rotor frequency.
+    * @return The rotor frequency.
+    */
+   public float getRotorFrequency()
+   {
+      return rotorFrequency;
+   }
+
+   /**
+    * Get the rotor phase.
+    * @return The rotor phase.
+    */
+   public float getRotorPhase()
+   {
+      return rotorPhase;
+   }
+
+   /**
+    * Get the rotor slit package.
+    * @return The rotor slit package.
+    */
+   public int getRotorSlitPackage()
+   {
+      return rotorSlitPackage;
+   }
+
+   /**
+    * Get the scattering position.
+    * @return The scattering position (eg 1 or 2 HRPD).
+    */
+   public int getScatteringPosition()
+   {
+      return scatteringPosition;
+   }
+
+   /**
+    * Get the slow chopper.
+    * @return The slow chopper.
+    */
+   public int getSlowChopper()
+   {
+      return slowChopper;
+   }
+
+   /**
+    * Get the distance from the source to the detector.
+    * @return The distance from the source to the detector.
+    */
+   public float getSourceToDetectorDist()
+   {
+      return sourceToDetectorDist;
+   }
+
+  /**
+   * Get the spectrum number for detector <code>detectorNum</code>.  Note:  
+   * the first detector is at <code>detectorNum</code>=1 not 0.
+   * @param detectorNum The number of the detector you are referring to.  
+   * Note:  For <code>detectorNum</code> to be valid, 1 <= 
+   * <code>detectorNum</code> <= {@link #getNumberOfDetectors() 
+   * getNumberOfDetectors()}.
+   * @return The spectrum number for the detector or -1 if 
+   * <code>detectorNum</code> is invallid.
+   */
+  public int getSpectrumNumberForDetector(int detectorNum)
+  {
+      if (detectorNum>=1 && detectorNum<=getNumberOfDetectors())
+         return spectrumNumbers[detectorNum];
+      else
+         return -1;
+  }
+
+   /**
+    * Get status c1.
+    * @return Status c1<br>
+    * Possible values:<br>
+    * run<br>
+    * stopped<br>
+    * stop<br>
+    * open
+    */
+   public int getStatusC1()
+   {
+      return statusC1;
+   }
+
+   /**
+    * Get status c2.
+    * @return Status c2<br>
+    * Possible values:<br>
+    * run<br>
+    * stopped<br>
+    * stop<br>
+    * open
+    */
+   public int getStatusC2()
+   {
+      return statusC2;
+   }
+
+   /**
+    * Get status c3.
+    * @return Status c3<br>
+    * Possible values:<br>
+    * run<br>
+    * stopped<br>
+    * stop<br>
+    * open
+    */   public int getStatusC3()
+   {
+      return statusC3;
+   }
+
+   /**
+    * Get the thermal shutter value.
+    * @return The thermal shutter value (open=1).
+    */
+   public int getThermalShutter()
+   {
+      return thermalShutter;
+   }
+
+  /**
+   * Get the user table for detector <code>detectorNum</code>.  Note:  
+   * the first detector is at <code>detectorNum</code>=1 not 0.
+   * @param detectorNum The number of the detector you are referring to.  
+   * Note:  For <code>detectorNum</code> to be valid, 1 <= 
+   * <code>detectorNum</code> <= {@link #getNumberOfDetectors() 
+   * getNumberOfDetectors()}.
+   * @return The user table for the detector or null if 
+   * <code>detectorNum</code> is invallid.
+   */
+   public float[] getUserTableForDetector(int detectorNum)
+   {
+      float[] resultArr = new float[getNumberOfUserTables()];
+      if (detectorNum>=1 && detectorNum<=getNumberOfDetectors())
+      {
+         for (int i=0; i<resultArr.length; i++)
+            resultArr[i] = userTable[i][detectorNum];
+            
+         return resultArr;
+      }
+      else
+         return null;
+   }
+
+   /**
+    * Get the Instrument Section version number.
+    * @return The Instrument Section version number.
+    */
+   public int getVersion()
+   {
+      return version;
+   }
 }
