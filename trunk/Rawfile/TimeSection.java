@@ -30,7 +30,15 @@
  *
  * For further information, see <http://www.pns.anl.gov/ISAW/>
  * $Log$
+ * Revision 1.8  2004/06/24 21:35:32  kramer
+ * Changed all of the fields' visiblity from protected to private.  Fields
+ * are now accessed from other classes in this package through getter methods
+ * instead of using <object>.<field name>.  Also, this class should now be
+ * immutable.  I also modified the main method to print the time channel
+ * boundaries in clock pulses and microseconds.
+ *
  * Revision 1.7  2004/06/22 16:32:55  kramer
+ *
  * Added getter methods (with documentation).  Made the constructors public.
  * Now this class imports 2 classes instead of the entire java.io package.
  * Commented out the old method for getting the time channel boundaries.
@@ -67,29 +75,29 @@ public class TimeSection {
   //~ Instance fields ----------------------------------------------------------
   
   /** TCB section version number. */
-  protected int         version;
+  private int         version;
   /** Number of time regimes (normally = 1). */
-  protected int         numOfRegimes;
+  private int         numOfRegimes;
   /** Number of frames per period. */
-  protected int         numOfFramesPerPeriod;
+  private int         numOfFramesPerPeriod;
   /** Number of periods. */
-  protected int         numOfPeriods;
+  private int         numOfPeriods;
   /** Period number for each basic period. */
-  protected int[]       periodMap;
+  private int[]       periodMap;
   /**
    * Gives the number of spectra in each time regime.  The ith element 
    * in the array is one more than the number of spectra in the (i+1)th time 
    * regime (an additional spectra is added for the zeroth spectra).  The 
    * length of this array equals the number of time regimes.
    */
-  protected int[]       numSpectra;
+  private int[]       numSpectra;
   /**
    * Gives the number of time channels in each time regime.  The ith element 
    * in the array is one more than the number of time channels in the (i+1)th time 
    * regime (an additional time channel is added for the zeroth time channel).  The 
    * length of this array equals the number of time regimes.
    */
-  protected int[]       numTimeChannels;
+  private int[]       numTimeChannels;
   /**
    * Gives the time channel mode for each time regime.  The ith element 
    * in the array is the time channel mode for the (i+1)th time regime.<br>
@@ -116,26 +124,26 @@ public class TimeSection {
    *                           documentation is interpreted from how ISIS files were accessed.  
    *                           Initially, Fortran was used to access data from an ISIS file.
    */
-  protected int[][]     timeChannelMode;
+  private int[][]     timeChannelMode;
   /**
    * Gives the time channel parameters (in microseconds) in each time regime.  
    * timeChannelParameters[i][j][k] gives the parameters for the (i+1)th time regime.  
    * Where 0<j<4 and 0<k<5.  Also, 0<\i<(the number of time regimes).
    */
-  protected float[][][] timeChannelParameters;
+  private float[][][] timeChannelParameters;
   /**
    * Prescale value for 32MHz clock (<=15).  The length of this array is equal to 
    * the number of time regimes and the ith element in the array corresponds to 
    * the clock prescale of the (i+1)th time regime.
    */
-  protected int[]       clockPrescale;
+  private int[]       clockPrescale;
   /**
-   * Gives the time channel boundaries.<br>
+   * Gives the time channel boundaries (in clock pulses).<br>
    * The first index is used to specify the regime number.<br>
    * The second index is used to specify the time channel number where 
    * values range from 0 to one more than the number of time channels.
    */
-  protected int[][]     timeChannelBoundaries;
+  private int[][]     timeChannelBoundaries;
 
   //~ Constructors -------------------------------------------------------------
 
@@ -165,7 +173,7 @@ public class TimeSection {
    */
   public TimeSection( RandomAccessFile rawFile, Header header ) {
      this();
-    int startAddress = ( header.startAddressTcb - 1 ) * 4;
+    int startAddress = ( header.getStartAddressTCBSection() - 1 ) * 4;
 
     try {
       rawFile.seek( startAddress );
@@ -291,9 +299,13 @@ public class TimeSection {
                 System.out.println(  );
               }
               System.out.println( "---clockPrescale:    " + ts.clockPrescale[ii] );
-              System.out.println( "---timeChannelBoundaries:" );
+              System.out.println( "---timeChannelBoundaries (in clock pulses):" );
               for( int jj = 0; jj < ( ts.numTimeChannels[ii] + 1 ); jj++ )
-                System.out.print( ts.timeChannelBoundaries[ii][jj] + "   " );
+                System.out.print( ""+(jj+1)+"->"+ts.timeChannelBoundaries[ii][jj] + "   " );
+              System.out.println();
+              System.out.println("--timeChannelBoundaries (computed as time):  ");
+              for( int jj = 0; jj < ( ts.numTimeChannels[ii] + 1 ); jj++ )
+                System.out.print( ""+(jj+1)+"->"+(ts.timeChannelBoundaries[ii][jj]*ts.clockPrescale[ii]/32.0+ts.timeChannelParameters[ii][0][0]) + "   " );
           }
           System.out.println();
       }
@@ -468,7 +480,8 @@ public class TimeSection {
    }
 
    /**
-    * Get the time channel boundaries for the given time regime.
+    * Get the time channel boundaries for the given time regime.  
+    * The values in the array are in clock pulses.
     * @param num The regime in question.  Note:  The 
     * first time regime is at num=1 not num=0.  For num 
     * to be valid 1<=<code>num</code><=
