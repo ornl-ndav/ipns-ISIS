@@ -30,7 +30,12 @@
  *
  * For further information, see <http://www.pns.anl.gov/ISAW/>
  * $Log$
+ * Revision 1.8  2004/06/16 20:38:19  kramer
+ * Replaced tabs with 3 spaces and created a default constructor where fields
+ * are now initialized (instead of when they were first declared).
+ *
  * Revision 1.7  2004/06/16 16:43:01  kramer
+ *
  * Added J.P. Hammonds <jphammonds@anl.gov> to the list of contacts.
  *
  * Revision 1.6  2004/06/16 16:13:08  kramer
@@ -71,24 +76,38 @@ import java.io.*;
 public class Rawfile {
   //~ Instance fields ----------------------------------------------------------
 
-  protected String            rawfileName = new String(  );
+  protected String            rawfileName;
   protected RandomAccessFile  rawfile;
-  protected Header            header    = new Header(  );
-  protected RunSection        runSect   = new RunSection(  );
-  protected InstrumentSection instSect  = new InstrumentSection(  );
-  protected SESection seSect = new SESection();
-  protected DaeSection        daeSect   = new DaeSection(  );
-  protected TimeSection       timeSect  = new TimeSection(  );
-  protected DataSection       dataSect  = new DataSection(  );
-  protected boolean           leaveOpen = false;
+  protected Header            header;
+  protected RunSection        runSect;
+  protected InstrumentSection instSect;
+  protected SESection seSect;
+  protected DaeSection        daeSect;
+  protected TimeSection       timeSect;
+  protected DataSection       dataSect;
+  protected boolean           leaveOpen;
   protected String            filename;
 
   //~ Constructors -------------------------------------------------------------
 
   /**
-   * Default Constructor with empty rawfile
+   * Default Constructor with empty rawfile.<br>
+   * <b>Note:  rawfile is not instantiated.  Instead it is null </b>
    */
-  public Rawfile(  ) {}
+   public Rawfile(  )
+   {
+      rawfileName = new String();
+      rawfile = null;
+      header = new Header();
+      runSect = new RunSection();
+      instSect = new InstrumentSection();
+      seSect = new SESection();
+      daeSect = new DaeSection();
+      timeSect = new TimeSection();
+      dataSect = new DataSection();
+      leaveOpen = false;
+      filename = new String();
+   }
 
   /**
    * Creates a new Rawfile object.
@@ -96,6 +115,7 @@ public class Rawfile {
    * @param infileName The name of the RAW file.
    */
   public Rawfile( String infileName ) {
+  	this();
     try {
       filename   = infileName;
       rawfile    = new RandomAccessFile( filename, "rw" );
@@ -106,7 +126,7 @@ public class Rawfile {
       daeSect    = new DaeSection( rawfile, header, instSect.nDet );
       timeSect   = new TimeSection( rawfile, header );
       dataSect   = new DataSection( rawfile, header, timeSect );
-    } catch( IOException ex ) {}
+    } catch( IOException ex ) { ex.printStackTrace(); }
   }
 
   //~ Methods ------------------------------------------------------------------
@@ -414,30 +434,30 @@ public class Rawfile {
 
       System.out.println("*******************************************************");
       System.out.println("RUN Section");
-	  System.out.println("*******************************************************");
-	  RunSection.main(fileArr);
+      System.out.println("*******************************************************");
+      RunSection.main(fileArr);
 
-	  System.out.println("*******************************************************");
+      System.out.println("*******************************************************");
       System.out.println("INSTRUMENT Section");
       System.out.println("*******************************************************");
       InstrumentSection.main(fileArr);
 
-	  System.out.println("*******************************************************");
-	  System.out.println("SE Section");
-	  System.out.println("*******************************************************");
-	  SESection.main(fileArr);
-	  
-	  System.out.println("*******************************************************");
+      System.out.println("*******************************************************");
+      System.out.println("SE Section");
+      System.out.println("*******************************************************");
+      SESection.main(fileArr);
+
+      System.out.println("*******************************************************");
       System.out.println("DAE Section");
       System.out.println("*******************************************************");
       DaeSection.main(fileArr);
       
-	  System.out.println("*******************************************************");
-     System.out.println("TCB Section");
-     System.out.println("*******************************************************");
-     TimeSection.main(fileArr);
+      System.out.println("*******************************************************");
+      System.out.println("TCB Section");
+      System.out.println("*******************************************************");
+      TimeSection.main(fileArr);
      
-	  System.out.println("*******************************************************");
+      System.out.println("*******************************************************");
       System.out.println("DATA Section");
       System.out.println("*******************************************************");
       DataSection.main(fileArr);
