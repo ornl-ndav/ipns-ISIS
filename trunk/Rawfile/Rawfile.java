@@ -30,7 +30,16 @@
  *
  * For further information, see <http://www.pns.anl.gov/ISAW/>
  * $Log$
+ * Revision 1.10  2004/06/24 21:57:17  kramer
+ * Changed all of the fields' visiblity from protected to private.  Fields
+ * are now accessed from other classes in this package through getter methods
+ * instead of using <object>.<field name>.  Also, this class should now be
+ * immutable.  The methods in this class now more closely match those in the
+ * class IPNS.Runfile.Runfile.  The old methods are still in the code but
+ * have been commented out.
+ *
  * Revision 1.9  2004/06/22 16:38:34  kramer
+ *
  * Added a method to get the run ID.  Now the main method also reads Header
  * information from a file.
  *
@@ -65,8 +74,11 @@
  
 package ISIS.Rawfile;
 
-import java.io.*;
+import java.io.IOException;
+import java.io.RandomAccessFile;
+import java.util.Vector;
 
+import IPNS.Runfile.InstrumentType;
 
 /**
  * This class is designed to provide an interface to the ISIS raw files.  This
@@ -81,17 +93,17 @@ import java.io.*;
 public class Rawfile {
   //~ Instance fields ----------------------------------------------------------
 
-  protected String            rawfileName;
-  protected RandomAccessFile  rawfile;
-  protected Header            header;
-  protected RunSection        runSect;
-  protected InstrumentSection instSect;
-  protected SESection seSect;
-  protected DaeSection        daeSect;
-  protected TimeSection       timeSect;
-  protected DataSection       dataSect;
-  protected boolean           leaveOpen;
-  protected String            filename;
+  private String            rawfileName;
+  private RandomAccessFile  rawfile;
+  private Header            header;
+  private RunSection        runSect;
+  private InstrumentSection instSect;
+  private SESection seSect;
+  private DaeSection        daeSect;
+  private TimeSection       timeSect;
+  private DataSection       dataSect;
+  private boolean           leaveOpen;
+  private String            filename;
 
   //~ Constructors -------------------------------------------------------------
 
@@ -128,24 +140,13 @@ public class Rawfile {
       runSect    = new RunSection( rawfile, header );
       instSect   = new InstrumentSection( rawfile, header );
       seSect = new SESection(rawfile,header);
-      daeSect    = new DaeSection( rawfile, header, instSect.nDet );
+      daeSect    = new DaeSection( rawfile, header, instSect.getNumberOfDetectors() );
       timeSect   = new TimeSection( rawfile, header );
       dataSect   = new DataSection( rawfile, header, timeSect );
     } catch( IOException ex ) { ex.printStackTrace(); }
   }
 
   //~ Methods ------------------------------------------------------------------
-
-  /**
-   * @return The actual run duration as stored in the run section
-   */
-  public int ActualRunDuration(  ) {
-    return runSect.actualRunDuration;
-  }
-
-  /*public int[] getTCB( int start, int end ) {
-     return timeSect.timeChannelBoundaries[0][0]*/
-
   /**
    * Closes files opened with LeaveOpen.
    */
@@ -163,83 +164,7 @@ public class Rawfile {
 
     leaveOpen = false;
   }
-
-  /**
-   * @return The angle for a given detector ID
-   */
-  public float DetectorAngle( int detID ) {
-    return instSect.detectorAngle[detID];
-  }
-
-  /**
-   * @return The end date in the run section
-   */
-  public String EndDate(  ) {
-    return runSect.finishDate;
-  }
-
-  /**
-   * @return The end time in the run section
-   */
-  public String EndTime(  ) {
-    return runSect.finishTime;
-  }
-
-  /**
-   * @return The flight path length for a given detector ID
-   */
-  public float FlightPath( int detID ) {
-    return instSect.flightPath[detID];
-  }
-
-  /**
-   * Retrieves the spectrum of a 1D detector.  This method is not complete yet,
-   * as the underlying code in DataSection is not yet complete (04/16/2004).
-   *
-   * @param subgroup Subgroup ID to be retrieved.
-   *
-   * @return The retrieved spectrum.
-   */
-  public float[] Get1DSpectrum( int spect ) {
-    return dataSect.get1DSpectrum( rawfile, spect, timeSect );
-  }
-
-  /**
-   * @return The good proton charge for this run from the runSection
-   */
-  public float GoodProtonCharge(  ) {
-    return runSect.goodProtonCharge;
-  }
-
-  /**
-   * @return A list of detector IDs which are in the specified spectrum
-   *         (subgroup)
-   */
-  public int[] IdsInSubgroup( int sg ) {
-    int[] sgList = new int[0];
-
-    //these instSec were originally instDesc.  I changed them so it would 
-    //compile
-    for( int ii = 1; ii < instSect.spectrumNumbers.length; ii++ ) {
-      if( sg == instSect.spectrumNumbers[ii] ) {
-        int[] tempList = new int[sgList.length + 1];
-
-        System.arraycopy( sgList, 0, tempList, 0, sgList.length );
-        tempList[sgList.length]   = ii;
-        sgList                    = tempList;
-      }
-    }
-
-    return sgList;
-  }
-
-  /**
-   * @return The instrument name.
-   */
-  public String InstrumentName(  ) {
-    return instSect.iName;
-  }
-
+  
   /**
    * Trigger to leave the file open for subsequent reads.  This is not required
    * but will speed up file access if a large number of spectra  are
@@ -264,173 +189,403 @@ public class Rawfile {
   }
 
   /**
-   * @return The maximum group of detector data (
+   * Get the detector IDs which are in the spectrum (aka subgroup) <code>sg</code>.
+   * @param sg The spectrum in question.
+   * @return A list of detector IDs which are in the specified spectrum
+   *         (subgroup)
    */
-  public int MaxSubgroupID(  ) {
-    int maxVal = 0;
+  public int[] IdsInSubgroup( int sg ) {
+    /*
+    int[] sgList = new int[0];
 
     //these instSec were originally instDesc.  I changed them so it would 
     //compile
-    for( int ii = 1; ii < instSect.spectrumNumbers.length; ii++ ) {
-      maxVal = Math.max( instSect.spectrumNumbers[ii], maxVal );
+    for( int ii = 1; ii < instSect.spectrumNumbers.length; ii++ )
+    {
+      if( sg == instSect.spectrumNumbers[ii] )
+      {
+        int[] tempList = new int[sgList.length + 1];
+
+        System.arraycopy( sgList, 0, tempList, 0, sgList.length );
+        tempList[sgList.length]   = ii;
+        sgList                    = tempList;
+      }
     }
+    */
+    
+    Vector found = new Vector(instSect.getNumberOfDetectors());
+    for (int i=1; i<=instSect.getNumberOfDetectors(); i++)
+    {
+       if (instSect.getSpectrumNumberForDetector(i)==sg)
+         found.add(new Integer(i));
+    }
+    
+    int[] answer = new int[found.size()];
+    for (int i=0; i<found.size(); i++)
+      answer[i] = ((Integer)found.elementAt(i)).intValue();
 
-    return maxVal;
+    return answer;
   }
 
   /**
-   * @return An array containing the detector numbers beam monitors
+   * Get the maximum subgroup ID (aka the pectrum number as it is 
+   * recorded in the ISIS RAW file).
+   * @param hist The histogram of spectra to search through.  Note:  
+   * The first histogram is at hist=0.
+   * @return The maximum group of detector data or -1 if the value of 
+   * <code>hist</code> is invalid.
    */
-  public int[] MonitorDetNums(  ) {
-    return instSect.monDetNums;
+  public int MaxSubgroupID(int hist)
+  {
+     if (hist == 0)
+     {
+       int maxVal = 0;
+
+       //these instSec were originally instDesc.  I changed them so it would 
+      //compile
+       for( int ii = 1; ii <= instSect.getNumberOfDetectors(); ii++ )
+       {
+          if (!IsSubgroupBeamMonitor(ii))
+            maxVal = Math.max( instSect.getSpectrumNumberForDetector(ii), maxVal );
+       }
+       return maxVal;
+     }
+     else
+       return -1;
   }
 
   /**
-   * @return The monitor 1 sum as stored in the run section
+   * Get the minimum subgroup ID (aka the pectrum number as it is 
+   * recorded in the ISIS RAW file).
+   * @param hist The histogram of spectra to search through.  Note:  
+   * The first histogram is at hist=0.
+   * @return The minimum group of detector data or -1 if the value of 
+   * <code>hist</code> is invalid.
    */
-  public int MonitorSum1(  ) {
-    return runSect.monitorSum1;
+  public int MinSubgroupID(int hist)
+  {
+     if (hist == 0)
+     {
+       int minVal = 0;
+
+       //these instSec were originally instDesc.  I changed them so it would 
+      //compile
+       for( int ii = 1; ii <= instSect.getNumberOfDetectors(); ii++ )
+       {
+          if (!IsSubgroupBeamMonitor(ii))
+            minVal = Math.min( instSect.getSpectrumNumberForDetector(ii), minVal );
+       }
+       return minVal;
+     }
+     else
+       return -1;
   }
 
   /**
-   * @return The monitor 2 sum as stored in the run section
-   */
-  public int MonitorSum2(  ) {
-    return runSect.monitorSum2;
-  }
-
-  /**
-   * @return The monitor 3 sum as stored in the run section
-   */
-  public int MonitorSum3(  ) {
-    return runSect.monitorSum3;
-  }
-
-  /**
-   * @return The number of detectors for this instrument
-   */
-  public int NumDet(  ) {
-    return instSect.nDet;
-  }
-
-  /**
-   * @return The number of monitors specified for this instrument
-   */
-  public int NumMon(  ) {
-    return instSect.nMon;
-  }
-
-  /**
-   * @return The number of user tables for this instrument
-   */
-  public int NumUserTables(  ) {
-    return instSect.nUserTables;
-  }
-
-  /**
-   * @return The RAL Proposal Number stored in the run section
-   */
-  public int RALProposalNum(  ) {
-    return runSect.ralProposalNum;
-  }
-
-  /**
-   * @return The required run duration
-   */
-  public int RequiredRunDuration(  ) {
-    return runSect.requiredRunDuration;
-  }
-
-  /**
-   * @return The run number in the run section
-   */
-  public int RunNumber(  ) {
-    return runSect.runNumber;
-  }
-
-  /**
-   * @return The full title stored in the run section
-   */
-  public String RunTitle(  ) {
-    return runSect.runTitle;
-  }
-
-  /**
-   * @return The incident flight path L1 from the instrument section
-   */
-  public float SourceToSample(  ) {
-    return instSect.L1;
-  }
-
-  /**
-   * @return The start date in the header
-   */
-  public String StartDate(  ) {
-    return header.startDate;
-  }
-
-  /**
-   * @return The start time in the header
-   */
-  public String StartTime(  ) {
-    return header.startTime;
-  }
-
-  /**
-   * @return A list that maps detectors by ID to a spectrum (subgroup) that
-   *         contains data for that detector.  This list has nDet + 1
-   *         elements. This is a 0 indexed array.
-   */
-  public int[] SubgroupIDList(  ) {
-    //these instSec were originally instDesc.  I changed them so it would 
-    //compile
-    return instSect.spectrumNumbers;
-  }
-
-  /**
-   * Accessor method for the time channel boundary array.  This assumes one
-   * time regime.
-   *
+   * Get the Time Channel Boundary array (where the time is in 
+   * microseconds) for the given time regime.
+   * @param num The time regime to get the TCB array for.  Note:  
+   * The first time regime corresponds to num=1 not num=0.
    * @return The TCB array.  If it does not exist, this returns null.
    */
-  public float[] TCBArray(  ) {
-    if( timeSect.timeChannelBoundaries == null ) {
+  public float[] TimeChannelBoundariesForRegime(int num)
+  {
+    int[] timeChanBound = timeSect.getTimeChannelBoundariesForRegime(num);
+    if (timeChanBound == null)
       return null;
+    else
+    {
+       int prescale = timeSect.getClockPrescaleForRegime(num);
+       float error = timeSect.getTimeChannelParametersForRegime(num)[0][0];
+       float[] tcbArray = new float[timeChanBound.length];
+       //here 4 is subtracted because data collected from ISIS RAW files seems 
+       //to be hinting that the first and last values in timeChanBound are always 
+       //too high by 4 units.  Therefore, it is hypothesized that all of the values are 
+       //too high by 4 units.  This makes the calculated values match 
+       //getTimeChannelParametersForRegime(num)[0][0] and 
+       //getTimeChannelParametersForRegime(num)[0][1] which appear to be the 
+       //initial and final times (in microseconds) respectively
+       for (int i=0; i<timeChanBound.length; i++)
+         tcbArray[i] = (timeChanBound[i]*prescale/32.0f+error-4);
+       
+       return tcbArray;
     }
-
-    float[] TCBFloatArray = new float[timeSect.timeChannelBoundaries[0].length];
-
-    for( int i = 0; i < TCBFloatArray.length; i++ ) {
-      TCBFloatArray[i] = ( timeSect.timeChannelBoundaries[0][i] * 0.0125f ) +
-        ( timeSect.timeChannelParameters[0][0][0] * 0.1f );
-    }
-
-    return TCBFloatArray;
-  }
-
-  /**
-   * @return The total proton charge for this run from the runSection
-   */
-  public float TotalProtonCharge(  ) {
-    return runSect.totalProtonCharge;
-  }
-
-  /**
-   * @return The user name stored int the run section
-   */
-  public String UserName(  ) {
-    return runSect.userName;
   }
   
   /**
+   * Get the time channel boundaries (where the time is in 
+   * microseconds) for the given given detector.
+   * @param id The detector in question.  Note:  The first 
+   * detector is id=1 not id=0.
+   * @return The time channel boundaries for the given 
+   * detector or null if <code>id</code> is invalid.
+   */
+  public float[] TimeChannelBoundaries(int id)
+  {
+     return TimeChannelBoundariesForRegime(daeSect.getTimeRegimeForDetector(id));
+  }
+
+  /**
+   * Retrieves the spectrum of a 1D detector.  This method is not complete yet,
+   * as the underlying code inX DataSection is not yet complete (04/16/2004).
+   * @param spect The number of the spectrum that is to be recieved.
+   * @return The retrieved spectrum.
+   */
+  public float[] Get1DSpectrum( int spect )
+  {
+    return dataSect.get1DSpectrum( rawfile, spect, timeSect );
+  }
+  
+  /**
+   * Is the detector numbered <code>detNum</code> a monitor?
+   * @param detNum The number of the detector in question.
+   * @return True if the detector is a monitor and false otherwise.
+   */
+  public boolean IsSubgroupBeamMonitor(int detNum)
+  {
+     return instSect.isAMonitor(detNum);
+  }
+  
+  /**
+   * Get the phi angle.
+   * @return The phi angle (in degrees).
+   */
+  public float Phi()
+  {
+     return seSect.getPhi();
+  }
+  
+  /**
+   * Get the chi angle.
+   * @return The chi angle (in degrees).
+   */
+  public float Chi()
+  {
+     //IPNS calls the angle Chi
+     //ISIS calls it Psi
+     return seSect.getPsi();
+  }
+  
+  /**
+   * Get the omega angle.
+   * @return The omega angle (in degrees).
+   */
+  public float Omega()
+  {
+     return seSect.getOmega();
+  }
+   
+   /**
+    * Get the distance from the source to the sample.
+    * @return The distance from the source to the sample.
+    */
+   public float SourceToSample()
+   {
+      return instSect.getL1();
+   }
+   
+   /**
+    * The number of histograms.
+    * @return The number of histograms.
+    */
+   public short NomOfHistograms()
+   {
+      //it looks like all of the data is in one histogram
+      return 1;
+   }
+   
+   /**
+    * Get the instrument type.
+    * @return An integer code specifying the 
+    * instrument's type.  The integer value 
+    * returned corresponds to one of the 
+    * public static final int fields in the class 
+    * IPNS.Runfile.InstrumentType
+    */
+   public int InstrumentType()
+   {
+      String type = header.getInstrumentType();
+      if (type.equalsIgnoreCase("HRP"))
+         return InstrumentType.TOF_DIFFRACTOMETER;
+      else if (type.equalsIgnoreCase("SXD"))
+         return InstrumentType.TOF_SCD;
+      else if (type.equalsIgnoreCase("LOQ"))
+         return InstrumentType.TOF_SAD;
+      else
+         return InstrumentType.UNKNOWN;
+   }
+   
+   /**
+    * Get the run number.
+    * @return The run number or -1 if the 
+    * run number could not be properly 
+    * determined.
+    */
+   public int RunNumber()
+   {
+      String numStr = header.getRunNumber();
+      int result = -1;
+      try { result = Integer.valueOf(numStr).intValue(); }
+      catch (NumberFormatException e)
+      {
+         result = -1;
+         e.printStackTrace();
+      }
+      return result;
+   }
+   
+   /**
+    * Get the run title.
+    * @return The run title.
+    */
+   public String RunTitle()
+   {
+      return runSect.getRunTitle();
+   }
+   
+   /**
+    * Get the end date.
+    * @return The end date in the 
+    * format dd-mmm-yyyy_
+    */
+   public String EndDate()
+   {
+      return runSect.getFinishDate();
+   }
+   
+   /**
+    * Get the finish time.
+    * @return The finish time in the 
+    * format hh-mm-ss
+    */
+   public String EndTime()
+   {
+      return runSect.getFinishTime();
+   }
+   
+   /**
+    * Get the user's name.
+    * @return The user's name.
+    */
+   public String UserName()
+   {
+      return runSect.getUserName();
+   }
+   
+   /***
+    * Get the raw flight path (in meters) for the monitor 
+    * specified by the detector ID <code>detNum</code>.
+    * @param detID The number of the detector you are 
+    * referring to.  Note:  For <code>detectorNum</code> 
+    * to be valid, 1 <= <code>detectorNum</code> <= 
+    * {@link InstrumentSection#getNumberOfDetectors() 
+    * getNumberOfDetectors()}.  Also, ther first detector 
+    * is at detID=1 not detID=0.  
+    * @return The flight path for the monitor specified.  
+    * The flight path is the same as the L2 distance (the 
+    * distance from the sample to the detector in meters).  
+    * If detNum is invalid or does not specify a monitor 
+    * Float.NaN is returned.
+    */
+   public double MonitorRawFlightPath(int detID)
+   {
+      if (IsSubgroupBeamMonitor(detID))
+         return instSect.getFlightPathForDetector(detID);
+      else
+         return Float.NaN;
+   }
+   
+   /**
+    * Get the time field type for the detector with 
+    * the detector ID <code>detID</code>.
+    * @param detID The number of the detector you are 
+    * refering you.  Note:  for <code>detectorNum</code> to be 
+    * valid, 1 <= <code>detectorNum</code> <= 
+    * {@link InstrumentSection#getNumberOfDetectors() 
+    * InstrumentSection.getNumberOfDetectors()}.
+    * @return The time field type (ie the time regime) 
+    * for the detector specified or -1 if <code>detID</code> 
+    * is invallid.
+    */
+   public int TimeFieldType(int detID)
+   {
+      return daeSect.getTimeRegimeForDetector(detID);
+   }
+
+  /**
    * Get the run ID.
    * @return The run ID.
-      *
    */
   public String getRunID()
   {
-     return header.runID;
+     return header.getRunID();
   }
+
+  /**
+   * Get one more than the number of spectra for the 
+   * given time regime (an extra spectra is added for 
+   * the zeroth spectra).
+   * @param num The regime in question.  Note:  The 
+   * first time regime is at num=1 not num=0.  For num 
+   * to be valid 1<=<code>num</code><=
+   * {@link InstrumentSection#getNumOfTimeRegimes() 
+   * getNumOfTimeRegimes()}.
+   * @return One more than the number of spectra for 
+   * time regime <code>num</code> or -1 if <code>num
+   * </code> is invalid.
+   */
+  public int getNumSpectraForRegime(int num)
+  {
+     return timeSect.getNumSpectraForRegime(num);
+  }
+  
+  /**
+   * Get the instrument's name.
+   * @return The instrument name.
+   */
+  public String InstrumentName(  )
+  {
+    return instSect.getInstrumentName();
+  }
+  
+  /**
+   * The good proton charge.
+   * @return The good proton charge for this run.
+   */
+  public float GoodProtonCharge(  )
+  {
+    return runSect.getGoodProtonCharge();
+  }
+
+  /**
+   * The angle for the detector specified by 
+   * <code>detID</code>.
+   * @param detID The number of the detector you are referring to.  
+   * Note:  For <code>detectorNum</code> to be valid, 1 <= 
+   * <code>detectorNum</code> <= 
+   * {@link InstrumentSection#getNumberOfDetectors() 
+   * getNumberOfDetectors()}.
+   * @return The angle for a given detector ID
+   */
+  public float DetectorAngle( int detID )
+  {
+    return instSect.getDetectorAngleForDetector(detID);
+  }
+
+  /**
+   * The flight path length for a given detector ID.
+   * @param detID The number of the detector you are referring to.  
+   * Note:  For <code>detectorNum</code> to be valid, 1 <= 
+   * <code>detectorNum</code> <= 
+   * {@link InstrumentSection#getNumberOfDetectors() 
+   * getNumberOfDetectors()}.
+   * @return The flight path length for a given detector ID
+   */
+  public float FlightPath( int detID )
+  {
+     return instSect.getFlightPathForDetector(detID);
+  }
+
 
   /**
    * Testbed
@@ -486,6 +641,7 @@ public class Rawfile {
   	}
   }
   
+  //these are all of the old methods from this file
   /*
   public static void main( String[] args ) {
     Rawfile file = new Rawfile( args[0] );
@@ -548,13 +704,150 @@ public class Rawfile {
 */
 
   /**
-   * @return A clone of the integer array holding the number of spectra.
-   */
-  public int[] numSpectra(  ) {
-    int[] tempSpect = new int[timeSect.numSpectra.length];
-
-    System.arraycopy( timeSect.numSpectra, 0, tempSpect, 0, tempSpect.length );
-
-    return tempSpect;
+   * @return The actual run duration as stored in the run section
+   /
+  public int ActualRunDuration(  ) {
+    return runSect.actualRunDuration;
   }
+
+  /*public int[] getTCB( int start, int end ) {
+     return timeSect.timeChannelBoundaries[0][0]*/
+
+  /**
+   * @return The end date in the run section
+   /
+  public String EndDate(  ) {
+    return runSect.finishDate;
+  }
+
+  /**
+   * @return The end time in the run section
+   /
+  public String EndTime(  ) {
+    return runSect.finishTime;
+  }
+
+  /**
+   * @return An array containing the detector numbers beam monitors
+   
+  public int[] MonitorDetNums(  ) {
+    return instSect.monDetNums;
+  }
+
+  /**
+   * @return The monitor 1 sum as stored in the run section
+   /
+  public int MonitorSum1(  ) {
+    return runSect.monitorSum1;
+  }
+
+  /**
+   * @return The monitor 2 sum as stored in the run section
+   /
+  public int MonitorSum2(  ) {
+    return runSect.monitorSum2;
+  }
+
+  /**
+   * @return The monitor 3 sum as stored in the run section
+   /
+  public int MonitorSum3(  ) {
+    return runSect.monitorSum3;
+  }
+
+  /**
+   * @return The number of detectors for this instrument
+   /
+  public int NumDet(  ) {
+    return instSect.nDet;
+  }
+
+  /**
+   * @return The number of monitors specified for this instrument
+   /
+  public int NumMon(  ) {
+    return instSect.nMon;
+  }
+
+  /**
+   * @return The number of user tables for this instrument
+   /
+  public int NumUserTables(  ) {
+    return instSect.nUserTables;
+  }
+
+  /**
+   * @return The RAL Proposal Number stored in the run section
+   /
+  public int RALProposalNum(  ) {
+    return runSect.ralProposalNum;
+  }
+
+  /**
+   * @return The required run duration
+   /
+  public int RequiredRunDuration(  ) {
+    return runSect.requiredRunDuration;
+  }
+
+  /**
+   * @return The run number in the run section
+   /
+  public int RunNumber(  ) {
+    return runSect.runNumber;
+  }
+
+  /**
+   * @return The full title stored in the run section
+   /
+  public String RunTitle(  ) {
+    return runSect.runTitle;
+  }
+
+  /**
+   * @return The incident flight path L1 from the instrument section
+   /
+  public float SourceToSample(  ) {
+    return instSect.L1;
+  }
+
+  /**
+   * @return The start date in the header
+   /
+  public String StartDate(  ) {
+    return header.startDate;
+  }
+
+  /**
+   * @return The start time in the header
+   /
+  public String StartTime(  ) {
+    return header.startTime;
+  }
+
+  /**
+   * @return A list that maps detectors by ID to a spectrum (subgroup) that
+   *         contains data for that detector.  This list has nDet + 1
+   *         elements. This is a 0 indexed array.
+   /
+  public int[] SubgroupIDList(  ) {
+    //these instSec were originally instDesc.  I changed them so it would 
+    //compile
+    return instSect.spectrumNumbers;
+  }
+
+  /**
+   * @return The total proton charge for this run from the runSection
+   /
+  public float TotalProtonCharge(  ) {
+    return runSect.totalProtonCharge;
+  }
+
+  /**
+   * @return The user name stored int the run section
+   /
+  public String UserName(  ) {
+    return runSect.userName;
+  }
+*/
 }
