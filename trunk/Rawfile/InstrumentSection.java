@@ -320,10 +320,7 @@ public class InstrumentSection {
       }
     } catch( IOException ex ) {}
 
-    //looks complete based on libget.txt
-    
-    for (int i=0; i<monDetNums.length; i++)
-    	System.out.println("monDetNums["+i+"]="+monDetNums[i]);
+    //looks complete based on libget.txt    
   }
 
   //~ Methods ------------------------------------------------------------------
