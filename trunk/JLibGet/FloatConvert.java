@@ -39,7 +39,7 @@ public class FloatConvert {
    */
   public int IEEEToVaxFloat( float[] fp ) {
     IEEESingle is = new IEEESingle( ( int )fp[0], ( int )fp[1], ( int )fp[2] );
-    VAXSingle vs  = new VAXSingle(  );
+    VAXSingle  vs = new VAXSingle(  );
 
     switch( is.getExp(  ) ) {
       case 0:
@@ -99,8 +99,8 @@ public class FloatConvert {
     IEEESingle is = new IEEESingle(  );
 
     flipBytes( fp );
-    
-    VAXSingle vs  = new VAXSingle( 
+
+    VAXSingle vs = new VAXSingle( 
         ( int )fp[0], ( int )fp[1], ( int )fp[2], ( int )fp[3] );
 
     switch( vs.getExp(  ) ) {
@@ -160,7 +160,7 @@ public class FloatConvert {
     //this originally took a char[] (char* actually), and this has not been taken 
     //care of correctly yet
     float c_tmp;
-    int n = p.length;
+    int   n = p.length;
 
     for( int i = 0; i < ( n / 2 ); i++ ) {
       c_tmp          = p[i];
@@ -212,10 +212,9 @@ public class FloatConvert {
      */
     public void setExp( int exp ) {
       /*if( exp > 256 ) {
-        throw new IllegalArgumentException( 
-          "IEEE exponent can be no more than 256." );
-      }*/
-
+         throw new IllegalArgumentException(
+           "IEEE exponent can be no more than 256." );
+         }*/
       this.exp = exp;
     }
 
@@ -234,10 +233,9 @@ public class FloatConvert {
      */
     public void setMantissa( int i ) {
       /*if( mantissa > 8388608 ) {
-        throw new IllegalArgumentException( 
-          "IEEE mantissa can be no more than 8,388,608." );
-      }*/
-
+         throw new IllegalArgumentException(
+           "IEEE mantissa can be no more than 8,388,608." );
+         }*/
       mantissa = i;
     }
 
@@ -255,9 +253,8 @@ public class FloatConvert {
      */
     public void setSign( int sign ) {
       /*if( sign > 1 ) {
-        throw new IllegalArgumentException( "IEEE sign can be no more than 1." );
-      }*/
-
+         throw new IllegalArgumentException( "IEEE sign can be no more than 1." );
+         }*/
       this.sign = sign;
     }
 
@@ -275,7 +272,7 @@ public class FloatConvert {
   private class SingleLimits {
     //~ Instance fields ********************************************************
 
-    private VAXSingle s;
+    private VAXSingle  s;
     private IEEESingle ieee;
 
     //~ Constructors ***********************************************************
@@ -382,10 +379,9 @@ public class FloatConvert {
      */
     public void setExp( int i ) {
       /*if( i > 256 ) {
-        throw new IllegalArgumentException( 
-          "VAX exponent can be no more than 256." );
-      }*/
-
+         throw new IllegalArgumentException(
+           "VAX exponent can be no more than 256." );
+         }*/
       exp = i;
     }
 
@@ -404,10 +400,9 @@ public class FloatConvert {
      */
     public void setMantissa1( int i ) {
       /*if( i > 128 ) {
-        throw new IllegalArgumentException( 
-          "VAX mantissa1 can be no more than 128." );
-      }*/
-
+         throw new IllegalArgumentException(
+           "VAX mantissa1 can be no more than 128." );
+         }*/
       mantissa1 = i;
     }
 
@@ -426,10 +421,9 @@ public class FloatConvert {
      */
     public void setMantissa2( int i ) {
       /*if( i > 65536 ) {
-        throw new IllegalArgumentException( 
-          "VAX mantissa2 can be no more than 65536." );
-      }*/
-
+         throw new IllegalArgumentException(
+           "VAX mantissa2 can be no more than 65536." );
+         }*/
       mantissa2 = i;
     }
 
@@ -447,9 +441,8 @@ public class FloatConvert {
      */
     public void setSign( int i ) {
       /*if( i > 1 ) {
-        throw new IllegalArgumentException( "VAX sign can be no more than 1." );
-      }*/
-
+         throw new IllegalArgumentException( "VAX sign can be no more than 1." );
+         }*/
       sign = i;
     }
 

@@ -9,8 +9,8 @@
  * Converted to Java by Chris M. Bouzek, February 2004
  *
  * $Log$
- * Revision 1.1  2004/04/30 00:02:09  bouzekc
- * Initial revision
+ * Revision 1.2  2004/04/30 00:18:17  bouzekc
+ * New version.  Old version should not have been in CVS.
  *
  */
 package ISIS.JLibGet;
@@ -22,23 +22,23 @@ public class ISISio {
   //~ Instance fields **********************************************************
 
   //crpt_SPECIALS common block start
-  private String fileName;
-  private int ver1;
-  private int[] iFormat = new int[10];
-  private int[] iVer = new int[10];
-  private int nDet;
-  private int nMon;
-  private int nEff;
-  private int nSep;
-  private int nTRG;
-  private int NSP1;
-  private int NTC1;
-  private int uLen;
-  private int nPer;
-  private int[] dataHeader = new int[32];
-  private IntConvert intConvert = new IntConvert(  );
-  private FloatConvert fConvert = new FloatConvert(  );
-  private GetSect getSect       = new GetSect(  );
+  private String       fileName;
+  private int          ver1;
+  private int[]        iFormat    = new int[10];
+  private int[]        iVer       = new int[10];
+  private int          nDet;
+  private int          nMon;
+  private int          nEff;
+  private int          nSep;
+  private int          nTRG;
+  private int          NSP1;
+  private int          NTC1;
+  private int          uLen;
+  private int          nPer;
+  private int[]        dataHeader = new int[32];
+  private IntConvert   intConvert = new IntConvert(  );
+  private FloatConvert fConvert   = new FloatConvert(  );
+  private GetSect      getSect    = new GetSect(  );
 
   //crpt_SPECIALS common block end
   //peculiar to crpt_SPECIALS common block from OPEN_DATA_FILE start
@@ -61,32 +61,31 @@ public class ISISio {
   public int getDat( String runID, int IFSN, int NOS, int[] iData ) {
     //note that the length parameter is the length of iData
     //note also that there was an EQUIVALENCE(iWork, work) in Fortran
-    int iErr;
-    int iBase;
-    int iLong;
-    int j;
-    int i;
-    int iStart;
-    int status;
-    int iCompress;
+    int   iErr;
+    int   iBase;
+    int   iLong;
+    int   j;
+    int   i;
+    int   iStart;
+    int   status;
+    int   iCompress;
     int[] iBuffer = new int[33000];
-    int errCode   = 0;
+    int   errCode = 0;
 
     if( runID.substring( 3, 7 ).equals( "00000" ) ) {
       errCode = 2;
-
       //note no return statement in original Fortran
     }
 
     //  check name is valid & open file according to runID
-    /*if( ( !fileName.equals( runID ) ) || ( fileName.equals( " " ) ) ) {
-      String msg = "Access requested to " + runID + " when " + fileName +
-        " open.";
-      FErrorAddDummy.fErrorAdd( "getDat", msg, " " );
-      errCode = 1;
 
-      return errCode;
-    }*/
+    /*if( ( !fileName.equals( runID ) ) || ( fileName.equals( " " ) ) ) {
+       String msg = "Access requested to " + runID + " when " + fileName +
+         " open.";
+       FErrorAddDummy.fErrorAdd( "getDat", msg, " " );
+       errCode = 1;
+       return errCode;
+       }*/
 
     //  read data into iDat ....remembering there are NTC1+1 time channels and
     //  NSP1+1 spectra and now also nPer periods
@@ -156,6 +155,7 @@ public class ISISio {
 
             return errCode;
           }
+
           j = j + NTC1 + 1;
         }
       } else {
@@ -224,41 +224,40 @@ public class ISISio {
    *         <li>3 = asked for non-existent parameter</li> <li>4 = other
    *         error</li> </ul>
    */
-  public int getParc( 
-    String runID, String name, String[] cValue ) {
+  public int getParc( String runID, String name, String[] cValue ) {
     //note that lengthIn is the length of cValue[]
     //note also an original Fortran EQUIVALENCE(iTemp, cTemp)
-
     String cTemp;
-    int[] iTemp  = new int[33];
-    int noteSect;
-    int lengthOut = 0;
-    int k;
-    int i;
-    int nLines   = 0;
-    int iLines   = 0;
-    int ver9     = 0;
-    int offset;
-    int iLlen;
-    int lLen     = 0;
-    int iErr     = 0;
-    int errCode  = 0;
+    int[]  iTemp     = new int[33];
+    int    noteSect;
+    int    lengthOut = 0;
+    int    k;
+    int    i;
+    int    nLines    = 0;
+    int    iLines    = 0;
+    int    ver9      = 0;
+    int    offset;
+    int    iLlen;
+    int    lLen      = 0;
+    int    iErr      = 0;
+    int    errCode   = 0;
 
     //  decide whether it's CRPT or just a file
     if( runID.substring( 3, 7 ).equals( "00000" ) ) {
       errCode = 2;
+
       //note no return in original Fortran code
     }
 
     //  check name is valid & open file according to runID
-    /*if( ( !fileName.equals( runID ) ) || ( fileName.equals( " " ) ) ) {
-      String msg = "Access requested to " + runID + " when " + fileName +
-        " open.";
-      FErrorAddDummy.fErrorAdd( "getParc", msg, " " );
-      errCode = 1;
 
-      return errCode;
-    }*/
+    /*if( ( !fileName.equals( runID ) ) || ( fileName.equals( " " ) ) ) {
+       String msg = "Access requested to " + runID + " when " + fileName +
+         " open.";
+       FErrorAddDummy.fErrorAdd( "getParc", msg, " " );
+       errCode = 1;
+       return errCode;
+       }*/
 
     //  read variables into cValue
     //  Format section
@@ -268,6 +267,7 @@ public class ISISio {
       //EQUIVALENCE
       cTemp       = copyIntsToString( iTemp );
       cValue[1]   = cTemp;
+
       //  Run section
     } else if( name.equals( "TITL" ) ) {
       iErr        = getSect.getSect( iFormat[0] + 2, 20, iTemp, 49 );
@@ -289,6 +289,7 @@ public class ISISio {
       cValue[5]   = cTemp.substring( 20, 39 );
       cValue[6]   = cTemp.substring( 40, 59 );
       cValue[7]   = cTemp.substring( 60, 79 );
+
       //  Instrument section
     } else if( name.equals( "NAME" ) ) {
       iErr        = getSect.getSect( iFormat[1] + 1, 2, iTemp, 49 );
@@ -296,6 +297,7 @@ public class ISISio {
       //EQUIVALENCE
       cTemp       = copyIntsToString( iTemp );
       cValue[1]   = cTemp.substring( 0, 7 );
+
       // LOG / Notes section
     } else if( name.equals( "NOTE" ) ) {
       if( ver1 == 1 ) {
@@ -305,6 +307,7 @@ public class ISISio {
       }
 
       int[] ver9Arr = { ver9 };
+
       iErr   = getSect.getSect( iFormat[noteSect - 1], 1, ver9Arr, 49 );
       ver9   = ver9Arr[0];
       ver9   = intConvert.VAXToLocalInt( ver9 );
@@ -331,6 +334,7 @@ public class ISISio {
         }
       } else if( ver9 == 2 ) {
         int[] lineArr = { nLines };
+
         iErr        = getSect.getSect( 
             iFormat[noteSect - 1] + 1, 1, lineArr, 49 );
         nLines      = lineArr[0];
@@ -355,6 +359,7 @@ public class ISISio {
         }
       } else {
         int[] lineArr = { nLines };
+
         iErr        = getSect.getSect( 
             iFormat[noteSect - 1] + 1, 1, lineArr, 49 );
         nLines      = lineArr[0];
@@ -382,6 +387,7 @@ public class ISISio {
 
       if( lengthOut < nLines ) {
         String msg = "Not enough space to return all of NOTES section";
+
         FErrorAddDummy.fErrorAdd( "getParc", msg, " " );
       }
 
@@ -390,6 +396,7 @@ public class ISISio {
       errCode = 3;
 
       String msg = "No such char parameter as " + name;
+
       FErrorAddDummy.fErrorAdd( "getParc", msg, " " );
 
       return errCode;
@@ -417,24 +424,24 @@ public class ISISio {
     //EQUIVALENCE(iJunk, bJunk)
     //there was also a INTRINSIC CHAR statement...I am not sure what to
     //do with that
-    int iFrom;
-    int i        = 0;
-    int j        = 0;
-    int k        = 0;
-    int seNum    = 0;
-    int noteSect = 0;
+    int    iFrom;
+    int    i        = 0;
+    int    j        = 0;
+    int    k        = 0;
+    int    seNum    = 0;
+    int    noteSect = 0;
     RefInt NTC      = new RefInt(  );
-    RefInt NDETY    =  new RefInt();
-    RefInt nUse     = new RefInt();
+    RefInt NDETY    = new RefInt(  );
+    RefInt nUse     = new RefInt(  );
 
     //int iJunk    = 0;
     int offset = 0;
-    int lLen   = 0;
-    int iLlen  = 0;
+    int lLen  = 0;
+    int iLlen = 0;
 
     //byte[] bJunk = new byte[4];
     int errCode = 0;
-    int iErr    = 0;
+    int iErr = 0;
 
     //  decide whether it's CRPT or just a file
     if( runID.substring( 3, 7 ).equals( "00000" ) ) {
@@ -455,13 +462,13 @@ public class ISISio {
     //  From now on just decide what has been requested and return it
     if( name.equals( "VER1" ) ) {
       iValue[0] = ver1;
+
       //length      = 1;
     } else if( name.equals( "SFMT" ) ) {
       iErr = getSect.getSect( 1, 31, iValue, 49 );
 
       //length   = 31;
       intConvert.VAXToLocalInts( iValue );
-
       //  run section
     } else if( name.equals( "SRUN" ) ) {
       iErr = getSect.getSect( iFormat[0], 94, iValue, 49 );
@@ -483,7 +490,6 @@ public class ISISio {
 
       //length   = 32;
       intConvert.VAXToLocalInts( iValue );
-
       //  instrument section
     } else if( name.equals( "SINS" ) ) {
       if( iVer[1] == 1 ) {
@@ -501,6 +507,7 @@ public class ISISio {
       }
     } else if( name.equals( "VER3" ) ) {
       iValue[0] = iVer[1];
+
       //length      = 1;
     } else if( name.equals( "IVPB" ) ) {
       iErr = getSect.getSect( iFormat[1] + 3, 64, iValue, 49 );
@@ -509,15 +516,19 @@ public class ISISio {
       intConvert.VAXToLocalInts( iValue );
     } else if( name.equals( "NDET" ) ) {
       iValue[0] = nDet;
+
       //length      = 1;
     } else if( name.equals( "NMON" ) ) {
       iValue[0] = nMon;
+
       //length      = 1;
     } else if( name.equals( "NEFF" ) ) {
       iValue[0] = nEff;
+
       //length      = 1;
     } else if( name.equals( "NUSE" ) ) {
       iValue[0] = nEff;
+
       //length      = 1;
     } else if( name.equals( "MDET" ) ) {
       iErr = getSect.getSect( iFormat[1] + 70, nMon, iValue, 49 );
@@ -551,11 +562,11 @@ public class ISISio {
       } else {
         iFrom = iFormat[3] + 65 + ( 3 * nDet );
       }
+
       iErr = getSect.getSect( iFrom, nDet, iValue, 49 );
 
       //length   = nDet;
       intConvert.VAXToLocalInts( iValue );
-
       //  sample environment section
     } else if( name.equals( "SSEN" ) ) {
       if( iVer[2] == 1 ) {
@@ -594,11 +605,13 @@ public class ISISio {
       }
     } else if( name.equals( "NSEP" ) ) {
       iValue[1] = nSep;
+
       //length      = 1;
     } else if( name.substring( 0, 1 ).equals( "SE" ) ) {
       //READ(name.substring(3,4), "(I2.2)") SENUM;
       if( ( iVer[2] == 1 ) || ( nSep < seNum ) ) {
         String msg = "Invalid SE block " + name;
+
         FErrorAddDummy.fErrorAdd( "getPari", msg, " " );
         errCode = 4;
       } else {
@@ -613,11 +626,14 @@ public class ISISio {
     } else if( name.equals( "SDAE" ) ) {
       if( iVer[3] == 1 ) {
         iErr = getSect.getSect( iFormat[3], 65 + ( 3 * nDet ), iValue, 49 );
+
         //length   = 65 + ( 3 * nDet );
       } else {
         iErr = getSect.getSect( iFormat[3], 65 + ( 5 * nDet ), iValue, 49 );
+
         //length   = 65 + ( 5 * nDet );
       }
+
       intConvert.VAXToLocalInts( iValue );
     } else if( name.equals( "VER5" ) ) {
       iErr = getSect.getSect( iFormat[3], 1, iValue, 49 );
@@ -649,7 +665,6 @@ public class ISISio {
 
       //length   = nDet;
       intConvert.VAXToLocalInts( iValue );
-
       //  TCB section
     } else if( name.equals( "STCB" ) ) {
       if( nTRG != 1 ) {
@@ -674,6 +689,7 @@ public class ISISio {
         errCode = 4;
       } else {
         iValue[0] = nTRG;
+
         //length      = 1;
       }
     } else if( name.equals( "NFPP" ) ) {
@@ -683,6 +699,7 @@ public class ISISio {
       intConvert.VAXToLocalInts( iValue );
     } else if( name.equals( "NPER" ) ) {
       iValue[0] = nPer;
+
       //length      = 1;
     } else if( name.equals( "PMAP" ) ) {
       iErr = getSect.getSect( iFormat[4] + 4, 256, iValue, 49 );
@@ -691,9 +708,11 @@ public class ISISio {
       intConvert.VAXToLocalInts( iValue );
     } else if( name.equals( "NSP1" ) ) {
       iValue[0] = NSP1;
+
       //length      = 1;
     } else if( name.equals( "NTC1" ) ) {
       iValue[0] = NTC1;
+
       //length      = 1;
     } else if( name.equals( "TCM1" ) ) {
       iErr = getSect.getSect( iFormat[4] + 262, 5, iValue, 49 );
@@ -718,6 +737,7 @@ public class ISISio {
       //length = 32;
     } else if( name.equals( "ULEN" ) ) {
       iValue[0] = uLen;
+
       //length      = 1;
       // User section
     } else if( name.equals( "VER7" ) ) {
@@ -741,6 +761,7 @@ public class ISISio {
 
       //length = 1;
       intConvert.VAXToLocalInts( iValue );
+
       // NOTES section
     } else if( name.equals( "VER9" ) ) {
       if( ver1 == 1 ) {
@@ -753,6 +774,7 @@ public class ISISio {
 
       //length = 1;
       intConvert.VAXToLocalInts( iValue );
+
       // Max Line length in notes section (bytes)
     } else if( name.equals( "NTLL" ) ) {
       if( ver1 == 1 ) {
@@ -791,6 +813,7 @@ public class ISISio {
       //length = 1;
     } else if( name.equals( "FORM" ) ) {
       iValue[0] = iFormat[9];
+
       //length      = 1;
       // Number of lines in notes section
     } else if( name.equals( "NTNL" ) ) {
@@ -815,11 +838,13 @@ public class ISISio {
       //  non existent requests
     } else {
       errCode = 3;
+
       //length    = 0;
     }
 
     if( ( iErr != 0 ) && ( errCode == 0 ) ) {
       String msg = "Error in reading data from file " + runID;
+
       FErrorAddDummy.fErrorAdd( "getPari", msg, " " );
       errCode = 4;
     }
@@ -841,14 +866,14 @@ public class ISISio {
     //note also two original equivalence statements:
     //EQUIVALENCE(iWork, work)
     //EQUIVALENCE(temp,iTemp)
-    int iErr     = 0;
-    int[] iStore = new int[64];
-    int iTable   = 0;
-    int IPRE1    = 0;
-    int i        = 0;
-    float temp   = 0;
-    float extra  = 0;
-    int errCode  = 0;
+    int   iErr    = 0;
+    int[] iStore  = new int[64];
+    int   iTable  = 0;
+    int   IPRE1   = 0;
+    int   i       = 0;
+    float temp    = 0;
+    float extra   = 0;
+    int   errCode = 0;
 
     //lengthOut    = 0;
     //int length   = lengthIn;
@@ -862,20 +887,18 @@ public class ISISio {
 
     //  check name is valid & open file according to runID
     /*if( ( !fileName.equals( "runID" ) ) || ( fileName.equals( " " ) ) ) {
-      String msg = "Access requested to " + runID + " when " + fileName +
-        " open";
-      FErrorAddDummy.fErrorAdd( "getParr", msg, " " );
-      errCode = 1;
-
-      return errCode;
-    }*/
-
+       String msg = "Access requested to " + runID + " when " + fileName +
+         " open";
+       FErrorAddDummy.fErrorAdd( "getParr", msg, " " );
+       errCode = 1;
+       return errCode;
+       }*/
     //  read variables into rValue
     //  Instrument section
-    
     iTable = iFormat[1] + 70 + ( 2 * nMon );
 
     int[] iArr = new int[rValue.length];
+
     arrayCopyFloatToInt( rValue, iArr );
 
     if( name.equals( "LEN2" ) ) {
@@ -893,6 +916,7 @@ public class ISISio {
         iErr = fConvert.VAXToIEEEFloat( rValue );
       } else {
         String msg = "Cannot access " + name;
+
         FErrorAddDummy.fErrorAdd( "getParr", msg, " " );
         errCode = 4;
       }
@@ -905,6 +929,7 @@ public class ISISio {
         iErr = fConvert.VAXToIEEEFloat( rValue );
       } else {
         String msg = "Cannot access " + name;
+
         FErrorAddDummy.fErrorAdd( "getParr", msg, " " );
         errCode = 4;
       }
@@ -977,7 +1002,6 @@ public class ISISio {
 
       //length   = nDet;
       iErr = fConvert.VAXToIEEEFloat( rValue );
-
       //  Time channel boundaries section
       //     time channel area definition
     } else if( name.equals( "TCP1" ) ) {
@@ -1031,7 +1055,6 @@ public class ISISio {
       //  non existent requests
     } else if( name.equals( "RRPB" ) ) {
       iErr = getSect.getSect( iFormat[0] + 62, 32, iArr, 49 );
-      
       arrayCopyIntToFloat( iArr, rValue );
 
       //length   = 32;
@@ -1045,6 +1068,7 @@ public class ISISio {
 
     if( ( iErr != 0 ) && ( errCode == 0 ) ) {
       String msg = "Error in reading data from file " + runID;
+
       FErrorAddDummy.fErrorAdd( "getParr", msg, " " );
       errCode = 4;
     }
@@ -1072,11 +1096,11 @@ public class ISISio {
   public int getRun( String runID, int[] iArray ) {
     //note that length is the length of iArray[]
     boolean found;
-    int start_of_data;
-    int iErr      = 0;
-    int errCode   = 0;
-    int iError    = 0;
-    int[] iArray2;
+    int     start_of_data;
+    int     iErr    = 0;
+    int     errCode = 0;
+    int     iError  = 0;
+    int[]   iArray2;
 
     //  check name is valid & open file according to runID
     if( ( !fileName.equals( runID ) ) || ( fileName.equals( " " ) ) ) {
@@ -1096,6 +1120,7 @@ public class ISISio {
     } else {
       start_of_data = iFormat[6];
     }
+
     iErr = getSect.getSect( 1, start_of_data, iArray, 49 );
     intConvert.VAXToLocalInts( iArray );
 
@@ -1109,6 +1134,7 @@ public class ISISio {
     for( int m = 0; m < iArray2.length; m++ ) {
       iArray2[m] = iArray[start_of_data + m];
     }
+
     errCode = getDat( runID, 0, ( NSP1 + 1 ) * nPer, iArray2 );
 
     if( errCode != 0 ) {
@@ -1177,9 +1203,9 @@ public class ISISio {
   public int byteRelExpn( 
     byte[] inData, int nIn, int nFrom, int[] outData, int nOut ) {
     //note the original equivalence statement: EQUIVALENCE(iTemp, bTemp)
-    int i;
-    int j;
-    int iTemp;
+    int    i;
+    int    j;
+    int    iTemp;
     byte[] bTemp = new byte[4];
 
     // Assume innocent until proven guilty
@@ -1246,9 +1272,8 @@ public class ISISio {
 
   /**
    * Opens a data file.  Note that this uses single element integer arrays to
-   * simulate reference parameters.  This should eventually be changed. 
-   * The following class variables are changed:<br>
-   * 
+   * simulate reference parameters.  This should eventually be changed.  The
+   * following class variables are changed:<br>
    * 
    * <ul>
    * <li>
@@ -1270,8 +1295,8 @@ public class ISISio {
    *         in opening it</li> </ul>
    */
   public int openDataFile( String runID, RefInt NTC, RefInt nDet, RefInt nUse ) {
-    boolean found = false;
-    int errCode   = 0;
+    boolean found   = false;
+    int     errCode = 0;
 
     if( !fileName.equals( runID ) ) {
       fileName   = " ";
@@ -1280,12 +1305,14 @@ public class ISISio {
       if( !found ) {
         //this had RUNID(:TRUELEN(RUNID))
         String msg = "File " + runID + " not found.";
+
         FErrorAddDummy.fErrorAdd( "openDataFile", msg, " " );
         errCode = 1;
 
         return errCode;
       }
     }
+
     NTC.innerInt    = NTC1;
     nDet.innerInt   = nDet1;
     nUse.innerInt   = nEff;
@@ -1301,18 +1328,17 @@ public class ISISio {
   public boolean openFile( String runID ) {
     //note the original equivalence statement: EQUIVALENCE(cFileTemp, iFileTemp)
     boolean found;
-    int[] iTemp      = new int[3];
-    int i;
-    String cFileTemp;
-    int errCode      = 0;
-    int iErr         = 0;
+    int[]   iTemp     = new int[3];
+    int     i;
+    String  cFileTemp;
+    int     errCode   = 0;
+    int     iErr      = 0;
 
     //  Check that the file exists
-    i                = trueLength( runID );
+    i           = trueLength( runID );
 
-      //original: INQUIRE(FILE=RUNID(1:I),EXIST=FOUND)
-      found = new java.io.File( runID ).exists(  );
-   
+    //original: INQUIRE(FILE=RUNID(1:I),EXIST=FOUND)
+    found       = new java.io.File( runID ).exists(  );
 
     if( !found ) {
       return found;
@@ -1324,9 +1350,7 @@ public class ISISio {
     //Hack - we have fileName in common block, so temporarily assign it for getsect_orig.f to read
     fileName    = runID;
     errCode     = 0;
-
     errCode     = getSect.fastGetInit( cFileTemp, 49 );
-
     fileName    = " ";
 
     if( errCode != 0 ) {
@@ -1374,6 +1398,7 @@ public class ISISio {
     } else {
       iErr = getSect.getSect( iFormat[2] + 65, 1, iTemp, 49 );
     }
+
     nSep         = intConvert.VAXToLocalInt( iTemp[0] );
 
     //  DAE section
@@ -1393,10 +1418,10 @@ public class ISISio {
     //I commented this out for testing.  It should be fixed.
     if( nTRG != 1 ) {
       //original: WRITE(6,*) 'NTRG Problem', NTRG
-      /*System.out.println( "nTRG problem " + nTRG );
-      found = false;
 
-      return found;*/
+      /*System.out.println( "nTRG problem " + nTRG );
+         found = false;
+         return found;*/
     }
 
     //  nPer
@@ -1447,6 +1472,7 @@ public class ISISio {
         iVer[7] = 0;
       }
     }
+
     iVer[6] = intConvert.VAXToLocalInt( iVer[6] );
 
     // DATA section header
@@ -1492,27 +1518,27 @@ public class ISISio {
    */
   public int readData( 
     String runID, int iSpec, float[] deltaWork, int[] specWork, float[] ttheWork,
-    float[] L2Work, int nDetMax, float[] TCB, int[] iDat, int nTCMax, RefFloat L1,
-    RefFloat L2, RefFloat tthe, RefFloat delta, float phi, RefString runTitle,
-    RefFloat duration, RefString combinedTime, RefString userName, RefString instName,
-    RefString runNo, float[] userTables, int nUse, int quick ) {
+    float[] L2Work, int nDetMax, float[] TCB, int[] iDat, int nTCMax,
+    RefFloat L1, RefFloat L2, RefFloat tthe, RefFloat delta, float phi,
+    RefString runTitle, RefFloat duration, RefString combinedTime,
+    RefString userName, RefString instName, RefString runNo, float[] userTables,
+    int nUse, int quick ) {
     //note the equivalence: EQUIVALENCE(IVPBWK,RVPBWK)
     //note also that nDetMax = length of deltaWork[], specWork[], ttheWork[],L2Work[]
     //also that nTCMax = length of TCB[]
     //also that nUse = length of userTables[]
-
-    int iErr       = 0;
-    int errCode    = 0;
-    int i;
-    int j;
-    int nDetMatch  = 0;
-    float rNDet    = 0.0f;
-    float[] RVPBWK = new float[64];
-    int[] RPB      = new int[32];
-    String error1  = "";
-    String error2  = "";
-    String UTNum   = "";
-    String header  = "";
+    int     iErr      = 0;
+    int     errCode   = 0;
+    int     i;
+    int     j;
+    int     nDetMatch = 0;
+    float   rNDet     = 0.0f;
+    float[] RVPBWK    = new float[64];
+    int[]   RPB       = new int[32];
+    String  error1    = "";
+    String  error2    = "";
+    String  UTNum     = "";
+    String  header    = "";
 
     //String runIdent="";
     String exptTitle = "";
@@ -1539,6 +1565,7 @@ public class ISISio {
 
       String msg = "Too many time channels: NTC1 = " + error1 + ", nTCMax = " +
         error2;
+
       FErrorAddDummy.fErrorAdd( "readData", msg, " " );
       errCode = 2;
 
@@ -1552,6 +1579,7 @@ public class ISISio {
       String msg = "Invalid spectrum number = " + iSpec +
         " (spectra must be in the range 0 - " + ( ( ( NSP1 + 1 ) * nPer ) - 1 ) +
         ")";
+
       FErrorAddDummy.fErrorAdd( "readData", msg, " " );
       errCode = 3;
 
@@ -1566,6 +1594,7 @@ public class ISISio {
       error2   = "" + nDetMax;
 
       String msg = "Too many detectors: " + error1 + " > " + error2;
+
       FErrorAddDummy.fErrorAdd( "readData", msg, " " );
       errCode = 2;
 
@@ -1581,6 +1610,7 @@ public class ISISio {
 
       String msg = "Invalid number of user parameters: " + error1 + " != " +
         error2;
+
       FErrorAddDummy.fErrorAdd( "readData", msg, " " );
       errCode = 2;
 
@@ -1589,9 +1619,10 @@ public class ISISio {
 
     if( quick == 0 ) {
       String[] headerArr = new String[1];
-      headerArr[0]     = header;
-      iErr             = getParc( runID, "HDR", headerArr );
-      header           = headerArr[0];
+
+      headerArr[0]               = header;
+      iErr                       = getParc( runID, "HDR", headerArr );
+      header                     = headerArr[0];
 
       if( iErr != 0 ) {
         return errorCode999GoTo(  );
@@ -1599,31 +1630,34 @@ public class ISISio {
 
       // Run identifier e.g. LAD12345
       //runIdent       = header.substring( 1, 8 );
-      runNo.innerString            = header.substring( 4, 8 );
+      runNo.innerString          = header.substring( 4, 8 );
 
       // User Name
-      userName.innerString         = header.substring( 9, 28 );
+      userName.innerString       = header.substring( 9, 28 );
 
       //Experiment short title
-      exptTitle        = header.substring( 29, 52 );
+      exptTitle                  = header.substring( 29, 52 );
 
       // Start date
-      startDate        = header.substring( 53, 64 );
+      startDate                  = header.substring( 53, 64 );
 
       // Start Time
-      startTime        = header.substring( 65, 72 );
-      combinedTime.innerString     = startDate.substring( 1, trueLength( startDate ) ) +
-        " " + startTime.substring( 1, trueLength( startTime ) );
-      runTitle.innerString         = exptTitle;
+      startTime                  = header.substring( 65, 72 );
+      combinedTime.innerString   = startDate.substring( 
+          1, trueLength( startDate ) ) + " " +
+        startTime.substring( 1, trueLength( startTime ) );
+      runTitle.innerString       = exptTitle;
 
-      String[] instNameArr = new String[1];
-      instNameArr[0]   = instName.innerString;
-      iErr             = getParc( runID, "name", instNameArr );
-      instName.innerString         = instNameArr[0];
+      String[] instNameArr       = new String[1];
+
+      instNameArr[0]         = instName.innerString;
+      iErr                   = getParc( runID, "name", instNameArr );
+      instName.innerString   = instNameArr[0];
 
       if( iErr != 0 ) {
         return errorCode999GoTo(  );
       }
+
       iErr = getParr( runID, "TCB1", TCB );
 
       if( iErr != 0 ) {
@@ -1639,10 +1673,11 @@ public class ISISio {
     if( iErr != 0 ) {
       return errorCode999GoTo(  );
     }
-    L1.innerFloat          = RVPBWK[22];
+
+    L1.innerFloat         = RVPBWK[22];
 
     // spectrum table
-    iErr        = getPari( runID, "SPEC", specWork );
+    iErr                  = getPari( runID, "SPEC", specWork );
 
     if( iErr != 0 ) {
       return errorCode999GoTo(  );
@@ -1654,17 +1689,20 @@ public class ISISio {
     if( iErr != 0 ) {
       return errorCode999GoTo(  );
     }
-    duration.innerFloat    = ( float )( RPB[12] );
-    iErr        = getParr( runID, "DELT", deltaWork );
+
+    duration.innerFloat   = ( float )( RPB[12] );
+    iErr                  = getParr( runID, "DELT", deltaWork );
 
     if( iErr != 0 ) {
       return errorCode999GoTo(  );
     }
+
     iErr = getParr( runID, "LEN2", L2Work );
 
     if( iErr != 0 ) {
       return errorCode999GoTo(  );
     }
+
     iErr = getParr( runID, "TTHE", ttheWork );
 
     if( iErr != 0 ) {
@@ -1672,10 +1710,10 @@ public class ISISio {
     }
 
     // average tthe, L2 and delta over detectors used for given spectrum
-    tthe.innerFloat        = 0.0f;
-    L2.innerFloat          = 0.0f;
-    delta.innerFloat       = 0.0f;
-    j           = 0;
+    tthe.innerFloat    = 0.0f;
+    L2.innerFloat      = 0.0f;
+    delta.innerFloat   = 0.0f;
+    j                  = 0;
 
     for( i = 0; i < nDet; i++ ) {
       if( specWork[i] == iSpec ) {
@@ -1685,6 +1723,7 @@ public class ISISio {
         j++;
       }
     }
+
     nDetMatch   = j;
 
     // *** phi ***
@@ -1720,16 +1759,17 @@ public class ISISio {
     }
 
     if( nDetMatch != 0 ) {
-      rNDet   = ( float )( nDetMatch );
+      rNDet              = ( float )( nDetMatch );
       tthe.innerFloat    = tthe.innerFloat / rNDet;
       delta.innerFloat   = delta.innerFloat / rNDet;
       L2.innerFloat      = L2.innerFloat / rNDet;
-      phi     = phi / rNDet;
+      phi                = phi / rNDet;
 
       for( i = 0; i < nUse; i++ ) {
         userTables[i] = userTables[i] / rNDet;
       }
     }
+
     iErr = getDat( runID, iSpec, 1, iDat );
 
     if( iErr != 0 ) {
@@ -1759,6 +1799,7 @@ public class ISISio {
    */
   private int errorCode999GoTo(  ) {
     int errCode = 4;
+
     FErrorAddDummy.fErrorAdd( "readData", "Some other error", " " );
 
     return errCode;

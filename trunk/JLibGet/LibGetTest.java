@@ -2,8 +2,8 @@
  * Original copyright ??
  * Converted to Java by Chris M. Bouzek, February 2004
  * $Log$
- * Revision 1.1  2004/04/30 00:02:09  bouzekc
- * Initial revision
+ * Revision 1.2  2004/04/30 00:18:18  bouzekc
+ * New version.  Old version should not have been in CVS.
  *
  */
 package ISIS.JLibGet;
@@ -18,14 +18,14 @@ public class LibGetTest {
 
   //~ Instance fields **********************************************************
 
-  private int maxTCB;
-  private int errCode;
-  private int NTCB;
-  private int iSpec;
+  private int     maxTCB;
+  private int     errCode;
+  private int     NTCB;
+  private int     iSpec;
   private boolean found;
-  private int[] counts            = new int[MAXTCB];
-  private float[] TCB             = new float[MAXTCB];
-  private String runID;
+  private int[]   counts = new int[MAXTCB];
+  private float[] TCB    = new float[MAXTCB];
+  private String  runID;
 
   //~ Methods ******************************************************************
 
@@ -62,6 +62,7 @@ public class LibGetTest {
 
       return;
     }
+
     System.out.println( "Read " + NTCB + " time channels." );
 
     //read spectrum 1
@@ -76,6 +77,7 @@ public class LibGetTest {
 
       return;
     }
+
     System.out.println( "Read spectrum " + iSpec );
 
     for( int i = 1; i <= Math.min( 10, NTCB ); i++ ) {
