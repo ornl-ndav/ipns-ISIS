@@ -30,7 +30,15 @@
  *
  * For further information, see <http://www.pns.anl.gov/ISAW/>
  * $Log$
+ * Revision 1.10  2004/06/24 21:39:50  kramer
+ * Changed all of the fields' visiblity from protected to private.  Fields
+ * are now accessed from other classes in this package through getter methods
+ * instead of using <object>.<field name>.  Also, this class should now be
+ * immutable.  I also added private fields for the instrument type and run
+ * number as well as getter methods for the fields.
+ *
  * Revision 1.9  2004/06/22 16:49:03  kramer
+ *
  * Made the constructors public.
  *
  * Revision 1.8  2004/06/21 19:11:16  kramer
@@ -65,46 +73,50 @@ public class Header {
 /**
  * The run duration (in {mu}A.Hr).
  */
-  protected String runDuration;
+  private String runDuration;
   /**
    * Run identifier.  Three characters for the instrument followed by 
    * five characters for the run number (eg LAD12345).
    */
-  protected String runID;
+  private String runID;
+  /** A three character abbreviation for the instrument. */
+  private String instName;
+  /** A five character String representation for the run number. */
+  private String runNumber;
   /** Experiment short title. */
-  protected String runTitleShort;
+  private String runTitleShort;
   /** Start date. */
-  protected String startDate;
+  private String startDate;
   /** Start time. */
-  protected String startTime;
+  private String startTime;
   /** The user name. */
-  protected String userName;
+  private String userName;
   /**
    * data format flag (0 or 1)<br>
    * 0 - all time channels for each<br>
    * 1 - the same time channel for every spectrum
    */
-  protected int    dataFormatFlag;
+  private int    dataFormatFlag;
   /** Format version number. */
-  protected int    formatVersion;
+  private int    formatVersion;
   /** The start address of the DATA ACQUISITION ELECTRONICS section. */
-  protected int    startAddressDae;
+  private int    startAddressDae;
   /** The start address of the RAW DATA section. */
-  protected int    startAddressData;
+  private int    startAddressData;
   /** The start address of the INSTRUMENT section. */
-  protected int    startAddressInst;
+  private int    startAddressInst;
   /** The start address of the LOG section. */
-  protected int    startAddressLog;
+  private int    startAddressLog;
   /** The start address of the RUN section. */
-  protected int    startAddressRun;
+  private int    startAddressRun;
   /** The start address of the SAMPLE ENVIRONMENT section. */
-  protected int    startAddressSe;
+  private int    startAddressSe;
   /**  The start address of the spare section. */
-  protected int    startAddressSpare;
+  private int    startAddressSpare;
   /**  The start address of the TIME CHANNEL BOUNDARIES section. */
-  protected int    startAddressTcb;
+  private int    startAddressTcb;
   /**  The start address of the USER DEFINED section. */
-  protected int    startAddressUser;
+  private int    startAddressUser;
 
   //~ Constructors -------------------------------------------------------------
 
@@ -115,6 +127,8 @@ public class Header {
    {
       runDuration = new String();
       runID = new String();
+      instName = new String();
+      runNumber = new String();
       runTitleShort = new String();
       startDate = new String();
       startTime = new String();
@@ -142,13 +156,19 @@ public class Header {
     try {
       rawFile.seek( 0 );
 
-      StringBuffer temp = new StringBuffer( 8 );
-
-      for( int ii = 0; ii < 8; ii++ ) {
+      StringBuffer temp = new StringBuffer( 3 );
+      for( int ii = 0; ii < 3; ii++ )
         temp.append( ( char )rawFile.readByte(  ) );
-      }
+        
+      instName = temp.toString();
+      
+      temp = new StringBuffer(5);
+      for (int ii=0; ii<5; ii++)
+         temp.append( (char)rawFile.readByte());
 
-      runID   = temp.toString(  );
+      runNumber = temp.toString();
+
+      runID   = instName+runNumber;
       temp    = new StringBuffer( 20 );
 
       for( int ii = 0; ii < 20; ii++ ) {
@@ -226,6 +246,8 @@ public class Header {
 
          rawFile.close(  );
          System.out.println( "RunID                 " + header.runID );
+         System.out.println( "  InstrumentType    "+header.instName);
+         System.out.println( "  RunNumber          "+header.runNumber);
          System.out.println( "UserName              " + header.userName );
          System.out.println( "RunTitle              " + header.runTitleShort );
          System.out.println( "StartDate             " + header.startDate );
@@ -390,6 +412,17 @@ public class Header {
    {
       return formatVersion;
    }
+   
+   /**
+    * Get the instrument type.  Examples are 
+    * LOQ, HRP, or SXD.
+    * @return An abbreviation for the instrument's 
+    * name.  This is a three character String.
+    */
+   public String getInstrumentType()
+   {
+      return instName;
+   }
 
    /**
     * Get the run duration.
@@ -409,7 +442,17 @@ public class Header {
    {
       return runID;
    }
-
+   
+   /**
+    * Get a String representing the run number.
+    * @return A five character String representing 
+    * the run number.
+    */
+   public String getRunNumber()
+   {
+      return runNumber;
+   }
+   
    /**
     * Get the experiment short title.
     * @return The experiment short title.
