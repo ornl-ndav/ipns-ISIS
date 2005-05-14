@@ -31,6 +31,9 @@
  * Modified:
  *
  *  $Log$
+ *  Revision 1.3  2005/05/14 01:44:19  dennis
+ *  Configuration now read from file specified by "filename".
+ *
  *  Revision 1.2  2004/06/29 16:29:32  dennis
  *  Now makes the vectors and grids private data members.
  *
@@ -180,8 +183,7 @@ public class Write_SXD_Grid_Info
                                               // load the pixel locations into
     try                                       // a list of Vector3D points
     {
-      TextFileReader tfr = 
-                     new TextFileReader("/home/dennis/ISIS_SXD/sxdII.config");
+      TextFileReader tfr = new TextFileReader( filename );
       int i = 0;
       for ( int det = 0; det < N_DET; det++ )
         for ( int pix = 0; pix < PIX_PER_DET; pix++ )
