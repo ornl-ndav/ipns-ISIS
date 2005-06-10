@@ -30,7 +30,11 @@
  *
  * For further information, see <http://www.pns.anl.gov/ISAW/>
  * $Log$
+ * Revision 1.11  2005/06/10 14:15:48  dennis
+ * Fixed javadoc syntax error.
+ *
  * Revision 1.10  2004/06/24 21:39:50  kramer
+ *
  * Changed all of the fields' visiblity from protected to private.  Fields
  * are now accessed from other classes in this package through getter methods
  * instead of using <object>.<field name>.  Also, this class should now be
@@ -379,7 +383,7 @@ public class Header {
    * @param inFile The file to read the data from.
    * @param length The number of bytes to read.
    * @return The String created from the next <code>length</code> bytes read from the file.
-   * @throws An IOException is thrown to allow the calling method to decide if it should 
+   * @throws IOException to allow the calling method to decide if it should 
    * continue reading the file or not.
    */
   protected static String readString(RandomAccessFile inFile, int length) throws IOException
