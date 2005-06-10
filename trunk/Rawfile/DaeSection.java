@@ -30,7 +30,11 @@
  *
  * For further information, see <http://www.pns.anl.gov/ISAW/>
  * $Log$
+ * Revision 1.13  2005/06/10 14:11:48  dennis
+ * Fixed problem with several javadoc comments.
+ *
  * Revision 1.12  2004/07/12 19:10:53  kramer
+ *
  * Added a field of type IRegimeInfo which is used to get the mimimum regime
  * number.  Added a method to get a copy of the time regime table.  Modified the
  * getMinimumRegimeNumber() method to use the IRegimeInfo object to get the
@@ -92,45 +96,44 @@ public class DaeSection {
    * The crate number for each detector.  The length of 
    * this array equals 1 more than the number of 
    * detectors.  Indexing starts at 1.  Index 0 contains 
-   * garbage values.
-   * 
-   * @see InstrumentSection#nDet
+   * garbage values.  The number of detectors should
+   * match the value in InstrumentSection.nDet.
    */
   private int[] crateNum;
+
   /**
    * Position in module for each detector.  The length of 
    * this array equals 1 more than the number of 
    * detectors.  Indexing starts at 1.  Index 0 contains 
-   * garbage values.
-   * 
-   * @see InstrumentSection#nDet
+   * garbage values.  The number of detectors should
+   * match the value in InstrumentSection.nDet.
    */
   private int[] inputNum;
+
   /**
    * The module number for each detector.  The length of 
    * this array equals 1 more than the number of 
    * detectors.  Indexing starts at 1.  Index 0 contains 
-   * garbage values.
-   * 
-   * @see InstrumentSection#nDet
+   * garbage values.  The number of detectors should
+   * match the value in InstrumentSection.nDet.
    */
   private int[] moduleNum;
+
   /**
    * Time regime number table.  The length of 
    * this array equals 1 more than the number of 
    * detectors.  Indexing starts at 1.  Index 0 contains 
-   * garbage values.
-   * 
-   * @see InstrumentSection#nDet
+   * garbage values.  The number of detectors should
+   * match the value in InstrumentSection.nDet.
    */
   private int[] timeRegimeTable;
+
   /**
    * 'User detector number' for each detector.  The length of 
    * this array equals 1 more than the number of 
    * detectors.  Indexing starts at 1.  Index 0 contains 
-   * garbage values.
-   * 
-   * @see InstrumentSection#nDet
+   * garbage values.  The number of detectors should
+   * match the value in InstrumentSection.nDet.
    */
   private int[] userDetectorNumber;
   /** Crate for monitor 1. */
