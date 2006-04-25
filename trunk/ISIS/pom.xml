@@ -9,7 +9,7 @@
     <artifactId>sns-asg-pom</artifactId>
     <version>0.9-SNAPSHOT</version>
   </parent>
-  <groupId>ISIS</groupId>
+  <groupId>ISAW</groupId>
   <artifactId>ipns-isis</artifactId>
   <version>1.0-SNAPSHOT</version>
   <name>ISIS Core</name>
