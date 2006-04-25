@@ -14,18 +14,18 @@
   <version>1.0-SNAPSHOT</version>
   <name>ISIS Core</name>
   <description>ISIS Core Libraries</description>
-  <!-- dependencies>
-    <dependency>
+  <dependencies>
+    <!-- dependency>
       <groupId>sns.dependency.isaw</groupId>
       <artifactId>isaw-gov</artifactId>
       <version>1.0</version>
-    </dependency>
+    </dependency -->
     <dependency>
       <groupId>ISAW</groupId>
       <artifactId>ipns-core</artifactId>
       <version>1.0-SNAPSHOT</version>
     </dependency>
-  </dependencies -->
+  </dependencies>
   <build>
     <plugins>
       <plugin>
