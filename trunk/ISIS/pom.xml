@@ -9,12 +9,12 @@
     <artifactId>sns-asg-pom</artifactId>
     <version>0.9-SNAPSHOT</version>
   </parent>
-  <groupId>ISAW</groupId>
-  <artifactId>isaw-core</artifactId>
+  <groupId>ISIS</groupId>
+  <artifactId>ipns-isis</artifactId>
   <version>1.0-SNAPSHOT</version>
-  <name>ISAW Core</name>
-  <description>ISAW Core Libraries</description>
-  <dependencies>
+  <name>ISIS Core</name>
+  <description>ISIS Core Libraries</description>
+  <!-- dependencies>
     <dependency>
       <groupId>sns.dependency.isaw</groupId>
       <artifactId>isaw-gov</artifactId>
@@ -25,7 +25,7 @@
       <artifactId>ipns-core</artifactId>
       <version>1.0-SNAPSHOT</version>
     </dependency>
-  </dependencies>
+  </dependencies -->
   <build>
     <plugins>
       <plugin>

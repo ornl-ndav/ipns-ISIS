@@ -1,7 +1,7 @@
 #
 
 default:
-	@echo "Run 'make install' to update, build & install ISAW."
+	@echo "Run 'make install' to update, build & install ISIS."
 
 update:
 	svn update
